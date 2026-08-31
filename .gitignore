@@ -22,3 +22,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Material de referencia visual (capturas propias del demo de la plantilla,
+# bocetos, imagenes de prueba). Es material de consulta local: NO se versiona
+# ni se redistribuye.
+referencia/
+
+# Mirror local del demo de la plantilla PrestaShop (Codezeel PRS040088).
+# Codigo de terceros con copyright, descargado solo como referencia de
+# maquetacion/estilos. NO se versiona ni se redistribuye.
+plantilla-prestashop/
