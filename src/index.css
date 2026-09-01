@@ -18,6 +18,14 @@
   --surface-2: #faf7f4;
   --cream: #f4efe9;
 
+  /* Hielo (cabecera) */
+  --ice-50: #eef8fd;
+  --ice-100: #e3f4fc;
+  --ice-200: #c5e6f5;
+  --ice-300: #9fd4ec;
+  --ice-600: #2b7fa3;
+  --ice-800: #0f4c63;
+
   /* Estado */
   --ok: #2f7d5d;
   --danger: #b23b3b;

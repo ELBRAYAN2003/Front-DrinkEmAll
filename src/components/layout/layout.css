@@ -3,13 +3,53 @@
 .site-header {
   position: relative;
   z-index: 50;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
+  /* Celeste helado. Va mas saturado abajo para que la escarcha blanca del
+     canvas tenga contraste suficiente y se lea como hielo. */
+  background: linear-gradient(135deg, #6aa9e0 0%, #3d80c2 55%, #2c66a8 100%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+/* Halo frio siguiendo al puntero. Va por debajo del canvas de escarcha. */
+.site-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease);
+  background: radial-gradient(
+    220px circle at var(--fx, -999px) var(--fy, -999px),
+    rgba(255, 255, 255, 0.55),
+    rgba(255, 255, 255, 0) 70%
+  );
+}
+
+.site-header.is-chilled::after {
+  opacity: 1;
+}
+
+.header-cracks {
+  position: absolute;
+  inset: 0;
+  /* Debajo del contenido a proposito: el vidrio se raja sobre el azul, nunca
+     sobre el logo, el buscador, el menu ni el carrito. */
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Las tres filas se elevan por encima de las capas de hielo. Sin position
+   el z-index no aplica: son estaticas. */
+.topbar,
+.header-main,
+.mainnav {
+  position: relative;
+  z-index: 2;
 }
 
 /* Barra superior ------------------------------------------------------- */
 .topbar {
-  background: var(--wine);
+  background: var(--ice-800);
   color: rgba(255, 255, 255, 0.86);
   font-size: 13px;
 }
@@ -120,13 +160,15 @@
   display: flex;
   align-items: center;
   min-width: 0;
-  border: 1px solid var(--line);
+  border: 1px solid rgba(255, 255, 255, 0.75);
   border-radius: 999px;
-  background: var(--surface-2);
-  transition: border-color 0.25s var(--ease);
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(3px);
+  transition: border-color 0.25s var(--ease), background-color 0.25s var(--ease);
 
   &:focus-within {
-    border-color: var(--wine);
+    border-color: var(--ice-600);
+    background: rgba(255, 255, 255, 0.8);
   }
 
   input {
@@ -164,7 +206,7 @@
   flex: none;
   max-width: 210px;
   border: 0;
-  border-right: 1px solid var(--line);
+  border-right: 1px solid var(--ice-300);
   background: none;
   padding: 12px 14px;
   color: var(--body);
@@ -240,7 +282,7 @@
 
 /* Navegacion ------------------------------------------------------------ */
 .mainnav {
-  border-top: 1px solid var(--line);
+  border-top: 1px solid rgba(255, 255, 255, 0.6);
 
   @media (max-width: 900px) {
     display: none;
@@ -277,7 +319,7 @@
     }
 
     &:hover > a {
-      color: var(--wine);
+      color: var(--ice-800);
     }
   }
 }
@@ -416,7 +458,7 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  background: var(--surface);
+  background: linear-gradient(135deg, #6aa9e0, #3d80c2);
   box-shadow: var(--shadow-sm);
 }
 
@@ -612,4 +654,129 @@
       color: #fff;
     }
   }
+}
+
+
+/* --- Cabecera sobre azul ---------------------------------------------- --
+   Al pasar el fondo a azul medio, todo el contenido que antes era tinta
+   oscura deja de leerse. Se agrupa aca el vuelco a claro en vez de tocar
+   cada regla de arriba. */
+
+.site-header {
+  color: #fff;
+}
+
+.logo-text {
+  color: #fff;
+}
+
+.logo-mark {
+  background: rgba(255, 255, 255, 0.94);
+  color: #2c66a8;
+}
+
+.burger {
+  color: #fff;
+}
+
+.menu > li > a {
+  color: rgba(255, 255, 255, 0.93);
+}
+
+.menu > li:hover > a {
+  color: #fff;
+}
+
+.mainnav {
+  border-top-color: rgba(255, 255, 255, 0.22);
+}
+
+.mainnav-note {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.action {
+  color: #fff;
+}
+
+.action:hover {
+  color: #fff;
+}
+
+.action-text small {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* Buscador como vidrio sobre el azul */
+.search {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.34);
+}
+
+.search:focus-within {
+  background: rgba(255, 255, 255, 0.24);
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.search input {
+  color: #fff;
+}
+
+.search input::placeholder {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.search-cat {
+  color: #fff;
+  border-right-color: rgba(255, 255, 255, 0.3);
+}
+
+/* El desplegable nativo se pinta con el tema del sistema: la tinta oscura
+   vuelve a hacer falta ahi. */
+.search-cat option {
+  color: var(--ink);
+}
+
+.search button {
+  background: rgba(255, 255, 255, 0.95);
+  color: #2c66a8;
+}
+
+.search button:hover {
+  background: #fff;
+}
+
+
+/* --- Legibilidad sobre la escarcha ------------------------------------- --
+   El hielo se dibuja detras de estas filas, que son transparentes. Sin un
+   contraste propio, el texto blanco sobre escarcha palida desaparece. */
+
+.logo-text,
+.menu > li > a,
+.mainnav-note,
+.action,
+.action-text small,
+.action-text b {
+  text-shadow: 0 1px 3px rgba(12, 52, 92, 0.55);
+}
+
+/* Vidrio azulado, no blanco: oscurece la escarcha que queda debajo y
+   devuelve el contraste al texto y al placeholder. */
+.search {
+  background: rgba(18, 66, 112, 0.42);
+  border-color: rgba(255, 255, 255, 0.42);
+}
+
+.search:focus-within {
+  background: rgba(18, 66, 112, 0.55);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+.search input::placeholder {
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* Circulo solido: la escarcha no lo atraviesa. */
+.logo-mark {
+  box-shadow: 0 2px 10px rgba(12, 52, 92, 0.35);
 }

@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import GlassCracks from './GlassCracks.jsx'
 import Icon from '../ui/Icon.jsx'
 import { navigation, searchCategories, topBar } from '../../data/home.js'
 
@@ -74,6 +75,7 @@ function MegaMenu({ item }) {
 export default function Header() {
   const [open, setOpen] = useState(false)
   const [stuck, setStuck] = useState(false)
+  const shell = useRef(null)
 
   useEffect(() => {
     const onScroll = () => setStuck(window.scrollY > 140)
@@ -91,7 +93,8 @@ export default function Header() {
   }, [open])
 
   return (
-    <header className={`site-header ${stuck ? 'is-stuck' : ''}`.trim()}>
+    <header className={`site-header ${stuck ? 'is-stuck' : ''}`.trim()} ref={shell}>
+      <GlassCracks hostRef={shell} />
       <TopBar />
 
       <div className="header-main">
