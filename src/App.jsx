@@ -3,11 +3,9 @@ import Header from './components/layout/Header.jsx'
 import Brands from './components/home/Brands.jsx'
 import Categories from './components/home/Categories.jsx'
 import ContactStrip from './components/home/ContactStrip.jsx'
-import DealOfDay from './components/home/DealOfDay.jsx'
 import Gallery from './components/home/Gallery.jsx'
 import Hero from './components/home/Hero.jsx'
 import Newsletter from './components/home/Newsletter.jsx'
-import Promos from './components/home/Promos.jsx'
 import Services from './components/home/Services.jsx'
 import SpecialProducts from './components/home/SpecialProducts.jsx'
 import Testimonials from './components/home/Testimonials.jsx'
@@ -26,8 +24,6 @@ export default function App() {
         <Services />
         <Categories />
         <Trending />
-        <Promos />
-        <DealOfDay />
         <SpecialProducts />
         <Gallery />
         <Testimonials />

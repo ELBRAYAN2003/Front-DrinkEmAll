@@ -52,26 +52,6 @@ export function productImage({ hue = 348, shape = 'wine', bg = '#f7f2ec' } = {})
 }
 
 /**
- * Fondo abstracto para banners y cabeceras de seccion.
- */
-export function sceneImage({ hue = 348, tone = 30 } = {}) {
-  return toDataUri(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500" role="img">
-      <defs>
-        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="hsl(${hue} 42% ${tone + 14}%)"/>
-          <stop offset="1" stop-color="hsl(${hue} 52% ${tone - 8}%)"/>
-        </linearGradient>
-      </defs>
-      <rect width="800" height="500" fill="url(#g)"/>
-      <circle cx="640" cy="120" r="190" fill="#fff" opacity=".07"/>
-      <circle cx="150" cy="430" r="230" fill="#000" opacity=".10"/>
-      <circle cx="380" cy="250" r="90" fill="#fff" opacity=".05"/>
-    </svg>
-  `)
-}
-
-/**
  * Miniatura cuadrada para la galeria / feed social.
  */
 export function tileImage({ hue = 348 } = {}) {

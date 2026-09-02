@@ -1,7 +1,7 @@
 // Contenido de la home. Todo esto es data de maqueta: cuando exista el backend,
 // cada bloque se reemplaza por la respuesta de la API con la misma forma.
 
-import { productImage, sceneImage, tileImage } from '../lib/placeholder.js'
+import { productImage, tileImage } from '../lib/placeholder.js'
 
 export const topBar = {
   message: 'Envio sin cargo en pedidos de mas de $80',
@@ -70,32 +70,68 @@ export const navigation = [
 export const slides = [
   {
     id: 'slide-1',
-    eyebrow: 'Seleccion de temporada',
-    title: 'Tu proxima botella favorita',
-    text: 'Etiquetas elegidas una por una, guardadas a temperatura y despachadas el mismo dia.',
-    cta: 'Ver la seleccion',
+    eyebrow: 'Todo lo que buscabas',
+    title: 'Malbec de altura',
+    subtitle: 'Seleccion de bodega',
+    off: '20%',
+    cta: 'Comprar ahora',
+    bg: '#e8f1fa',
     hue: 344,
-    tone: 26,
+    shape: 'wine',
   },
   {
     id: 'slide-2',
-    eyebrow: 'Cerveceria artesanal',
-    title: 'Frio, fresco y bien lupulado',
-    text: 'Producciones chicas de cerveceros independientes, rotando todas las semanas.',
+    eyebrow: 'Cerveceria independiente',
+    title: 'Frio y bien lupulado',
+    subtitle: 'Rotamos todas las semanas',
+    off: '15%',
     cta: 'Explorar cervezas',
+    bg: '#fdf1e3',
     hue: 34,
-    tone: 28,
+    shape: 'can',
   },
   {
     id: 'slide-3',
     eyebrow: 'Para regalar',
-    title: 'Combos armados a tu gusto',
-    text: 'Elegis las botellas, nosotros ponemos la caja, el papel y la tarjeta.',
+    title: 'Combos a tu gusto',
+    subtitle: 'Caja, papel y tarjeta incluidos',
+    off: '25%',
     cta: 'Armar un combo',
+    bg: '#efeaf7',
     hue: 268,
-    tone: 26,
+    shape: 'wine',
   },
 ]
+
+// Tarjetas de la columna derecha del hero.
+export const heroPromos = [
+  {
+    id: 'hp-1',
+    price: 'Desde $9',
+    title: 'Cervezas',
+    subtitle: 'artesanales',
+    cta: 'Ver ahora',
+    bg: '#f0f2f5',
+    ink: '#1c1418',
+    hue: 28,
+    shape: 'can',
+  },
+  {
+    id: 'hp-2',
+    price: 'Solo $210',
+    title: 'Caja',
+    subtitle: 'degustacion',
+    cta: 'Ver ahora',
+    bg: '#f2c14e',
+    ink: '#3a2a08',
+    hue: 344,
+    shape: 'wine',
+  },
+].map((p) => ({ ...p, image: productImage({ hue: p.hue, shape: p.shape, bg: p.bg }) }))
+
+export const slideArt = Object.fromEntries(
+  slides.map((sl) => [sl.id, productImage({ hue: sl.hue, shape: sl.shape, bg: sl.bg })]),
+)
 
 export const services = [
   {
@@ -312,38 +348,6 @@ export const productsByTab = Object.fromEntries(
 
 export const specialProducts = CATALOG.filter((p) => p.oldPrice).slice(0, 8)
 
-export const promos = [
-  {
-    id: 'promo-1',
-    eyebrow: '20% de descuento',
-    title: 'Rosados de verano',
-    text: 'Seleccion fresca para tomar a la sombra.',
-    cta: 'Aprovechar',
-    hue: 336,
-    tone: 34,
-  },
-  {
-    id: 'promo-2',
-    eyebrow: 'Segunda al 50%',
-    title: 'Finde cervecero',
-    text: 'Llevando dos latas del mismo estilo.',
-    cta: 'Ver estilos',
-    hue: 30,
-    tone: 32,
-  },
-]
-
-export const countdownDeal = {
-  eyebrow: 'Oferta del dia',
-  title: 'Caja degustacion de seis etiquetas',
-  text: 'Seis botellas elegidas por nuestro sommelier, con ficha de cata incluida.',
-  price: 210,
-  oldPrice: 288,
-  cta: 'Llevar la caja',
-  endsAt: OPENED_AT + 46 * 3600_000,
-  hue: 348,
-}
-
 export const gallery = [
   { id: 'g1', title: 'Como leer una etiqueta sin marearte', tag: 'Guias', hue: 344 },
   { id: 'g2', title: 'Seis maridajes que nunca fallan', tag: 'Cocina', hue: 28 },
@@ -400,8 +404,3 @@ export const footerColumns = [
     links: ['Envios y plazos', 'Cambios y devoluciones', 'Medios de pago', 'Preguntas frecuentes', 'Contacto'],
   },
 ]
-
-export const heroBanners = {
-  slides,
-  scene: (hue, tone) => sceneImage({ hue, tone }),
-}

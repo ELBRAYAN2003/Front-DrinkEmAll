@@ -1,73 +1,112 @@
 /* Secciones de la home, en el mismo orden en que se apilan en pantalla. */
 
-/* Hero -------------------------------------------------------------------- */
+/* Hero ---------------------------------------------------------------------
+   Dos columnas: el carrusel grande a la izquierda y dos tarjetas apiladas a
+   la derecha. */
+
 .hero {
+  padding-block: 24px;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 2.05fr) minmax(0, 1fr);
+  gap: 20px;
+
+  @media (max-width: 1000px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --- Carrusel ------------------------------------------------------------ */
+.hero-slider {
   position: relative;
-  min-height: clamp(420px, 56vw, 620px);
+  min-height: clamp(340px, 34vw, 460px);
+  border-radius: var(--radius-lg);
   overflow: hidden;
-  background: var(--cream);
 }
 
 .hero-slide {
   position: absolute;
   inset: 0;
   display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   align-items: center;
-  background-size: cover;
-  background-position: center;
+  background: var(--slide-bg);
   opacity: 0;
   visibility: hidden;
-  transform: scale(1.04);
-  transition:
-    opacity 0.8s var(--ease),
-    transform 1.4s var(--ease),
-    visibility 0.8s;
+  transition: opacity 0.6s var(--ease), visibility 0.6s;
 
   &.is-active {
     opacity: 1;
     visibility: visible;
-    transform: none;
   }
 
-  /* Velo para que el texto blanco no dependa del color del fondo. */
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, rgba(20, 12, 16, 0.62), rgba(20, 12, 16, 0.15));
+  @media (max-width: 620px) {
+    grid-template-columns: minmax(0, 1fr);
+
+    .hero-art {
+      display: none;
+    }
   }
 }
 
-.hero-content {
-  position: relative;
-  z-index: 2;
-  max-width: 620px;
-  margin-inline: 0;
-  padding-left: max(20px, calc((100vw - var(--wrap)) / 2 + 20px));
-  color: #fff;
+.hero-copy {
+  padding: 40px 0 40px 44px;
 
-  h1 {
-    font-size: clamp(34px, 5vw, 60px);
-    color: #fff;
-    margin-block: 12px 16px;
-  }
-
-  .btn {
-    margin-top: 26px;
+  @media (max-width: 620px) {
+    padding: 32px 24px;
   }
 }
 
 .hero-eyebrow {
   font-size: 12px;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--muted);
 }
 
-.hero-text {
-  font-size: clamp(15px, 1.5vw, 18px);
-  color: rgba(255, 255, 255, 0.82);
-  max-width: 46ch;
+.hero-slide h1 {
+  font-size: clamp(28px, 3.4vw, 46px);
+  margin-block: 10px 4px;
+}
+
+.hero-sub {
+  font-size: clamp(17px, 2vw, 26px);
+  font-family: var(--display);
+  color: var(--body);
+}
+
+.hero-off {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 14px;
+
+  b {
+    font-family: var(--display);
+    font-size: clamp(40px, 6vw, 76px);
+    font-weight: 400;
+    line-height: 1;
+    color: var(--wine);
+  }
+
+  span {
+    font-size: 14px;
+    color: var(--muted);
+  }
+}
+
+.hero-copy .btn {
+  margin-top: 22px;
+}
+
+.hero-art {
+  justify-self: center;
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+  mix-blend-mode: multiply;
 }
 
 .hero-nav {
@@ -76,53 +115,135 @@
   z-index: 3;
   display: grid;
   place-items: center;
-  width: 46px;
-  height: 46px;
-  margin-top: -23px;
+  width: 38px;
+  height: 38px;
+  margin-top: -19px;
   border-radius: 50%;
-  color: #fff;
-  background: rgba(255, 255, 255, 0.16);
-  backdrop-filter: blur(6px);
-  transition: background-color 0.25s var(--ease);
-
-  &:hover {
-    background: var(--wine);
-  }
+  color: var(--ink);
+  background: rgba(255, 255, 255, 0.75);
+  opacity: 0;
+  transition: opacity 0.25s var(--ease), background-color 0.25s var(--ease);
 
   &.is-prev {
-    left: 18px;
+    left: 14px;
   }
   &.is-next {
-    right: 18px;
+    right: 14px;
   }
 
-  @media (max-width: 700px) {
-    display: none;
+  &:hover {
+    background: #fff;
   }
+}
+
+.hero-slider:hover .hero-nav,
+.hero-slider:focus-within .hero-nav {
+  opacity: 1;
 }
 
 .hero-dots {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 22px;
+  bottom: 18px;
   z-index: 3;
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 7px;
 
   button {
-    width: 26px;
-    height: 4px;
+    width: 9px;
+    height: 9px;
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.42);
-    transition: background-color 0.25s var(--ease), width 0.25s var(--ease);
+    background: rgba(28, 20, 24, 0.22);
+    transition: width 0.25s var(--ease), background-color 0.25s var(--ease);
 
     &.is-active {
-      width: 40px;
-      background: var(--gold);
+      width: 26px;
+      background: var(--wine);
     }
   }
+}
+
+/* --- Tarjetas laterales --------------------------------------------------- */
+.hero-side {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  gap: 20px;
+
+  @media (max-width: 1000px) {
+    grid-template-rows: none;
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width: 620px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hero-promo {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 150px;
+  padding: 24px 0 24px 26px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--promo-bg);
+  color: var(--promo-ink);
+}
+
+.hero-promo-copy {
+  display: grid;
+  gap: 2px;
+  position: relative;
+  z-index: 1;
+
+  small {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--wine);
+  }
+
+  strong {
+    font-family: var(--display);
+    font-size: clamp(22px, 2.4vw, 30px);
+    font-weight: 400;
+    line-height: 1.1;
+  }
+
+  em {
+    font-family: var(--display);
+    font-size: clamp(18px, 2vw, 25px);
+    font-style: normal;
+    line-height: 1.1;
+  }
+}
+
+.hero-promo-cta {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.hero-promo-art {
+  width: 46%;
+  max-width: 170px;
+  height: auto;
+  flex: none;
+  mix-blend-mode: multiply;
+  /* El zoom se aplica a la imagen, no a la tarjeta: agrandar la tarjeta
+     correria la grilla del hero. */
+  transition: transform 0.45s var(--ease);
+}
+
+.hero-promo:hover .hero-promo-art {
+  transform: scale(1.12);
 }
 
 /* Servicios ---------------------------------------------------------------- */
@@ -271,152 +392,6 @@
   @media (max-width: 460px) {
     grid-template-columns: 1fr;
   }
-}
-
-/* Banners promocionales ---------------------------------------------------- */
-.promos-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--gap);
-
-  @media (max-width: 780px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.promo {
-  position: relative;
-  display: grid;
-  align-content: center;
-  gap: 6px;
-  min-height: 230px;
-  padding: 40px;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  color: #fff;
-  background-size: cover;
-  background-position: center;
-
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(100deg, rgba(20, 12, 16, 0.55), rgba(20, 12, 16, 0.12));
-  }
-
-  > * {
-    position: relative;
-    z-index: 1;
-  }
-
-  h3 {
-    font-size: clamp(22px, 2.6vw, 32px);
-    color: #fff;
-  }
-
-  p {
-    color: rgba(255, 255, 255, 0.82);
-    font-size: 14px;
-  }
-
-  &:hover .promo-cta {
-    gap: 12px;
-  }
-}
-
-.promo-eyebrow {
-  font-size: 12px;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
-.promo-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  margin-top: 14px;
-  font-size: 14px;
-  font-weight: 500;
-  transition: gap 0.25s var(--ease);
-}
-
-/* Oferta del dia ------------------------------------------------------------ */
-.deal {
-  background: var(--surface-2);
-}
-
-.deal-inner {
-  display: grid;
-  grid-template-columns: 380px 1fr;
-  align-items: center;
-  gap: 56px;
-
-  @media (max-width: 860px) {
-    grid-template-columns: 1fr;
-    gap: 28px;
-    text-align: center;
-  }
-}
-
-.deal-media {
-  position: relative;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--cream);
-
-  .badge {
-    position: absolute;
-    top: 16px;
-    left: 16px;
-  }
-}
-
-.deal-body {
-  display: grid;
-  gap: 14px;
-  justify-items: start;
-
-  h2 {
-    font-size: clamp(26px, 3.4vw, 40px);
-  }
-
-  .btn {
-    margin-top: 6px;
-  }
-
-  @media (max-width: 860px) {
-    justify-items: center;
-  }
-}
-
-.deal-price {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  font-size: 26px;
-
-  b {
-    color: var(--wine);
-    font-weight: 600;
-  }
-
-  s {
-    font-size: 17px;
-    color: var(--muted);
-  }
-}
-
-.deal-timer {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 18px;
-  border-radius: var(--radius);
-  background: var(--surface);
-  border: 1px solid var(--line);
-  font-size: 14px;
-  color: var(--muted);
 }
 
 /* Blog / galeria ------------------------------------------------------------ */

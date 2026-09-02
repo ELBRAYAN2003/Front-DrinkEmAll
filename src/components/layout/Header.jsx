@@ -1,41 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
-import GlassCracks from './GlassCracks.jsx'
+import { useEffect, useState } from 'react'
 import Icon from '../ui/Icon.jsx'
-import { navigation, searchCategories, topBar } from '../../data/home.js'
-
-function TopBar() {
-  return (
-    <div className="topbar">
-      <div className="wrap topbar-inner">
-        <p className="topbar-msg">{topBar.message}</p>
-
-        <div className="topbar-side">
-          <ul className="topbar-links">
-            {topBar.links.map((l) => (
-              <li key={l.label}>
-                <a href={l.href}>{l.label}</a>
-              </li>
-            ))}
-          </ul>
-
-          <label className="sr-only" htmlFor="lang">Idioma</label>
-          <select id="lang" className="bare-select" defaultValue={topBar.languages[0]}>
-            {topBar.languages.map((l) => (
-              <option key={l}>{l}</option>
-            ))}
-          </select>
-
-          <label className="sr-only" htmlFor="curr">Moneda</label>
-          <select id="curr" className="bare-select" defaultValue={topBar.currencies[0]}>
-            {topBar.currencies.map((c) => (
-              <option key={c}>{c}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-    </div>
-  )
-}
+import { navigation, topBar } from '../../data/home.js'
 
 function MegaMenu({ item }) {
   return (
@@ -55,11 +20,7 @@ function MegaMenu({ item }) {
         ))}
 
         {item.promo && (
-          <a
-            className="mega-promo"
-            href="#"
-            style={{ '--promo-hue': item.promo.hue }}
-          >
+          <a className="mega-promo" href="#" style={{ '--promo-hue': item.promo.hue }}>
             <span className="mega-promo-sub">{item.promo.subtitle}</span>
             <strong>{item.promo.title}</strong>
             <span className="mega-promo-cta">
@@ -74,15 +35,6 @@ function MegaMenu({ item }) {
 
 export default function Header() {
   const [open, setOpen] = useState(false)
-  const [stuck, setStuck] = useState(false)
-  const shell = useRef(null)
-
-  useEffect(() => {
-    const onScroll = () => setStuck(window.scrollY > 140)
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
   // Bloquea el scroll del fondo mientras el panel movil esta abierto.
   useEffect(() => {
@@ -93,12 +45,41 @@ export default function Header() {
   }, [open])
 
   return (
-    <header className={`site-header ${stuck ? 'is-stuck' : ''}`.trim()} ref={shell}>
-      <GlassCracks hostRef={shell} />
-      <TopBar />
+    <header className="site-header">
+      {/* Fila 1: servicio */}
+      <div className="header-top">
+        <div className="wrap header-top-inner">
+          <p className="header-note">{topBar.message}</p>
 
+          <div className="header-top-side">
+            <ul className="utility-links">
+              {topBar.links.map((l) => (
+                <li key={l.label}>
+                  <a href={l.href}>{l.label}</a>
+                </li>
+              ))}
+            </ul>
+
+            <label className="sr-only" htmlFor="lang">Idioma</label>
+            <select id="lang" className="bare-select" defaultValue={topBar.languages[0]}>
+              {topBar.languages.map((l) => (
+                <option key={l}>{l}</option>
+              ))}
+            </select>
+
+            <label className="sr-only" htmlFor="curr">Moneda</label>
+            <select id="curr" className="bare-select" defaultValue={topBar.currencies[0]}>
+              {topBar.currencies.map((c) => (
+                <option key={c}>{c}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Fila 2: marca, navegacion, buscador y cuenta, toda sobre el azul */}
       <div className="header-main">
-        <div className="wrap header-main-inner">
+        <form className="wrap header-main-inner" role="search" onSubmit={(e) => e.preventDefault()}>
           <button
             type="button"
             className="burger"
@@ -116,37 +97,58 @@ export default function Header() {
             </span>
           </a>
 
-          <form className="search" role="search" onSubmit={(e) => e.preventDefault()}>
-            <label className="sr-only" htmlFor="search-cat">Categoria</label>
-            <select id="search-cat" className="search-cat">
-              {searchCategories.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-            <label className="sr-only" htmlFor="search-q">Buscar productos</label>
-            <input id="search-q" type="search" placeholder="Buscar vinos, cervezas, destilados..." />
-            <button type="submit" aria-label="Buscar">
-              <Icon name="search" size={19} />
-            </button>
-          </form>
+          <button type="button" className="cat-toggle" onClick={() => setOpen(true)}>
+            <Icon name="menu" size={17} />
+            Todas las categorias
+          </button>
 
-          <div className="header-actions">
+          <nav className="mainnav" aria-label="Principal">
+            <ul className="menu">
+              {navigation.map((item) => (
+                <li key={item.label} className={item.columns ? 'has-mega' : ''}>
+                  <a href={item.href}>
+                    {item.label}
+                    {item.highlight && <em className="tag">{item.highlight}</em>}
+                    {item.columns && <Icon name="down" size={13} />}
+                  </a>
+                  {item.columns && <MegaMenu item={item} />}
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          <div className="search-box">
+            <label className="sr-only" htmlFor="search-q">Buscar productos</label>
+            <input
+              id="search-q"
+              className="search-input"
+              type="search"
+              placeholder="Buscar vinos, cervezas..."
+            />
+            <button type="submit" className="search-btn" aria-label="Buscar">
+              <Icon name="search" size={18} />
+            </button>
+          </div>
+
+          <div className="header-account">
             <a className="action" href="#">
-              <Icon name="user" size={21} />
+              <Icon name="user" size={22} />
               <span className="action-text">
                 <small>Hola</small>
                 <b>Mi cuenta</b>
               </span>
             </a>
+
             <a className="action" href="#" aria-label="Favoritos">
               <span className="action-icon">
-                <Icon name="heart" size={21} />
+                <Icon name="heart" size={22} />
                 <i className="dot">3</i>
               </span>
             </a>
+
             <a className="action" href="#">
               <span className="action-icon">
-                <Icon name="cart" size={21} />
+                <Icon name="cart" size={22} />
                 <i className="dot">2</i>
               </span>
               <span className="action-text">
@@ -155,30 +157,8 @@ export default function Header() {
               </span>
             </a>
           </div>
-        </div>
+        </form>
       </div>
-
-      <nav className="mainnav" aria-label="Principal">
-        <div className="wrap mainnav-inner">
-          <ul className="menu">
-            {navigation.map((item) => (
-              <li key={item.label} className={item.columns ? 'has-mega' : ''}>
-                <a href={item.href}>
-                  {item.label}
-                  {item.columns && <Icon name="down" size={14} />}
-                  {item.highlight && <em className="tag">{item.highlight}</em>}
-                </a>
-                {item.columns && <MegaMenu item={item} />}
-              </li>
-            ))}
-          </ul>
-
-          <p className="mainnav-note">
-            <Icon name="truck" size={18} />
-            Entregas el mismo dia en Resistencia
-          </p>
-        </div>
-      </nav>
 
       {/* Panel movil */}
       <div className={`drawer ${open ? 'is-open' : ''}`.trim()}>
