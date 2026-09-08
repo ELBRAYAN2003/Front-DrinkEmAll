@@ -26,7 +26,7 @@ export const searchCategories = [
 export const navigation = [
   {
     label: 'Vinos',
-    href: '#',
+    to: '/catalogo/tinto',
     columns: [
       {
         title: 'Por tipo',
@@ -49,7 +49,7 @@ export const navigation = [
   },
   {
     label: 'Cervezas',
-    href: '#',
+    to: '/catalogo/cerveza',
     columns: [
       {
         title: 'Estilos',
@@ -61,10 +61,10 @@ export const navigation = [
       },
     ],
   },
-  { label: 'Destilados', href: '#' },
-  { label: 'Sin alcohol', href: '#' },
-  { label: 'Combos', href: '#', highlight: 'Nuevo' },
-  { label: 'Ofertas', href: '#' },
+  { label: 'Destilados', to: '/catalogo/destilado' },
+  { label: 'Sin alcohol', to: '/catalogo/sin-alcohol' },
+  { label: 'Combos', to: '/catalogo', highlight: 'Nuevo' },
+  { label: 'Ofertas', to: '/catalogo' },
 ]
 
 export const slides = [
@@ -161,13 +161,15 @@ export const services = [
 ]
 
 export const categories = [
-  { id: 'tinto', name: 'Vinos tintos', count: 128, hue: 344, image: tileImage({ hue: 344 }) },
-  { id: 'blanco', name: 'Vinos blancos', count: 96, hue: 48, image: tileImage({ hue: 48 }) },
-  { id: 'espumante', name: 'Espumantes', count: 54, hue: 42, image: tileImage({ hue: 42 }) },
-  { id: 'ipa', name: 'Cervezas IPA', count: 73, hue: 28, image: tileImage({ hue: 28 }) },
-  { id: 'gin', name: 'Gin & tonica', count: 41, hue: 196, image: tileImage({ hue: 196 }) },
-  { id: 'sin-alcohol', name: 'Sin alcohol', count: 35, hue: 152, image: tileImage({ hue: 152 }) },
+  { id: 'tinto', name: 'Vinos tintos', hue: 344, image: tileImage({ hue: 344 }) },
+  { id: 'blanco', name: 'Vinos blancos', hue: 48, image: tileImage({ hue: 48 }) },
+  { id: 'rosado', name: 'Vinos rosados', hue: 320, image: tileImage({ hue: 320 }) },
+  { id: 'espumante', name: 'Espumantes', hue: 42, image: tileImage({ hue: 42 }) },
+  { id: 'cerveza', name: 'Cervezas', hue: 28, image: tileImage({ hue: 28 }) },
+  { id: 'destilado', name: 'Destilados', hue: 196, image: tileImage({ hue: 196 }) },
+  { id: 'sin-alcohol', name: 'Sin alcohol', hue: 152, image: tileImage({ hue: 152 }) },
 ]
+
 
 // Helper para no repetir la construccion de cada producto.
 let seq = 0
@@ -186,6 +188,7 @@ const CATALOG = [
   make({
     hue: 344,
     name: 'Malbec Reserva de Altura 750ml',
+    category: 'tinto',
     brand: 'Finca del Sauce',
     price: 52,
     oldPrice: 65,
@@ -200,6 +203,7 @@ const CATALOG = [
   make({
     hue: 48,
     name: 'Torrontes Cosecha Temprana 750ml',
+    category: 'blanco',
     brand: 'Alto Calchaqui',
     price: 38,
     rating: 4,
@@ -213,6 +217,7 @@ const CATALOG = [
     hue: 28,
     shape: 'can',
     name: 'IPA Sesion Doble Lupulo 473ml',
+    category: 'cerveza',
     brand: 'Barrio Nueve',
     price: 9,
     rating: 5,
@@ -224,6 +229,7 @@ const CATALOG = [
   make({
     hue: 268,
     name: 'Cabernet Franc Parcela 4 750ml',
+    category: 'tinto',
     brand: 'Vina Trelew',
     price: 71,
     oldPrice: 79,
@@ -237,6 +243,7 @@ const CATALOG = [
   make({
     hue: 12,
     name: 'Blend de Corte Cinco Barricas 750ml',
+    category: 'tinto',
     brand: 'Casa Miramar',
     price: 58,
     oldPrice: 68,
@@ -250,6 +257,7 @@ const CATALOG = [
     hue: 196,
     shape: 'beer',
     name: 'Gin Botanico Serie Limitada 700ml',
+    category: 'destilado',
     brand: 'Destileria Sur',
     price: 84,
     rating: 4.5,
@@ -262,6 +270,7 @@ const CATALOG = [
   make({
     hue: 88,
     name: 'Chardonnay sin Madera 750ml',
+    category: 'blanco',
     brand: 'Finca del Sauce',
     price: 44,
     oldPrice: 52,
@@ -275,6 +284,7 @@ const CATALOG = [
   make({
     hue: 320,
     name: 'Rosado de Prensa Directa 750ml',
+    category: 'rosado',
     brand: 'Vina Trelew',
     price: 36,
     rating: 4.5,
@@ -288,6 +298,7 @@ const CATALOG = [
     hue: 4,
     shape: 'can',
     name: 'Stout Imperial Cafe y Cacao 473ml',
+    category: 'cerveza',
     brand: 'Barrio Nueve',
     price: 11,
     oldPrice: 14,
@@ -300,6 +311,7 @@ const CATALOG = [
   make({
     hue: 42,
     name: 'Espumante Metodo Tradicional 750ml',
+    category: 'espumante',
     brand: 'Casa Miramar',
     price: 62,
     oldPrice: 74,
@@ -314,6 +326,7 @@ const CATALOG = [
     hue: 152,
     shape: 'beer',
     name: 'Vermut Blanco de Autor 750ml',
+    category: 'destilado',
     brand: 'Destileria Sur',
     price: 33,
     rating: 4,
@@ -326,6 +339,7 @@ const CATALOG = [
     hue: 232,
     shape: 'can',
     name: 'Kombucha de Jengibre 473ml',
+    category: 'sin-alcohol',
     brand: 'Fermento Vivo',
     price: 6,
     rating: 4,
@@ -334,7 +348,97 @@ const CATALOG = [
     notes: ['Jengibre fresco y limon', 'Sin alcohol, sin azucar agregada', 'Fermentado treinta dias'],
     tabs: ['nuevos', 'vendidos'],
   }),
+  make({
+    hue: 350, category: 'tinto',
+    name: 'Syrah de Guarda Larga 750ml', brand: 'Casa Miramar',
+    price: 66, rating: 4.5, reviews: 27, stock: 48,
+    notes: ['Pimienta negra y mora', 'Veinte meses en barrica', 'Para descorchar con tiempo'],
+    tabs: [],
+  }),
+  make({
+    hue: 12, category: 'tinto',
+    name: 'Pinot Noir de Clima Frio 750ml', brand: 'Vina Trelew',
+    price: 78, oldPrice: 92, rating: 5, reviews: 61, stock: 33,
+    badges: ['nuevo'],
+    notes: ['Frutilla, hongo y tierra humeda', 'Delicado pero persistente', 'Servir apenas fresco'],
+    tabs: [],
+  }),
+  make({
+    hue: 40, category: 'blanco',
+    name: 'Sauvignon Blanc de Rio 750ml', brand: 'Alto Calchaqui',
+    price: 41, rating: 4, reviews: 19, stock: 92,
+    notes: ['Pomelo y hoja de tomate', 'Acidez filosa', 'Ideal con pescados'],
+    tabs: [],
+  }),
+  make({
+    hue: 56, category: 'blanco',
+    name: 'Semillon de Parcela Vieja 750ml', brand: 'Finca del Sauce',
+    price: 49, oldPrice: 58, rating: 4.5, reviews: 23, stock: 40,
+    notes: ['Membrillo y cera de abeja', 'Vinas de mas de sesenta anos', 'Gana con el tiempo en copa'],
+    tabs: [],
+  }),
+  make({
+    hue: 326, category: 'rosado',
+    name: 'Rosado de Malbec Fresco 750ml', brand: 'Casa Miramar',
+    price: 34, rating: 4, reviews: 37, stock: 130,
+    notes: ['Cereza y pomelo rosado', 'Muy seco, poco alcohol', 'Para la tarde'],
+    tabs: [],
+  }),
+  make({
+    hue: 46, category: 'espumante',
+    name: 'Extra Brut de Guarda 750ml', brand: 'Vina Trelew',
+    price: 71, oldPrice: 84, rating: 4.5, reviews: 31, stock: 26,
+    notes: ['Manzana al horno y pan tostado', 'Treinta meses sobre lias', 'Burbuja fina'],
+    tabs: [],
+  }),
+  make({
+    hue: 20, shape: 'can', category: 'cerveza',
+    name: 'Golden Ale Facil de Tomar 473ml', brand: 'Barrio Nueve',
+    price: 7, rating: 4, reviews: 74, stock: 320,
+    notes: ['Cereal y un toque citrico', 'Cuatro grados y medio', 'La cerveza de entrada'],
+    tabs: [],
+  }),
+  make({
+    hue: 36, shape: 'can', category: 'cerveza',
+    name: 'Cerveza de Trigo Turbia 473ml', brand: 'Barrio Nueve',
+    price: 8, oldPrice: 10, rating: 4.5, reviews: 52, stock: 180,
+    notes: ['Banana y clavo de olor', 'Sin filtrar', 'Servir en vaso alto'],
+    tabs: [],
+  }),
+  make({
+    hue: 186, shape: 'beer', category: 'destilado',
+    name: 'Aperitivo Amargo de Hierbas 750ml', brand: 'Destileria Sur',
+    price: 39, rating: 4, reviews: 16, stock: 70,
+    notes: ['Genciana, naranja amarga y ruibarbo', 'Macerado tres meses', 'Con soda y hielo'],
+    tabs: [],
+  }),
+  make({
+    hue: 210, shape: 'beer', category: 'destilado',
+    name: 'Whisky de Malta Doble Barrica 700ml', brand: 'Destileria Sur',
+    price: 128, oldPrice: 149, rating: 5, reviews: 44, stock: 0,
+    badges: ['agotado'],
+    notes: ['Caramelo, humo y nuez', 'Terminado en barrica de jerez', 'Cuarenta y seis grados'],
+    tabs: [],
+  }),
+  make({
+    hue: 140, shape: 'can', category: 'sin-alcohol',
+    name: 'Gaseosa Artesanal de Pomelo 473ml', brand: 'Fermento Vivo',
+    price: 5, rating: 4, reviews: 88, stock: 400,
+    notes: ['Pomelo rosado exprimido', 'Poca azucar, mucha burbuja', 'Bien fria'],
+    tabs: [],
+  }),
+  make({
+    hue: 168, category: 'sin-alcohol',
+    name: 'Vino Desalcoholizado Blanco 750ml', brand: 'Alto Calchaqui',
+    price: 22, oldPrice: 28, rating: 3.5, reviews: 29, stock: 65,
+    badges: ['nuevo'],
+    notes: ['Aromatico y liviano', 'Menos de medio grado', 'Para brindar sin alcohol'],
+    tabs: [],
+  }),
 ]
+
+// Catalogo completo, para la pagina de listado.
+export const allProducts = CATALOG
 
 export const productTabs = [
   { id: 'destacados', label: 'Destacados' },

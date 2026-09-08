@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router'
 import Icon from '../ui/Icon.jsx'
 import { navigation, topBar } from '../../data/home.js'
 
@@ -90,27 +91,27 @@ export default function Header() {
             <Icon name="menu" size={22} />
           </button>
 
-          <a className="logo" href="#">
+          <Link className="logo" to="/">
             <span className="logo-mark" aria-hidden="true">D</span>
             <span className="logo-text">
               DrinkEm<em>All</em>
             </span>
-          </a>
+          </Link>
 
-          <button type="button" className="cat-toggle" onClick={() => setOpen(true)}>
+          <Link className="cat-toggle" to="/catalogo">
             <Icon name="menu" size={17} />
             Todas las categorias
-          </button>
+          </Link>
 
           <nav className="mainnav" aria-label="Principal">
             <ul className="menu">
               {navigation.map((item) => (
                 <li key={item.label} className={item.columns ? 'has-mega' : ''}>
-                  <a href={item.href}>
+                  <Link to={item.to}>
                     {item.label}
                     {item.highlight && <em className="tag">{item.highlight}</em>}
                     {item.columns && <Icon name="down" size={13} />}
-                  </a>
+                  </Link>
                   {item.columns && <MegaMenu item={item} />}
                 </li>
               ))}
@@ -172,7 +173,7 @@ export default function Header() {
           <ul className="drawer-menu">
             {navigation.map((item) => (
               <li key={item.label}>
-                <a href={item.href} onClick={() => setOpen(false)}>{item.label}</a>
+                <Link to={item.to} onClick={() => setOpen(false)}>{item.label}</Link>
                 {item.columns && (
                   <ul>
                     {item.columns.flatMap((c) => c.links).map((l) => (

@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import { categories } from '../../data/home.js'
 
 export default function Categories() {
@@ -13,13 +14,12 @@ export default function Categories() {
         <ul className="cat-grid">
           {categories.map((c) => (
             <li key={c.id}>
-              <a href="#" className="cat-card">
+              <Link to={`/catalogo/${c.id}`} className="cat-card">
                 <img src={c.image} alt="" loading="lazy" />
                 <span className="cat-body">
                   <b>{c.name}</b>
-                  <small>{c.count} productos</small>
                 </span>
-              </a>
+              </Link>
             </li>
           ))}
         </ul>

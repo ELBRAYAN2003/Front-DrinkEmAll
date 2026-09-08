@@ -1,0 +1,292 @@
+/* Pagina de catalogo: barra lateral de filtros + grilla paginada. */
+
+.catalog {
+  padding-bottom: 72px;
+}
+
+/* --- Miga de pan --------------------------------------------------------- */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-block: 18px;
+  font-size: 13px;
+  color: var(--muted);
+
+  a:hover {
+    color: var(--wine);
+  }
+
+  .icon {
+    color: var(--line);
+  }
+
+  [aria-current] {
+    color: var(--ink);
+  }
+}
+
+/* --- Encabezado ---------------------------------------------------------- */
+.catalog-head {
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--line);
+
+  h1 {
+    font-size: clamp(28px, 3.4vw, 42px);
+  }
+
+  p {
+    margin-top: 8px;
+    color: var(--muted);
+  }
+}
+
+/* --- Cuerpo -------------------------------------------------------------- */
+.catalog-body {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+  padding-top: 32px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+}
+
+/* --- Filtros ------------------------------------------------------------- */
+.filters-toggle {
+  display: none;
+  align-items: center;
+  gap: 9px;
+  padding: 11px 18px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+
+  @media (max-width: 900px) {
+    display: inline-flex;
+    justify-self: start;
+  }
+}
+
+.dot-mini {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--wine);
+}
+
+.filters {
+  display: grid;
+  gap: 26px;
+  align-content: start;
+
+  /* En movil se pliega detras del boton de filtros. */
+  @media (max-width: 900px) {
+    display: none;
+
+    &.is-open {
+      display: grid;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+    }
+  }
+}
+
+.facet {
+  h2 {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+}
+
+.facet-links {
+  display: grid;
+  gap: 2px;
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 7px 10px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    color: var(--body);
+    transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
+
+    span {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    &:hover {
+      background: var(--surface-2);
+      color: var(--ink);
+    }
+
+    &.is-active {
+      background: var(--wine-soft);
+      color: var(--wine);
+      font-weight: 600;
+
+      span {
+        color: var(--wine);
+      }
+    }
+  }
+}
+
+.check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: 14px;
+  cursor: pointer;
+
+  input {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--wine);
+    flex: none;
+  }
+
+  &:hover span {
+    color: var(--ink);
+  }
+}
+
+.facet input[type='range'] {
+  width: 100%;
+  accent-color: var(--wine);
+}
+
+.facet-range {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+
+  b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+}
+
+.filters-clear {
+  justify-self: start;
+}
+
+/* --- Resultados ---------------------------------------------------------- */
+.catalog-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 22px;
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+
+.catalog-count {
+  font-size: 14px;
+  color: var(--body);
+}
+
+.catalog-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  color: var(--muted);
+
+  select {
+    padding: 7px 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 13px;
+    cursor: pointer;
+  }
+}
+
+/* Tres columnas: con la barra lateral al lado, cuatro aprietan demasiado. */
+.catalog-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  @media (max-width: 460px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.catalog-empty {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
+  padding: 60px 20px;
+  border: 1px dashed var(--line);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  color: var(--muted);
+}
+
+/* --- Paginacion ---------------------------------------------------------- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 36px;
+
+  button {
+    display: grid;
+    place-items: center;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 14px;
+    color: var(--body);
+    transition:
+      border-color 0.2s var(--ease),
+      background-color 0.2s var(--ease),
+      color 0.2s var(--ease);
+
+    &:hover:not(:disabled):not(.is-active) {
+      border-color: var(--wine);
+      color: var(--wine);
+    }
+
+    &.is-active {
+      background: var(--wine);
+      border-color: var(--wine);
+      color: #fff;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+}
