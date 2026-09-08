@@ -147,7 +147,7 @@ export default function Header() {
               </span>
             </a>
 
-            <a className="action" href="#">
+            <Link className="action" to="/carrito">
               <span className="action-icon">
                 <Icon name="cart" size={22} />
                 <i className="dot">2</i>
@@ -156,7 +156,7 @@ export default function Header() {
                 <small>Carrito</small>
                 <b>$61</b>
               </span>
-            </a>
+            </Link>
           </div>
         </form>
       </div>
