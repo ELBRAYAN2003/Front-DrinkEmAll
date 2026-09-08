@@ -32,3 +32,6 @@ referencia/
 # Codigo de terceros con copyright, descargado solo como referencia de
 # maquetacion/estilos. NO se versiona ni se redistribuye.
 plantilla-prestashop/
+
+# Variables de entorno locales. Se versiona solo .env.example
+.env
