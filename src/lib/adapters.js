@@ -9,6 +9,22 @@
 import { urlDeArchivo } from './api.js'
 import { productImage } from './placeholder.js'
 
+/**
+ * Nombre de categoria -> segmento de URL.
+ *
+ * Las rutas son /catalogo/:categoria y tienen que seguir siendo legibles y
+ * compartibles, asi que la URL lleva el nombre y no el id numerico de la API.
+ * Se quitan las tildes para que "Cognac" y "Regaleria" no viajen escapadas.
+ */
+export function slugDeCategoria(nombre = '') {
+  return nombre
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+}
+
 // Tono deterministico segun el nombre: sin foto real, dos productos
 // distintos igual reciben botellas de colores distintos y estables.
 function tonoDe(texto = '') {
@@ -35,13 +51,16 @@ export function adaptarProducto(p) {
     name: p.name,
     brand: p.brand ?? p.category?.name ?? '',
     price: Number(p.price),
-    // El modelo no maneja precio anterior ni ofertas todavia.
-    oldPrice: null,
+    // El precio tachado solo se muestra si es mayor al actual: un oldPrice igual
+    // o menor daria un descuento de 0% o negativo.
+    oldPrice: p.oldPrice != null && Number(p.oldPrice) > Number(p.price) ? Number(p.oldPrice) : null,
+    onOffer: Boolean(p.onOffer),
     // Tampoco hay reseñas: se omite el contador para no inventar un numero.
     rating: 0,
     reviews: null,
     stock: Number(p.stock ?? 0),
     badges: Number(p.stock ?? 0) === 0 ? ['agotado'] : [],
+    dealEndsAt: null,
     // La descripcion viene en un solo texto; se corta en lineas para las
     // notas que muestra la tarjeta al pasar el mouse.
     notes: (p.description ?? '')
@@ -49,7 +68,6 @@ export function adaptarProducto(p) {
       .map((s) => s.trim())
       .filter(Boolean)
       .slice(0, 3),
-    dealEndsAt: null,
     image: foto ?? productImage({ hue, shape }),
     hoverImage: foto ?? productImage({ hue: hue + 12, shape, bg: '#efe7dd' }),
     // Datos propios de la API que la UI puede necesitar mas adelante.
@@ -64,6 +82,8 @@ export function adaptarCategoria(c) {
   return {
     id: String(c.id),
     name: c.name,
+    // La ruta viaja por slug; el id es lo que despues se le manda a la API.
+    slug: slugDeCategoria(c.name),
     description: c.description ?? null,
   }
 }

@@ -3,33 +3,83 @@ import { Link, useParams } from 'react-router'
 import Icon from '../components/ui/Icon.jsx'
 import ProductCard from '../components/ui/ProductCard.jsx'
 import { money } from '../lib/format.js'
-import { allProducts, brands, categories } from '../data/home.js'
+import { useCategorias, useFiltros, useProductos } from '../hooks/useCatalogo.js'
 
 const POR_PAGINA = 9
 
+// El valor vacio es "sin orden": la API devuelve entonces su orden por defecto.
+// No hay opcion por puntaje porque no existe sistema de resenas: ofrecerla
+// mostraria un orden que en realidad no ordena nada.
 const ORDENES = [
-  { id: 'relevancia', label: 'Relevancia' },
-  { id: 'precio-asc', label: 'Precio: de menor a mayor' },
-  { id: 'precio-desc', label: 'Precio: de mayor a menor' },
-  { id: 'nombre-asc', label: 'Nombre: A a Z' },
-  { id: 'nombre-desc', label: 'Nombre: Z a A' },
-  { id: 'puntaje', label: 'Mejor puntuados' },
+  { id: '', label: 'Relevancia' },
+  { id: 'price_asc', label: 'Precio: de menor a mayor' },
+  { id: 'price_desc', label: 'Precio: de mayor a menor' },
+  { id: 'name_asc', label: 'Nombre: A a Z' },
+  { id: 'name_desc', label: 'Nombre: Z a A' },
 ]
 
-const TOPE_PRECIO = Math.ceil(Math.max(...allProducts.map((p) => p.price)) / 10) * 10
+// Cuantas marcas se listan sin buscar. Son casi cuatrocientas: mostrarlas todas
+// haria del sidebar una lista interminable.
+const MARCAS_VISIBLES = 8
+
+function sinTildes(texto = '') {
+  return texto.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
+}
+
+/**
+ * Numeros de pagina a dibujar, con elipsis.
+ *
+ * Con 1183 productos de a 9 son 132 paginas: un boton por cada una es una pared
+ * de numeros inservible.
+ */
+function ventanaDePaginas(actual, total) {
+  if (total <= 7) return Array.from({ length: total }, (_, k) => k + 1)
+
+  const paginas = new Set([1, total, actual, actual - 1, actual + 1])
+  const ordenadas = [...paginas].filter((n) => n >= 1 && n <= total).sort((a, b) => a - b)
+
+  const conCortes = []
+  for (const [i, n] of ordenadas.entries()) {
+    if (i > 0 && n - ordenadas[i - 1] > 1) conCortes.push('...')
+    conCortes.push(n)
+  }
+  return conCortes
+}
 
 export default function CatalogPage() {
   const { categoria } = useParams()
 
+  const categorias = useCategorias()
+  const filtros = useFiltros()
+
   const [marcas, setMarcas] = useState([])
-  const [soloStock, setSoloStock] = useState(false)
+  const [buscaMarca, setBuscaMarca] = useState('')
   const [soloOferta, setSoloOferta] = useState(false)
-  const [precioMax, setPrecioMax] = useState(TOPE_PRECIO)
-  const [orden, setOrden] = useState('relevancia')
+  const [precioMax, setPrecioMax] = useState(null)
+  const [orden, setOrden] = useState('')
   const [pagina, setPagina] = useState(1)
   const [filtrosAbiertos, setFiltrosAbiertos] = useState(false)
 
-  const catActual = categories.find((c) => c.id === categoria)
+  const catActual = categorias.find((c) => c.slug === categoria)
+  // Con una categoria en la URL hay que esperar a saber su id antes de pedir:
+  // si no, se pediria el catalogo entero y se descartaria en el acto.
+  const esperandoCategoria = Boolean(categoria) && categorias.length === 0
+
+  const tope = filtros.precio?.max ?? 0
+  const piso = filtros.precio?.min ?? 0
+  const precioElegido = precioMax ?? tope
+  const filtraPrecio = precioMax !== null && precioMax < tope
+
+  const { productos, meta, cargando, error } = useProductos({
+    categoryId: catActual?.id,
+    page: pagina,
+    pageSize: POR_PAGINA,
+    marcas,
+    precioMax: filtraPrecio ? precioMax : undefined,
+    orden: orden || undefined,
+    soloOferta,
+    pausado: esperandoCategoria,
+  })
 
   // Cada filtro vuelve al principio del listado. Se hace en el manejador y no
   // en un efecto: sincronizar estado con estado dentro de useEffect provoca
@@ -43,42 +93,32 @@ export default function CatalogPage() {
     setMarcas((prev) => (prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m])),
   )
 
-  const filtrados = useMemo(() => {
-    let out = allProducts.filter((p) => {
-      if (categoria && p.category !== categoria) return false
-      if (marcas.length && !marcas.includes(p.brand)) return false
-      if (soloStock && p.stock === 0) return false
-      if (soloOferta && !p.oldPrice) return false
-      return p.price <= precioMax
-    })
+  // Las marcas elegidas van siempre primero y siempre visibles: si al buscar
+  // desaparecieran de la lista, no habria forma de destildarlas.
+  const marcasListadas = useMemo(() => {
+    const busqueda = sinTildes(buscaMarca.trim())
+    const elegidas = filtros.marcas.filter((m) => marcas.includes(m.name))
+    const resto = filtros.marcas
+      .filter((m) => !marcas.includes(m.name))
+      .filter((m) => !busqueda || sinTildes(m.name).includes(busqueda))
 
-    const orderers = {
-      'precio-asc': (a, b) => a.price - b.price,
-      'precio-desc': (a, b) => b.price - a.price,
-      'nombre-asc': (a, b) => a.name.localeCompare(b.name, 'es'),
-      'nombre-desc': (a, b) => b.name.localeCompare(a.name, 'es'),
-      puntaje: (a, b) => b.rating - a.rating || b.reviews - a.reviews,
-    }
-    if (orderers[orden]) out = [...out].sort(orderers[orden])
-    return out
-  }, [categoria, marcas, soloStock, soloOferta, precioMax, orden])
+    return [...elegidas, ...resto.slice(0, busqueda ? 30 : MARCAS_VISIBLES)]
+  }, [filtros.marcas, marcas, buscaMarca])
 
-  const totalPaginas = Math.max(1, Math.ceil(filtrados.length / POR_PAGINA))
-  // La categoria cambia por navegacion, no por un manejador: si venias de una
-  // pagina alta y la nueva tiene menos, se acota aca en vez de quedar vacia.
-  const actual = Math.min(pagina, totalPaginas)
-  const visibles = filtrados.slice((actual - 1) * POR_PAGINA, actual * POR_PAGINA)
-  const desde = filtrados.length === 0 ? 0 : (actual - 1) * POR_PAGINA + 1
-  const hasta = Math.min(actual * POR_PAGINA, filtrados.length)
-
-  const hayFiltros = marcas.length > 0 || soloStock || soloOferta || precioMax < TOPE_PRECIO
+  const hayFiltros = marcas.length > 0 || soloOferta || filtraPrecio
 
   const limpiar = () => {
     setMarcas([])
-    setSoloStock(false)
+    setBuscaMarca('')
     setSoloOferta(false)
-    setPrecioMax(TOPE_PRECIO)
+    setPrecioMax(null)
+    setPagina(1)
   }
+
+  const total = meta.total ?? 0
+  const totalPaginas = Math.max(1, meta.totalPages ?? 1)
+  const desde = total === 0 ? 0 : (meta.page - 1) * POR_PAGINA + 1
+  const hasta = Math.min(meta.page * POR_PAGINA, total)
 
   return (
     <main className="catalog">
@@ -122,60 +162,77 @@ export default function CatalogPage() {
               <li>
                 <Link to="/catalogo" className={!categoria ? 'is-active' : ''}>
                   Todas
-                  <span>{allProducts.length}</span>
                 </Link>
               </li>
-              {categories.map((c) => {
-                const n = allProducts.filter((p) => p.category === c.id).length
-                return (
-                  <li key={c.id}>
-                    <Link to={`/catalogo/${c.id}`} className={categoria === c.id ? 'is-active' : ''}>
-                      {c.name}
-                      <span>{n}</span>
-                    </Link>
-                  </li>
-                )
-              })}
+              {categorias.map((c) => (
+                <li key={c.id}>
+                  <Link to={`/catalogo/${c.slug}`} className={categoria === c.slug ? 'is-active' : ''}>
+                    {c.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </section>
 
           <section className="facet">
-            <h2>Disponibilidad</h2>
+            <h2>Ofertas</h2>
             <label className="check">
-              <input type="checkbox" checked={soloStock} onChange={filtrar((e) => setSoloStock(e.target.checked))} />
-              <span>Solo con stock</span>
-            </label>
-            <label className="check">
-              <input type="checkbox" checked={soloOferta} onChange={filtrar((e) => setSoloOferta(e.target.checked))} />
+              <input
+                type="checkbox"
+                checked={soloOferta}
+                onChange={filtrar((e) => setSoloOferta(e.target.checked))}
+              />
               <span>Solo en oferta</span>
             </label>
           </section>
 
-          <section className="facet">
-            <h2>Precio</h2>
-            <input
-              type="range"
-              min="0"
-              max={TOPE_PRECIO}
-              step="1"
-              value={precioMax}
-              onChange={filtrar((e) => setPrecioMax(Number(e.target.value)))}
-              aria-label="Precio maximo"
-            />
-            <p className="facet-range">
-              <span>{money.format(0)}</span>
-              <b>hasta {money.format(precioMax)}</b>
-            </p>
-          </section>
+          {tope > 0 && (
+            <section className="facet">
+              <h2>Precio</h2>
+              <input
+                type="range"
+                min={piso}
+                max={tope}
+                // Un paso de 1 sobre un rango de cientos de miles obligaria a
+                // arrastrar el control una eternidad.
+                step={Math.max(1, Math.round((tope - piso) / 200))}
+                value={precioElegido}
+                onChange={filtrar((e) => setPrecioMax(Number(e.target.value)))}
+                aria-label="Precio maximo"
+              />
+              <p className="facet-range">
+                <span>{money.format(piso)}</span>
+                <b>hasta {money.format(precioElegido)}</b>
+              </p>
+            </section>
+          )}
 
           <section className="facet">
             <h2>Marca</h2>
-            {brands.map((b) => (
-              <label className="check" key={b}>
-                <input type="checkbox" checked={marcas.includes(b)} onChange={() => alternarMarca(b)} />
-                <span>{b}</span>
+            {filtros.marcas.length > MARCAS_VISIBLES && (
+              <input
+                type="search"
+                className="facet-search"
+                placeholder={`Buscar entre ${filtros.marcas.length} marcas`}
+                value={buscaMarca}
+                onChange={(e) => setBuscaMarca(e.target.value)}
+                aria-label="Buscar marca"
+              />
+            )}
+            {marcasListadas.map((m) => (
+              <label className="check" key={m.name}>
+                <input
+                  type="checkbox"
+                  checked={marcas.includes(m.name)}
+                  onChange={() => alternarMarca(m.name)}
+                />
+                <span>
+                  {m.name}
+                  {m.count > 0 && <em className="facet-count"> ({m.count})</em>}
+                </span>
               </label>
             ))}
+            {marcasListadas.length === 0 && <p className="facet-empty">Ninguna marca coincide.</p>}
           </section>
 
           {hayFiltros && (
@@ -188,9 +245,11 @@ export default function CatalogPage() {
         <section className="catalog-results" aria-live="polite">
           <div className="catalog-toolbar">
             <p className="catalog-count">
-              {filtrados.length === 0
-                ? 'No hay productos que coincidan'
-                : `${desde} - ${hasta} de ${filtrados.length} producto${filtrados.length === 1 ? '' : 's'}`}
+              {cargando && total === 0
+                ? 'Buscando productos...'
+                : total === 0
+                  ? 'No hay productos que coincidan'
+                  : `${desde} - ${hasta} de ${total} producto${total === 1 ? '' : 's'}`}
             </p>
 
             <label className="catalog-sort">
@@ -203,16 +262,27 @@ export default function CatalogPage() {
             </label>
           </div>
 
-          {filtrados.length === 0 ? (
+          {error ? (
             <div className="catalog-empty">
-              <p>Proba aflojar los filtros o mirar otra categoria.</p>
-              <button type="button" className="btn btn-primary" onClick={limpiar}>
-                Limpiar filtros
+              <p>No pudimos traer el catalogo: {error.message}</p>
+              <button type="button" className="btn btn-primary" onClick={() => setPagina(pagina)}>
+                Reintentar
               </button>
             </div>
+          ) : total === 0 && !cargando ? (
+            <div className="catalog-empty">
+              <p>Proba aflojar los filtros o mirar otra categoria.</p>
+              {hayFiltros && (
+                <button type="button" className="btn btn-primary" onClick={limpiar}>
+                  Limpiar filtros
+                </button>
+              )}
+            </div>
           ) : (
-            <ul className="product-grid catalog-grid">
-              {visibles.map((p) => (
+            // Se mantiene la lista anterior mientras llega la nueva pagina, con
+            // opacidad reducida: vaciarla haria saltar el alto del contenedor.
+            <ul className={`product-grid catalog-grid ${cargando ? 'is-loading' : ''}`.trim()}>
+              {productos.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </ul>
@@ -222,29 +292,33 @@ export default function CatalogPage() {
             <nav className="pagination" aria-label="Paginacion">
               <button
                 type="button"
-                onClick={() => setPagina(actual - 1)}
-                disabled={actual === 1}
+                onClick={() => setPagina(meta.page - 1)}
+                disabled={meta.page <= 1}
                 aria-label="Pagina anterior"
               >
                 <Icon name="left" size={16} />
               </button>
 
-              {Array.from({ length: totalPaginas }, (_, k) => k + 1).map((n) => (
-                <button
-                  key={n}
-                  type="button"
-                  className={n === actual ? 'is-active' : ''}
-                  onClick={() => setPagina(n)}
-                  aria-current={n === actual ? 'page' : undefined}
-                >
-                  {n}
-                </button>
-              ))}
+              {ventanaDePaginas(meta.page, totalPaginas).map((n, i) =>
+                n === '...' ? (
+                  <span key={`corte-${i}`} className="pagination-gap">...</span>
+                ) : (
+                  <button
+                    key={n}
+                    type="button"
+                    className={n === meta.page ? 'is-active' : ''}
+                    onClick={() => setPagina(n)}
+                    aria-current={n === meta.page ? 'page' : undefined}
+                  >
+                    {n}
+                  </button>
+                ),
+              )}
 
               <button
                 type="button"
-                onClick={() => setPagina(actual + 1)}
-                disabled={actual === totalPaginas}
+                onClick={() => setPagina(meta.page + 1)}
+                disabled={meta.page >= totalPaginas}
                 aria-label="Pagina siguiente"
               >
                 <Icon name="right" size={16} />

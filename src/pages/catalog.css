@@ -290,3 +290,56 @@
     }
   }
 }
+
+/* Buscador dentro del filtro de marcas. El catalogo real tiene casi
+   cuatrocientas: sin esto la lista seria impracticable. */
+.facet-search {
+  width: 100%;
+  height: 34px;
+  padding: 0 10px;
+  margin-bottom: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  background: #fff;
+
+  &::placeholder {
+    color: color-mix(in srgb, var(--ink) 45%, transparent);
+  }
+
+  &:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--ink) 25%, transparent);
+    outline-offset: 1px;
+  }
+}
+
+/* Cantidad de productos de cada marca. */
+.facet-count {
+  font-style: normal;
+  color: color-mix(in srgb, var(--ink) 50%, transparent);
+  font-size: 12px;
+}
+
+.facet-empty {
+  font-size: 13px;
+  color: color-mix(in srgb, var(--ink) 55%, transparent);
+  margin: 4px 0 0;
+}
+
+/* Elipsis entre saltos de pagina: con 132 paginas no entran todos los numeros. */
+.pagination-gap {
+  display: grid;
+  place-items: center;
+  min-width: 20px;
+  height: 38px;
+  color: color-mix(in srgb, var(--ink) 45%, transparent);
+}
+
+/* La grilla anterior se mantiene mientras llega la nueva pagina, atenuada. */
+.catalog-grid.is-loading {
+  opacity: 0.55;
+  transition: opacity 120ms ease-out;
+  pointer-events: none;
+}

@@ -43,29 +43,22 @@ importa. Falta un unico paso: cambiar la fuente de datos de `CatalogPage`.
 | `.env.example` | `VITE_API_URL` y `VITE_API_FILES` |
 | `src/lib/api.js` | fetch con URL base, querystring, `ApiError` y URLs de imagenes |
 | `src/lib/adapters.js` | traduce el producto de la API a la forma que espera `ProductCard` |
-| `src/api/catalog.js` | `listarProductos`, `obtenerProducto`, `listarCategorias` |
-| `src/hooks/useCatalogo.js` | `useProductos` y `useCategorias`, con corte a la maqueta si no hay API |
+| `src/api/catalog.js` | `listarProductos`, `obtenerProducto`, `listarCategorias`, `listarFiltros` |
+| `src/hooks/useCatalogo.js` | `useProductos`, `useCategorias` y `useFiltros`, con corte a la maqueta si no hay API |
 
 Si `VITE_API_URL` queda vacia, el hook devuelve la maqueta. Asi se puede
 trabajar sin backend levantado.
 
-### El paso que falta
+### Como esta conectado el catalogo
 
-En `src/pages/CatalogPage.jsx`, reemplazar:
+`CatalogPage` no toca `src/data/home.js`: pide todo a la API a traves de los
+hooks. El servidor resuelve filtrado, orden y paginacion; la pagina solo maneja
+el estado de los controles.
 
-```js
-import { allProducts, brands, categories } from '../data/home.js'
-```
-
-por el hook:
-
-```js
-import { useCategorias, useProductos } from '../hooks/useCatalogo.js'
-```
-
-y usar `productos`, `meta`, `cargando` y `error` en lugar de filtrar
-`allProducts` en el cliente. Con la API, la categoria y la paginacion las
-resuelve el servidor.
+La categoria viaja por la URL como slug legible (`/catalogo/whisky`,
+`/catalogo/conac`) y se traduce al id numerico que espera la API contra la lista
+de categorias. Mientras esa lista no llego, el pedido de productos queda en
+pausa para no traer el catalogo entero y descartarlo en el acto.
 
 ## Contrato del backend
 
@@ -81,36 +74,34 @@ Los listados responden siempre con el mismo sobre:
 
 | Metodo | Ruta | Parametros |
 | --- | --- | --- |
-| GET | `/products` | `page`, `pageSize` (max 100), `categoryId`, `search`, `active` |
+| GET | `/products` | `page`, `pageSize` (max 100), `categoryId`, `search`, `active`, `brand`, `priceMin`, `priceMax`, `sort`, `onOffer` |
+| GET | `/products/filters` | — (devuelve marcas con su conteo y rango de precios) |
 | GET | `/products/:id` | — |
 | GET | `/categories` | `page`, `pageSize` |
 
+`sort` acepta `price_asc`, `price_desc`, `name_asc` y `name_desc`, y ordena el
+catalogo completo, no la pagina visible. `brand` admite varias separadas por
+coma. Los importes llegan como numero, no como string.
+
 Campos del producto: `id`, `name`, `description`, `sku`, `brand`, `price`,
-`stock`, `lowStockThreshold`, `imageUrl`, `active`, `categoryId`, `supplierId`,
-mas los objetos `category` y `supplier` incluidos.
+`oldPrice`, `onOffer`, `stock`, `lowStockThreshold`, `imageUrl`, `active`,
+`categoryId`, `supplierId`, mas los objetos `category` y `supplier`.
 
 Las fotos se sirven desde `/uploads/products/<archivo>` en el origen del
 backend, no bajo `/api`. De ahi que `VITE_API_FILES` sea una variable aparte.
 
-### Diferencias a resolver
+### Lo que la UI muestra y el modelo no tiene
 
-Estas tres cosas la UI ya las ofrece y la API todavia no:
-
-1. **Filtro por marca.** `/products` no acepta `brand`. Hoy el sidebar filtra
-   marcas en el cliente; con paginacion del servidor eso solo alcanzaria a la
-   pagina cargada.
-2. **Rango de precio.** Tampoco hay `priceMin` / `priceMax`, con el mismo
-   problema.
-3. **Orden.** No hay parametro de ordenamiento, asi que "precio de menor a
-   mayor" ordenaria solo la pagina actual, no el catalogo.
-
-Mientras no existan del lado del servidor, conviene o bien pedir esos
-parametros al backend, o bien marcar esos filtros como refinamientos de la
-pagina visible.
-
-Ademas, el modelo no tiene **precio anterior, puntaje ni reseñas**, que la
-tarjeta de producto sí muestra. El adaptador los deja en null y la tarjeta se
-degrada sin romperse.
+- **Puntaje y resenas.** No hay sistema de resenas, asi que el adaptador deja
+  `rating` en 0 y `reviews` en null, y la tarjeta se degrada sin romperse. Por
+  eso el selector de orden tampoco ofrece "mejor puntuados": seria una opcion
+  que no ordena nada.
+- **Precio anterior.** El campo existe (`oldPrice`), pero el relevamiento del
+  sitio de origen solo lo trae para un producto. El precio tachado y el badge de
+  descuento aparecen solo en ese, y en los que se carguen a mano.
+- **Stock.** Los productos tienen un stock de relleno hasta que se haga el
+  inventario real. Por eso no hay filtro "solo con stock": hoy no discriminaria
+  nada.
 
 ### CORS
 
