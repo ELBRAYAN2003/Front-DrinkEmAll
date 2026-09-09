@@ -7,7 +7,7 @@
 // componente tiene que saber de que forma viene el dato.
 
 import { urlDeArchivo } from './api.js'
-import { productImage } from './placeholder.js'
+import { productImage, tileImage } from './placeholder.js'
 
 /**
  * Nombre de categoria -> segmento de URL.
@@ -79,11 +79,18 @@ export function adaptarProducto(p) {
 
 /** Categoria de la API -> categoria que espera el sidebar. */
 export function adaptarCategoria(c) {
+  // La API no expone una foto por categoria, asi que se genera una placa de
+  // color. El tono sale del nombre: cada categoria recibe siempre el mismo y
+  // dos categorias distintas no se confunden entre si.
+  const hue = tonoDe(c.name ?? '')
+
   return {
     id: String(c.id),
     name: c.name,
     // La ruta viaja por slug; el id es lo que despues se le manda a la API.
     slug: slugDeCategoria(c.name),
     description: c.description ?? null,
+    hue,
+    image: tileImage({ hue }),
   }
 }

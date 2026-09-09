@@ -691,3 +691,17 @@
   font-size: 14px;
   color: var(--ok);
 }
+
+/* Enlace al catalogo completo debajo de una seccion de la home. */
+.section-more {
+  margin-top: 26px;
+  text-align: center;
+}
+
+/* Se mantiene el contenido anterior mientras llega el nuevo, atenuado: vaciarlo
+   haria saltar el alto de la seccion. */
+.section .is-loading {
+  opacity: 0.55;
+  transition: opacity 120ms ease-out;
+  pointer-events: none;
+}

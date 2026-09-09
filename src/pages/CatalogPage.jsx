@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useParams, useSearchParams } from 'react-router'
 import Icon from '../components/ui/Icon.jsx'
 import ProductCard from '../components/ui/ProductCard.jsx'
 import { money } from '../lib/format.js'
@@ -52,9 +52,15 @@ export default function CatalogPage() {
   const categorias = useCategorias()
   const filtros = useFiltros()
 
-  const [marcas, setMarcas] = useState([])
+  // La busqueda, las marcas y el filtro de oferta viven en la URL: son los que
+  // se comparten por link y los que llegan desde el buscador de la cabecera y
+  // desde la home. El resto de los controles es estado local de la pagina.
+  const [params, setParams] = useSearchParams()
+  const busqueda = params.get('q') ?? ''
+  const marcas = params.getAll('marca')
+  const soloOferta = params.get('oferta') === '1'
+
   const [buscaMarca, setBuscaMarca] = useState('')
-  const [soloOferta, setSoloOferta] = useState(false)
   const [precioMax, setPrecioMax] = useState(null)
   const [orden, setOrden] = useState('')
   const [pagina, setPagina] = useState(1)
@@ -74,6 +80,7 @@ export default function CatalogPage() {
     categoryId: catActual?.id,
     page: pagina,
     pageSize: POR_PAGINA,
+    search: busqueda || undefined,
     marcas,
     precioMax: filtraPrecio ? precioMax : undefined,
     orden: orden || undefined,
@@ -89,9 +96,27 @@ export default function CatalogPage() {
     setPagina(1)
   }
 
-  const alternarMarca = filtrar((m) =>
-    setMarcas((prev) => (prev.includes(m) ? prev.filter((x) => x !== m) : [...prev, m])),
-  )
+  // Toda escritura sobre la URL vuelve a la primera pagina: los resultados que
+  // se estaban viendo dejan de existir en cuanto cambia el filtro.
+  const cambiarParams = (mutar) => {
+    const siguientes = new URLSearchParams(params)
+    mutar(siguientes)
+    setParams(siguientes)
+    setPagina(1)
+  }
+
+  const alternarMarca = (marca) =>
+    cambiarParams((p) => {
+      const actuales = p.getAll('marca')
+      const siguientes = actuales.includes(marca)
+        ? actuales.filter((m) => m !== marca)
+        : [...actuales, marca]
+      p.delete('marca')
+      for (const m of siguientes) p.append('marca', m)
+    })
+
+  const alternarOferta = (activo) =>
+    cambiarParams((p) => (activo ? p.set('oferta', '1') : p.delete('oferta')))
 
   // Las marcas elegidas van siempre primero y siempre visibles: si al buscar
   // desaparecieran de la lista, no habria forma de destildarlas.
@@ -105,14 +130,15 @@ export default function CatalogPage() {
     return [...elegidas, ...resto.slice(0, busqueda ? 30 : MARCAS_VISIBLES)]
   }, [filtros.marcas, marcas, buscaMarca])
 
-  const hayFiltros = marcas.length > 0 || soloOferta || filtraPrecio
+  const hayFiltros = marcas.length > 0 || soloOferta || filtraPrecio || Boolean(busqueda)
 
   const limpiar = () => {
-    setMarcas([])
     setBuscaMarca('')
-    setSoloOferta(false)
     setPrecioMax(null)
     setPagina(1)
+    // Limpiar tambien vacia la URL: si no, la busqueda seguiria aplicada sin
+    // ningun control encendido que lo delate.
+    setParams(new URLSearchParams())
   }
 
   const total = meta.total ?? 0
@@ -135,11 +161,19 @@ export default function CatalogPage() {
       </nav>
 
       <header className="catalog-head wrap">
-        <h1>{catActual ? catActual.name : 'Todo el catalogo'}</h1>
+        <h1>
+          {busqueda
+            ? `Resultados para "${busqueda}"`
+            : catActual
+              ? catActual.name
+              : 'Todo el catalogo'}
+        </h1>
         <p>
-          {catActual
-            ? `Nuestra seleccion de ${catActual.name.toLowerCase()}, con envio en 24 horas.`
-            : 'Vinos, cervezas y destilados elegidos uno por uno.'}
+          {busqueda
+            ? 'Buscamos en el nombre y en la marca de cada producto.'
+            : catActual
+              ? `Nuestra seleccion de ${catActual.name.toLowerCase()}, con envio en 24 horas.`
+              : 'Vinos, cervezas y destilados elegidos uno por uno.'}
         </p>
       </header>
 
@@ -180,7 +214,7 @@ export default function CatalogPage() {
               <input
                 type="checkbox"
                 checked={soloOferta}
-                onChange={filtrar((e) => setSoloOferta(e.target.checked))}
+                onChange={(e) => alternarOferta(e.target.checked)}
               />
               <span>Solo en oferta</span>
             </label>

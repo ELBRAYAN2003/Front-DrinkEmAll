@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import Icon from '../ui/Icon.jsx'
 import { navigation, topBar } from '../../data/home.js'
 
@@ -36,6 +36,18 @@ function MegaMenu({ item }) {
 
 export default function Header() {
   const [open, setOpen] = useState(false)
+  const [consulta, setConsulta] = useState('')
+  const navigate = useNavigate()
+
+  // El buscador vive en la cabecera pero los resultados los muestra el catalogo,
+  // que ya sabe filtrar contra la API. Se le pasa el termino por la URL para que
+  // la busqueda quede compartible y sobreviva a un refresh.
+  const buscar = (e) => {
+    e.preventDefault()
+    const termino = consulta.trim()
+    navigate(termino ? `/catalogo?q=${encodeURIComponent(termino)}` : '/catalogo')
+    setOpen(false)
+  }
 
   // Bloquea el scroll del fondo mientras el panel movil esta abierto.
   useEffect(() => {
@@ -80,7 +92,7 @@ export default function Header() {
 
       {/* Fila 2: marca, navegacion, buscador y cuenta, toda sobre el azul */}
       <div className="header-main">
-        <form className="wrap header-main-inner" role="search" onSubmit={(e) => e.preventDefault()}>
+        <form className="wrap header-main-inner" role="search" onSubmit={buscar}>
           <button
             type="button"
             className="burger"
@@ -125,6 +137,8 @@ export default function Header() {
               className="search-input"
               type="search"
               placeholder="Buscar vinos, cervezas..."
+              value={consulta}
+              onChange={(e) => setConsulta(e.target.value)}
             />
             <button type="submit" className="search-btn" aria-label="Buscar">
               <Icon name="search" size={18} />
