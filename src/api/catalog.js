@@ -20,6 +20,7 @@ export async function listarProductos({
   precioMax,
   orden,
   soloOferta,
+  minImagen,
   signal,
 } = {}) {
   const res = await apiGet('/products', {
@@ -34,6 +35,9 @@ export async function listarProductos({
       priceMin: precioMin,
       priceMax: precioMax,
       sort: orden,
+      // Ancho minimo de foto. El hero necesita imagenes grandes: las del
+      // catalogo van de 225px a 1181px y una chica ahi se ve pixelada.
+      minImageWidth: minImagen,
       // Solo se manda cuando esta activo: mandar false traeria los que NO estan
       // en oferta, que no es lo que ofrece el filtro.
       onOffer: soloOferta ? 'true' : undefined,

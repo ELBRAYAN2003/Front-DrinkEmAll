@@ -150,8 +150,13 @@
   display: flex;
   justify-content: center;
   gap: 7px;
+  /* La lista ocupa todo el ancho del slider y queda por encima del contenido:
+     sin esto se traga los clics del boton de la diapositiva, que cae en la
+     misma franja. Los puntos vuelven a recibirlos uno por uno. */
+  pointer-events: none;
 
   button {
+    pointer-events: auto;
     width: 9px;
     height: 9px;
     border-radius: 999px;

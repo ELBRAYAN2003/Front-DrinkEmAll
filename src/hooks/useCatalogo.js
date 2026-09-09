@@ -76,6 +76,7 @@ export function useProductos({
   precioMax,
   orden,
   soloOferta,
+  minImagen,
   pausado = false,
 }) {
   const [estado, setEstado] = useState(() =>
@@ -108,6 +109,7 @@ export function useProductos({
       precioMax,
       orden,
       soloOferta,
+      minImagen,
       signal: ctrl.signal,
     })
       .then(({ productos, meta }) => {
@@ -122,8 +124,56 @@ export function useProductos({
       vigente = false
       ctrl.abort()
     }
-  }, [categoryId, page, pageSize, search, marcasClave, precioMin, precioMax, orden, soloOferta, pausado])
+  }, [categoryId, page, pageSize, search, marcasClave, precioMin, precioMax, orden, soloOferta, minImagen, pausado])
 
   // `remoto` le dice a la pagina quien lleva el filtrado y la paginacion.
   return { ...estado, remoto: hayApi }
+}
+
+/**
+ * Para las tarjetas del hero: por cada categoria pedida, su producto mas barato
+ * con foto grande.
+ *
+ * Devuelve tambien el total de la categoria, que es lo que permite mostrar
+ * "desde $X" sobre un precio real en lugar de uno inventado.
+ */
+export function usePromosDeCategoria(slugs) {
+  const categorias = useCategorias()
+  const [promos, setPromos] = useState([])
+
+  // Los arrays cambian de identidad en cada render: se comparan por contenido.
+  const claveSlugs = slugs.join(',')
+  const claveCategorias = categorias.map((c) => c.slug).join(',')
+
+  useEffect(() => {
+    if (!hayApi || categorias.length === 0) return
+
+    const ctrl = new AbortController()
+    const elegidas = claveSlugs
+      .split(',')
+      .map((slug) => categorias.find((c) => c.slug === slug))
+      .filter(Boolean)
+
+    Promise.all(
+      elegidas.map((categoria) =>
+        listarProductos({
+          categoryId: categoria.id,
+          minImagen: 800,
+          orden: 'price_asc',
+          pageSize: 1,
+          signal: ctrl.signal,
+        })
+          .then(({ productos, meta }) => ({ categoria, producto: productos[0] ?? null, total: meta.total }))
+          .catch(() => null),
+      ),
+    ).then((resultados) => {
+      // Se descartan las que no tienen ningun producto con foto presentable:
+      // mejor una tarjeta menos que una con la botella dibujada.
+      setPromos(resultados.filter((r) => r?.producto))
+    })
+
+    return () => ctrl.abort()
+  }, [claveSlugs, claveCategorias, categorias])
+
+  return promos
 }
