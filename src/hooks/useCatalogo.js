@@ -15,6 +15,13 @@ const VACIO = { page: 1, pageSize: 0, total: 0, totalPages: 1 }
 // Igualar la forma acá evita que la pagina tenga dos caminos distintos.
 const CATEGORIAS_MOCK = categoriasMock.map((c) => ({ ...c, slug: c.id }))
 
+/**
+ * Categorias que realmente tienen productos.
+ *
+ * Las vacias se descartan aca y no en cada componente: cuatro de las veinte no
+ * tienen ni un producto, y ofrecerlas en el menu o en el sidebar lleva a una
+ * pagina que dice "no hay productos".
+ */
 export function useCategorias() {
   const [categorias, setCategorias] = useState(hayApi ? [] : CATEGORIAS_MOCK)
 
@@ -22,7 +29,7 @@ export function useCategorias() {
     if (!hayApi) return
     const ctrl = new AbortController()
     listarCategorias({ signal: ctrl.signal })
-      .then(setCategorias)
+      .then((todas) => setCategorias(todas.filter((c) => c.count > 0)))
       // Si la API no responde, el sidebar cae a las categorias de maqueta en
       // lugar de quedar vacio.
       .catch(() => setCategorias(CATEGORIAS_MOCK))

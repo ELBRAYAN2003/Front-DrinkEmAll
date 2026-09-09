@@ -1,34 +1,42 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import Icon from '../ui/Icon.jsx'
-import { navigation, topBar } from '../../data/home.js'
+import { topBar } from '../../data/home.js'
+import { useCategorias } from '../../hooks/useCatalogo.js'
 
-function MegaMenu({ item }) {
+// Cuantas categorias van sueltas en la barra; el resto cae en el desplegable.
+const EN_LA_BARRA = 5
+
+// Que va primero en la barra. Ordenar solo por cantidad dejaria Cervezas en el
+// desplegable —es la octava con 34 productos— y en una tienda de bebidas tiene
+// que estar a la vista. Las que no esten en esta lista se ordenan por cantidad.
+const PRIORIDAD = ['vinos', 'cervezas', 'whisky', 'gin', 'espumantes']
+
+// Columnas del desplegable, para que no quede una lista larga y angosta.
+const POR_COLUMNA = 4
+
+function MegaMenu({ categorias }) {
+  const columnas = []
+  for (let i = 0; i < categorias.length; i += POR_COLUMNA) {
+    columnas.push(categorias.slice(i, i + POR_COLUMNA))
+  }
+
   return (
     <div className="mega">
       <div className="wrap mega-inner">
-        {item.columns.map((col) => (
-          <div className="mega-col" key={col.title}>
-            <h4>{col.title}</h4>
+        {columnas.map((columna) => (
+          <div className="mega-col" key={columna[0].id}>
             <ul>
-              {col.links.map((l) => (
-                <li key={l}>
-                  <a href="#">{l}</a>
+              {columna.map((c) => (
+                <li key={c.id}>
+                  <Link to={`/catalogo/${c.slug}`}>
+                    {c.name} <em className="mega-count">{c.count}</em>
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
         ))}
-
-        {item.promo && (
-          <a className="mega-promo" href="#" style={{ '--promo-hue': item.promo.hue }}>
-            <span className="mega-promo-sub">{item.promo.subtitle}</span>
-            <strong>{item.promo.title}</strong>
-            <span className="mega-promo-cta">
-              Ver mas <Icon name="right" size={14} />
-            </span>
-          </a>
-        )}
       </div>
     </div>
   )
@@ -38,6 +46,17 @@ export default function Header() {
   const [open, setOpen] = useState(false)
   const [consulta, setConsulta] = useState('')
   const navigate = useNavigate()
+  const categorias = useCategorias()
+
+  // Cada item de la barra es una categoria real. Antes habia grupos inventados
+  // ("Destilados", "Sin alcohol") que no existen como categoria: al hacerles
+  // clic no habia a donde ir, y "Sin alcohol" ademas no tiene ni un producto.
+  const ordenadas = [
+    ...PRIORIDAD.map((slug) => categorias.find((c) => c.slug === slug)).filter(Boolean),
+    ...categorias.filter((c) => !PRIORIDAD.includes(c.slug)),
+  ]
+  const enLaBarra = ordenadas.slice(0, EN_LA_BARRA)
+  const enElMenu = ordenadas.slice(EN_LA_BARRA)
 
   // El buscador vive en la cabecera pero los resultados los muestra el catalogo,
   // que ya sabe filtrar contra la API. Se le pasa el termino por la URL para que
@@ -117,16 +136,21 @@ export default function Header() {
 
           <nav className="mainnav" aria-label="Principal">
             <ul className="menu">
-              {navigation.map((item) => (
-                <li key={item.label} className={item.columns ? 'has-mega' : ''}>
-                  <Link to={item.to}>
-                    {item.label}
-                    {item.highlight && <em className="tag">{item.highlight}</em>}
-                    {item.columns && <Icon name="down" size={13} />}
-                  </Link>
-                  {item.columns && <MegaMenu item={item} />}
+              {enLaBarra.map((c) => (
+                <li key={c.id}>
+                  <Link to={`/catalogo/${c.slug}`}>{c.name}</Link>
                 </li>
               ))}
+
+              {enElMenu.length > 0 && (
+                <li className="has-mega">
+                  <Link to="/catalogo">
+                    Mas
+                    <Icon name="down" size={13} />
+                  </Link>
+                  <MegaMenu categorias={enElMenu} />
+                </li>
+              )}
             </ul>
           </nav>
 
@@ -154,21 +178,19 @@ export default function Header() {
               </span>
             </a>
 
-            <a className="action" href="#" aria-label="Favoritos">
-              <span className="action-icon">
-                <Icon name="heart" size={22} />
-                <i className="dot">3</i>
-              </span>
-            </a>
+            {/* Favoritos se saca entero: no existe la funcionalidad y el enlace
+                no llevaba a ningun lado. El contador decia 3. */}
 
+            {/* El carrito conserva el icono pero no el contador ni el importe:
+                eran fijos en el JSX y anunciaban dos productos y $61 que nadie
+                habia puesto. Vuelven cuando haya carrito de verdad. */}
             <Link className="action" to="/carrito">
               <span className="action-icon">
                 <Icon name="cart" size={22} />
-                <i className="dot">2</i>
               </span>
               <span className="action-text">
-                <small>Carrito</small>
-                <b>$61</b>
+                <small>Ver</small>
+                <b>Carrito</b>
               </span>
             </Link>
           </div>
@@ -185,18 +207,14 @@ export default function Header() {
             </button>
           </div>
           <ul className="drawer-menu">
-            {navigation.map((item) => (
-              <li key={item.label}>
-                <Link to={item.to} onClick={() => setOpen(false)}>{item.label}</Link>
-                {item.columns && (
-                  <ul>
-                    {item.columns.flatMap((c) => c.links).map((l) => (
-                      <li key={l}>
-                        <a href="#" onClick={() => setOpen(false)}>{l}</a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
+            <li>
+              <Link to="/catalogo" onClick={() => setOpen(false)}>Todo el catalogo</Link>
+            </li>
+            {categorias.map((c) => (
+              <li key={c.id}>
+                <Link to={`/catalogo/${c.slug}`} onClick={() => setOpen(false)}>
+                  {c.name} <em className="mega-count">{c.count}</em>
+                </Link>
               </li>
             ))}
           </ul>

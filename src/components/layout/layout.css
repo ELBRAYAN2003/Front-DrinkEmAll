@@ -725,3 +725,13 @@
     }
   }
 }
+
+/* Cantidad de productos al lado de cada categoria del desplegable y del panel
+   movil. Ayuda a elegir: una categoria con 1 producto y otra con 697 no son lo
+   mismo aunque ocupen el mismo renglon. */
+.mega-count {
+  font-style: normal;
+  font-size: 12px;
+  opacity: 0.5;
+  margin-left: 4px;
+}

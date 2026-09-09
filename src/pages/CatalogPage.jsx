@@ -202,6 +202,7 @@ export default function CatalogPage() {
                 <li key={c.id}>
                   <Link to={`/catalogo/${c.slug}`} className={categoria === c.slug ? 'is-active' : ''}>
                     {c.name}
+                    <span>{c.count}</span>
                   </Link>
                 </li>
               ))}

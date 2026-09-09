@@ -90,6 +90,9 @@ export function adaptarCategoria(c) {
     // La ruta viaja por slug; el id es lo que despues se le manda a la API.
     slug: slugDeCategoria(c.name),
     description: c.description ?? null,
+    // Cuantos productos activos tiene. Permite esconder las vacias en lugar de
+    // ofrecer un camino que termina en "no hay productos".
+    count: Number(c.count ?? 0),
     hue,
     image: tileImage({ hue }),
   }

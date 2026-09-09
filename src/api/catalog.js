@@ -55,10 +55,17 @@ export async function obtenerProducto(id, { signal } = {}) {
   return adaptarProducto(await apiGet(`/products/${id}`, { signal }))
 }
 
-/** Las categorias vienen paginadas; se pide una pagina amplia de una vez. */
+/**
+ * Categorias con su cantidad de productos.
+ *
+ * Se piden a /products/filters y no a /categories porque ahi vienen con el
+ * conteo. Sin el, la interfaz no puede distinguir una categoria con 697
+ * productos de una vacia, y termina ofreciendo caminos que no llevan a nada:
+ * hay cuatro categorias sin un solo producto.
+ */
 export async function listarCategorias({ signal } = {}) {
-  const res = await apiGet('/categories', { params: { pageSize: 100 }, signal })
-  return (res.data ?? []).map(adaptarCategoria)
+  const res = await apiGet('/products/filters', { signal })
+  return (res.categories ?? []).map(adaptarCategoria)
 }
 
 /**
@@ -71,6 +78,7 @@ export async function listarCategorias({ signal } = {}) {
 export async function listarFiltros({ signal } = {}) {
   const res = await apiGet('/products/filters', { signal })
   return {
+    categorias: (res.categories ?? []).map(adaptarCategoria),
     marcas: res.brands ?? [],
     precio: res.priceRange ?? { min: 0, max: 0 },
   }
