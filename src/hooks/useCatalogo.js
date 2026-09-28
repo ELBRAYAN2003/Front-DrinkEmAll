@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { hayApi } from '../lib/api.js'
-import { listarCategorias, listarFiltros, listarProductos } from '../api/catalog.js'
+import { listarCategorias, listarFiltros, listarProductos, obtenerProducto } from '../api/catalog.js'
 import { allProducts, brands as marcasMock, categories as categoriasMock } from '../data/home.js'
 
 // Fuente de datos del catalogo.
@@ -183,4 +183,45 @@ export function usePromosDeCategoria(slugs) {
   }, [claveSlugs, claveCategorias, categorias])
 
   return promos
+}
+
+
+/**
+ * Un producto por id, para la pagina de detalle.
+ *
+ * Con API pide /products/:id. Sin ella lo busca en la maqueta, asi el detalle
+ * se puede recorrer con el backend apagado.
+ */
+export function useProducto(id) {
+  const [estado, setEstado] = useState({ producto: null, cargando: hayApi, error: null })
+
+  useEffect(() => {
+    if (!hayApi) return
+
+    const ctrl = new AbortController()
+    let vigente = true
+
+    obtenerProducto(id, { signal: ctrl.signal })
+      .then((producto) => {
+        if (vigente) setEstado({ producto, cargando: false, error: null })
+      })
+      .catch((err) => {
+        if (!vigente || err.name === 'AbortError') return
+        setEstado({ producto: null, cargando: false, error: err })
+      })
+
+    return () => {
+      vigente = false
+      ctrl.abort()
+    }
+  }, [id])
+
+  // Sin API la busqueda es sincrona: resolverla en el render evita que el
+  // estado quede viejo cuando cambia el id.
+  if (!hayApi) {
+    const producto = allProducts.find((p) => p.id === id) ?? null
+    return { producto, cargando: false, error: null }
+  }
+
+  return estado
 }

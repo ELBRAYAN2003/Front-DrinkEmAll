@@ -61,6 +61,9 @@ export function adaptarProducto(p) {
     stock: Number(p.stock ?? 0),
     badges: Number(p.stock ?? 0) === 0 ? ['agotado'] : [],
     dealEndsAt: null,
+    // Texto completo, para la pagina de detalle. La tarjeta usa `notes`, que
+    // es el mismo texto recortado.
+    description: p.description ?? null,
     // La descripcion viene en un solo texto; se corta en lineas para las
     // notas que muestra la tarjeta al pasar el mouse.
     notes: (p.description ?? '')

@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import Countdown from './Countdown.jsx'
 import Icon from './Icon.jsx'
 import Stars from './Stars.jsx'
@@ -20,10 +21,10 @@ export default function ProductCard({ product }) {
   return (
     <li className={`product-card ${soldOut ? 'is-soldout' : ''}`.trim()}>
       <div className="product-media">
-        <a className="product-link" href="#" aria-label={name}>
+        <Link className="product-link" to={`/producto/${product.id}`} aria-label={name}>
           <img className="product-img" src={image} alt="" loading="lazy" />
           <img className="product-img is-hover" src={hoverImage} alt="" loading="lazy" />
-        </a>
+        </Link>
 
         <div className="product-badges">
           {off > 0 && <span className="badge is-off">-{off}%</span>}
@@ -45,7 +46,7 @@ export default function ProductCard({ product }) {
       <div className="product-body">
         <span className="product-brand">{brand}</span>
         <h3 className="product-name">
-          <a href="#">{name}</a>
+          <Link to={`/producto/${product.id}`}>{name}</Link>
         </h3>
         <Stars value={rating} reviews={reviews} />
 
