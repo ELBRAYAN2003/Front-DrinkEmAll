@@ -4,6 +4,7 @@ import Icon from '../components/ui/Icon.jsx'
 import OrderSummary from '../components/cart/OrderSummary.jsx'
 import { money } from '../lib/format.js'
 import { useCarrito } from '../hooks/useCarrito.js'
+import { registrarPedido } from '../lib/edad.js'
 
 const PASOS = [
   { id: 1, titulo: 'Tus datos' },
@@ -24,14 +25,50 @@ export default function CheckoutPage() {
   const [paso, setPaso] = useState(1)
   const [entrega, setEntrega] = useState('envio')
   const [pago, setPago] = useState('tarjeta')
+  const [conforme, setConforme] = useState(false)
+  const [registro, setRegistro] = useState(null)
 
-  const { lineas } = useCarrito()
+  const { lineas, vaciar } = useCarrito()
 
   const retiroEnLocal = entrega === 'retiro'
 
+  const confirmar = (e) => {
+    e.preventDefault()
+    // Doble control: el boton ya esta deshabilitado, pero el submit puede
+    // dispararse con Enter desde cualquier campo del formulario.
+    if (!conforme) return
+    setRegistro(registrarPedido({ unidades: lineas.length, entrega, pago }))
+    vaciar()
+  }
+
   // Sin lineas no hay nada que confirmar: se vuelve al carrito, que ya tiene
-  // su propio estado vacio.
-  if (lineas.length === 0) return <Navigate to="/carrito" replace />
+  // su propio estado vacio. El registro se comprueba antes para no expulsar a
+  // quien acaba de confirmar.
+  if (!registro && lineas.length === 0) return <Navigate to="/carrito" replace />
+
+  if (registro) {
+    return (
+      <main className="checkout">
+        <div className="wrap checkout-ok">
+          <span className="checkout-ok-icono" aria-hidden="true">
+            <Icon name="check" size={30} />
+          </span>
+          <h1>Pedido registrado</h1>
+          <p>
+            Guardamos tu conformidad de mayoria de edad el{' '}
+            {new Date(registro.fecha).toLocaleString('es-AR')}.
+          </p>
+          <p className="checkout-ok-nota">
+            El pedido todavia no se envia a ningun lado: queda registrado en
+            este navegador hasta que el checkout hable con el backend.
+          </p>
+          <Link className="btn btn-primary" to="/catalogo">
+            Seguir comprando
+          </Link>
+        </div>
+      </main>
+    )
+  }
 
   return (
     <main className="checkout">
@@ -63,7 +100,7 @@ export default function CheckoutPage() {
             ))}
           </ol>
 
-          <form className="checkout-panel" onSubmit={(e) => e.preventDefault()}>
+          <form className="checkout-panel" onSubmit={confirmar}>
             {paso === 1 && (
               <section>
                 <h2>Tus datos</h2>
@@ -191,8 +228,15 @@ export default function CheckoutPage() {
                 </ul>
 
                 <label className="check">
-                  <input type="checkbox" />
-                  <span>Soy mayor de 18 anos y acepto los terminos.</span>
+                  <input
+                    type="checkbox"
+                    checked={conforme}
+                    onChange={(e) => setConforme(e.target.checked)}
+                  />
+                  <span>
+                    Declaro ser mayor de 18 anos y acepto los terminos. La venta
+                    de alcohol a menores esta prohibida por ley.
+                  </span>
                 </label>
               </section>
             )}
@@ -210,7 +254,7 @@ export default function CheckoutPage() {
                   <Icon name="right" size={16} />
                 </button>
               ) : (
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary" disabled={!conforme}>
                   <Icon name="check" size={17} />
                   Confirmar pedido
                 </button>

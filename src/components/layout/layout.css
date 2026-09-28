@@ -735,3 +735,78 @@
   opacity: 0.5;
   margin-left: 4px;
 }
+
+/* --- Puerta de edad --------------------------------------------------------
+   Cubre todo el sitio hasta que la persona responde. Sin boton de cerrar: la
+   unica salida es elegir una de las dos opciones. */
+
+.agegate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(20, 12, 16, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.agegate-panel {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  width: min(420px, 100%);
+  padding: 34px 30px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+
+  h2 {
+    font-size: 25px;
+  }
+
+  p {
+    font-size: 14.5px;
+    color: var(--body);
+  }
+}
+
+.agegate-marca {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  background: var(--wine);
+  color: #fff;
+  font-family: var(--display);
+  font-size: 23px;
+}
+
+.agegate-pregunta {
+  margin-top: 6px;
+  font-weight: 600;
+  color: var(--ink) !important;
+}
+
+.agegate-botones {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+  width: 100%;
+
+  .btn {
+    flex: 1;
+    min-width: 140px;
+  }
+}
+
+.agegate-nota {
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--muted) !important;
+}

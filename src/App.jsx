@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router";
+import AgeGate from "./components/layout/AgeGate.jsx";
 import Footer from "./components/layout/Footer.jsx";
 import Header from "./components/layout/Header.jsx";
 import CarritoProvider from "./context/CarritoProvider.jsx";
@@ -19,6 +20,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <CarritoProvider>
+        <AgeGate />
         <Header />
         <Routes>
           <Route path="/" element={<HomePage />} />

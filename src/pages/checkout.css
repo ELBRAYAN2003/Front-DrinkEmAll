@@ -452,3 +452,41 @@
   padding-top: 20px;
   border-top: 1px solid var(--line);
 }
+
+/* --- Confirmacion ---------------------------------------------------------- */
+.checkout-ok {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  max-width: 520px;
+  margin-inline: auto;
+  padding: 64px 20px;
+  text-align: center;
+
+  h1 {
+    font-size: clamp(26px, 3.2vw, 36px);
+  }
+
+  p {
+    color: var(--body);
+  }
+
+  .btn {
+    margin-top: 8px;
+  }
+}
+
+.checkout-ok-icono {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background: var(--ok);
+  color: #fff;
+}
+
+.checkout-ok-nota {
+  font-size: 13px;
+  color: var(--muted) !important;
+}
