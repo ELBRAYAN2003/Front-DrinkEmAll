@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import Icon from '../ui/Icon.jsx'
 import { topBar } from '../../data/home.js'
+import { useCarrito } from '../../hooks/useCarrito.js'
 import { useCategorias } from '../../hooks/useCatalogo.js'
 
 // Cuantas categorias van sueltas en la barra; el resto cae en el desplegable.
@@ -47,6 +48,7 @@ export default function Header() {
   const [consulta, setConsulta] = useState('')
   const navigate = useNavigate()
   const categorias = useCategorias()
+  const { unidades } = useCarrito()
 
   // Cada item de la barra es una categoria real. Antes habia grupos inventados
   // ("Destilados", "Sin alcohol") que no existen como categoria: al hacerles
@@ -181,12 +183,10 @@ export default function Header() {
             {/* Favoritos se saca entero: no existe la funcionalidad y el enlace
                 no llevaba a ningun lado. El contador decia 3. */}
 
-            {/* El carrito conserva el icono pero no el contador ni el importe:
-                eran fijos en el JSX y anunciaban dos productos y $61 que nadie
-                habia puesto. Vuelven cuando haya carrito de verdad. */}
             <Link className="action" to="/carrito">
               <span className="action-icon">
                 <Icon name="cart" size={22} />
+                {unidades > 0 && <i className="dot">{unidades}</i>}
               </span>
               <span className="action-text">
                 <small>Ver</small>

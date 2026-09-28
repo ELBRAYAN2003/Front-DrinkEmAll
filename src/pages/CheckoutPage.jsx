@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { Link } from 'react-router'
+import { Link, Navigate } from 'react-router'
 import Icon from '../components/ui/Icon.jsx'
 import OrderSummary from '../components/cart/OrderSummary.jsx'
 import { money } from '../lib/format.js'
-import { lineasIniciales } from '../data/cart.js'
+import { useCarrito } from '../hooks/useCarrito.js'
 
 const PASOS = [
   { id: 1, titulo: 'Tus datos' },
@@ -25,8 +25,13 @@ export default function CheckoutPage() {
   const [entrega, setEntrega] = useState('envio')
   const [pago, setPago] = useState('tarjeta')
 
+  const { lineas } = useCarrito()
+
   const retiroEnLocal = entrega === 'retiro'
-  const lineas = lineasIniciales
+
+  // Sin lineas no hay nada que confirmar: se vuelve al carrito, que ya tiene
+  // su propio estado vacio.
+  if (lineas.length === 0) return <Navigate to="/carrito" replace />
 
   return (
     <main className="checkout">

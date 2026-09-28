@@ -1,20 +1,5 @@
-// Carrito de maqueta. Vive aparte de home.js porque cuando exista el backend
-// esto se reemplaza por estado real (contexto o store), no por otra constante.
-
-import { allProducts } from './home.js'
-
-// Se toman productos del catalogo para no duplicar nombres ni precios.
-const elegir = (indices) => indices.map((i) => allProducts[i]).filter(Boolean)
-
-export const lineasIniciales = elegir([0, 2, 9]).map((p, i) => ({
-  id: p.id,
-  name: p.name,
-  brand: p.brand,
-  price: p.price,
-  image: p.image,
-  stock: p.stock,
-  cantidad: [2, 6, 1][i] ?? 1,
-}))
+// Reglas de precio del carrito. Las lineas las maneja CarritoProvider; aca
+// solo vive el calculo, compartido por el carrito y el checkout.
 
 // El backend calcula el IVA con este porcentaje (IVA_PERCENTAGE en su .env).
 export const IVA = 0.21

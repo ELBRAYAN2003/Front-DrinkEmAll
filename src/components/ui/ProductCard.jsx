@@ -2,6 +2,7 @@ import Countdown from './Countdown.jsx'
 import Icon from './Icon.jsx'
 import Stars from './Stars.jsx'
 import { money } from '../../lib/format.js'
+import { useCarrito } from '../../hooks/useCarrito.js'
 
 const QUICK_ACTIONS = [
   { name: 'heart', label: 'Agregar a favoritos' },
@@ -14,6 +15,7 @@ export default function ProductCard({ product }) {
 
   const soldOut = stock === 0
   const off = oldPrice ? Math.round((1 - price / oldPrice) * 100) : 0
+  const { agregar } = useCarrito()
 
   return (
     <li className={`product-card ${soldOut ? 'is-soldout' : ''}`.trim()}>
@@ -59,7 +61,12 @@ export default function ProductCard({ product }) {
         </ul>
 
         <div className="product-foot">
-          <button type="button" className="btn btn-primary" disabled={soldOut}>
+          <button
+            type="button"
+            className="btn btn-primary"
+            disabled={soldOut}
+            onClick={() => agregar(product)}
+          >
             <Icon name="cart" size={18} />
             {soldOut ? 'Sin stock' : 'Agregar'}
           </button>

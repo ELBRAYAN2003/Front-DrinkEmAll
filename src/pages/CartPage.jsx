@@ -1,29 +1,11 @@
-import { useState } from 'react'
-import { Link } from 'react-router'
-import Icon from '../components/ui/Icon.jsx'
-import OrderSummary from '../components/cart/OrderSummary.jsx'
-import { money } from '../lib/format.js'
-import { lineasIniciales } from '../data/cart.js'
+import { Link } from "react-router";
+import Icon from "../components/ui/Icon.jsx";
+import OrderSummary from "../components/cart/OrderSummary.jsx";
+import { money } from "../lib/format.js";
+import { useCarrito } from "../hooks/useCarrito.js";
 
 export default function CartPage() {
-  // Vista de maqueta: el carrito vive en estado local. Cuando exista el
-  // backend, esto pasa a un contexto compartido con el resto de la app.
-  const [lineas, setLineas] = useState(lineasIniciales)
-
-  const cambiarCantidad = (id, delta) =>
-    setLineas((prev) =>
-      prev.map((l) =>
-        l.id === id
-          // Nunca por debajo de 1 ni por encima del stock: para vaciar una
-          // linea esta el boton de quitar.
-          ? { ...l, cantidad: Math.max(1, Math.min(l.stock || 99, l.cantidad + delta)) }
-          : l,
-      ),
-    )
-
-  const quitar = (id) => setLineas((prev) => prev.filter((l) => l.id !== id))
-
-  const unidades = lineas.reduce((acc, l) => acc + l.cantidad, 0)
+  const { lineas, unidades, quitar, cambiarCantidad } = useCarrito();
 
   return (
     <main className="cart">
@@ -37,8 +19,8 @@ export default function CartPage() {
         <h1>Tu carrito</h1>
         <p>
           {lineas.length === 0
-            ? 'Todavia no agregaste nada.'
-            : `${unidades} unidad${unidades === 1 ? '' : 'es'} en ${lineas.length} producto${lineas.length === 1 ? '' : 's'}.`}
+            ? "Todavia no agregaste nada."
+            : `${unidades} unidad${unidades === 1 ? "" : "es"} en ${lineas.length} producto${lineas.length === 1 ? "" : "s"}.`}
         </p>
       </header>
 
@@ -46,7 +28,9 @@ export default function CartPage() {
         <div className="wrap">
           <div className="catalog-empty">
             <p>Tu carrito esta vacio.</p>
-            <Link className="btn btn-primary" to="/catalogo">Ver el catalogo</Link>
+            <Link className="btn btn-primary" to="/catalogo">
+              Ver el catalogo
+            </Link>
           </div>
         </div>
       ) : (
@@ -60,10 +44,16 @@ export default function CartPage() {
                   <div className="cart-line-info">
                     <span className="cart-line-brand">{l.brand}</span>
                     <h3>{l.name}</h3>
-                    <p className="cart-line-unit">{money.format(l.price)} por unidad</p>
+                    <p className="cart-line-unit">
+                      {money.format(l.price)} por unidad
+                    </p>
                   </div>
 
-                  <div className="qty" role="group" aria-label={`Cantidad de ${l.name}`}>
+                  <div
+                    className="qty"
+                    role="group"
+                    aria-label={`Cantidad de ${l.name}`}
+                  >
                     <button
                       type="button"
                       onClick={() => cambiarCantidad(l.id, -1)}
@@ -83,7 +73,9 @@ export default function CartPage() {
                     </button>
                   </div>
 
-                  <p className="cart-line-total">{money.format(l.price * l.cantidad)}</p>
+                  <p className="cart-line-total">
+                    {money.format(l.price * l.cantidad)}
+                  </p>
 
                   <button
                     type="button"
@@ -108,10 +100,12 @@ export default function CartPage() {
               Finalizar compra
               <Icon name="right" size={16} />
             </Link>
-            <p className="summary-note">Los impuestos se calculan en el checkout.</p>
+            <p className="summary-note">
+              Los impuestos se calculan en el checkout.
+            </p>
           </OrderSummary>
         </div>
       )}
     </main>
-  )
+  );
 }
