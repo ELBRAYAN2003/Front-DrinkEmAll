@@ -1,4 +1,3 @@
-import Icon from '../ui/Icon.jsx'
 import { gallery } from '../../data/home.js'
 
 export default function Gallery() {
@@ -14,18 +13,16 @@ export default function Gallery() {
         <ul className="gallery-grid">
           {gallery.map((post) => (
             <li key={post.id}>
-              <a className="post" href="#">
+              {/* No hay blog todavia: la tarjeta no es un enlace. */}
+              <div className="post">
                 <span className="post-media">
                   <img src={post.image} alt="" loading="lazy" />
                   <em className="post-tag">{post.tag}</em>
                 </span>
                 <span className="post-body">
                   <h3>{post.title}</h3>
-                  <span className="post-cta">
-                    Leer nota <Icon name="right" size={14} />
-                  </span>
                 </span>
-              </a>
+              </div>
             </li>
           ))}
         </ul>

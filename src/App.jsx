@@ -7,6 +7,7 @@ import CartPage from "./pages/CartPage.jsx";
 import CatalogPage from "./pages/CatalogPage.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 import ProductPage from "./pages/ProductPage.jsx";
 
 import "./components/ui/ui.css";
@@ -30,6 +31,9 @@ export default function App() {
           <Route path="/producto/:id" element={<ProductPage />} />
           <Route path="/carrito" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
+          {/* Cualquier otra URL: antes renderizaba cabecera y pie con el
+              medio vacio, sin aviso ni salida. */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <Footer />
       </CarritoProvider>

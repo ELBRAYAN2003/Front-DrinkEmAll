@@ -494,11 +494,10 @@ export const contact = [
   { id: 'mail', icon: 'mail', title: 'Escribinos', value: 'hola@drinkemall.com' },
 ]
 
+// La columna "Tienda" no esta aca: se arma con las categorias reales del
+// catalogo. Estas dos todavia no tienen destino, asi que el pie las muestra
+// como texto y no como enlaces: un enlace que no lleva a ningun lado miente.
 export const footerColumns = [
-  {
-    title: 'Tienda',
-    links: ['Vinos', 'Cervezas', 'Destilados', 'Sin alcohol', 'Combos y regalos'],
-  },
   {
     title: 'Tu cuenta',
     links: ['Mis pedidos', 'Direcciones', 'Lista de deseos', 'Cupones', 'Club DrinkEmAll'],

@@ -343,3 +343,37 @@
   transition: opacity 120ms ease-out;
   pointer-events: none;
 }
+
+/* --- 404 ------------------------------------------------------------------- */
+.notfound-panel {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  max-width: 520px;
+  margin-inline: auto;
+  padding: 90px 20px;
+  text-align: center;
+
+  h1 {
+    font-size: clamp(26px, 3.4vw, 38px);
+  }
+
+  p {
+    color: var(--muted);
+  }
+}
+
+.notfound-codigo {
+  font-family: var(--display);
+  font-size: clamp(64px, 12vw, 108px);
+  line-height: 1;
+  color: var(--wine-soft) !important;
+}
+
+.notfound-botones {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 10px;
+}

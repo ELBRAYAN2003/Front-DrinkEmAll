@@ -810,3 +810,30 @@
   font-size: 12.5px;
   color: var(--muted) !important;
 }
+
+/* Elementos cuya seccion todavia no existe: se muestran, pero no se comportan
+   como enlaces. Un enlace que no lleva a ningun lado es peor que su ausencia. */
+.footer-pendiente {
+  color: var(--muted);
+  cursor: default;
+}
+
+.action.is-pendiente {
+  cursor: default;
+
+  &:hover {
+    color: inherit;
+  }
+}
+
+.social span {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  cursor: default;
+}

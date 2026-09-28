@@ -172,13 +172,14 @@ export default function Header() {
           </div>
 
           <div className="header-account">
-            <a className="action" href="#">
+            {/* Texto y no enlace: no hay sistema de cuentas todavia. */}
+            <span className="action is-pendiente" title="Proximamente">
               <Icon name="user" size={22} />
               <span className="action-text">
                 <small>Hola</small>
                 <b>Mi cuenta</b>
               </span>
-            </a>
+            </span>
 
             {/* Favoritos se saca entero: no existe la funcionalidad y el enlace
                 no llevaba a ningun lado. El contador decia 3. */}
