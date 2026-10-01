@@ -3,6 +3,8 @@
 **DrinkEmAll** — e-commerce de bebidas
 Juan José Castelli, Chaco, Argentina
 
+**Equipo:** Senger, Brian Leonel Miguel - Baumgatner, Jose Ignacio - Riquel, Gaston Azula
+
 ---
 
 ## 1. Punto de partida

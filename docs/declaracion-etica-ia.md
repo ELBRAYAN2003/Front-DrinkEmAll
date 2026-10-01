@@ -3,6 +3,8 @@
 **Contenido sintético en DrinkEmAll**
 Documento de transparencia dirigido al usuario final
 
+**Equipo:** Senger, Brian Leonel Miguel - Baumgatner, Jose Ignacio - Riquel, Gaston Azula
+
 > Este documento describe prácticas y analiza el estado de un debate jurídico
 > abierto. No constituye asesoramiento legal. Antes de la puesta en producción
 > comercial corresponde validación por profesional del derecho.

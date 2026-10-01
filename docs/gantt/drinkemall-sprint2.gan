@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project name="DrinkEmAll - Sprint 2" company="IES Rene Favaloro" webLink="https://github.com/ELBRAYAN2003/Front-DrinkEmAll" view-date="2026-08-25" view-index="0" gantt-divider-location="380" resource-divider-location="300" version="3.2" locale="es_ES">
+    <description>Planificado segun la guia del Sprint 2 frente a la ejecucion real reconstruida del historial del repositorio.</description>
+    <view zooming-state="default:3" id="gantt-chart">
+        <field id="tpd3" name="tpd3" width="75" order="0" />
+        <field id="tpd4" name="tpd4" width="230" order="0" />
+        <field id="tpd5" name="tpd5" width="75" order="0" />
+        <field id="tpd6" name="tpd6" width="75" order="0" />
+    </view>
+    <view id="resource-table" />
+    <calendars>
+        <day-types>
+            <day-type id="0" />
+            <day-type id="1" />
+            <default-week id="1" name="default" sun="1" mon="0" tue="0" wed="0" thu="0" fri="0" sat="1" />
+            <only-show-weekends value="false" />
+            <overriden-day-types />
+            <days />
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="text" />
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="text" />
+            <taskproperty id="tpd2" name="info" type="default" valuetype="text" />
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text" />
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="text" />
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="text" />
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="text" />
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="text" />
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text" />
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text" />
+        </taskproperties>
+        <task id="0" name="PLANIFICADO (guia del Sprint 2)" color="#2c66a8" meeting="false" start="2026-09-14" duration="1" complete="0" expand="true">
+            <task id="1" name="Semana 4: diseno visual y estructura CSS" color="#2c66a8" meeting="false" start="2026-09-14" duration="5" complete="100" expand="true" />
+            <task id="2" name="Semana 5: Flexbox/Grid, productos.json, embudo" color="#2c66a8" meeting="false" start="2026-09-21" duration="5" complete="100" expand="true" />
+            <task id="3" name="Semana 6: pruebas, legales y entrega" color="#2c66a8" meeting="false" start="2026-09-28" duration="5" complete="100" expand="true" />
+        </task>
+        <task id="4" name="EJECUCION REAL (historial del repositorio)" color="#8b1d3f" meeting="false" start="2026-08-25" duration="1" complete="0" expand="true">
+            <task id="5" name="Inicializacion del repositorio" color="#8b1d3f" meeting="false" start="2026-08-25" duration="1" complete="100" expand="true" />
+            <task id="6" name="Home completa (reemplazo del scaffold)" color="#8b1d3f" meeting="false" start="2026-08-31" duration="2" complete="100" expand="true" />
+            <task id="7" name="Rediseno de cabecera y hero" color="#8b1d3f" meeting="false" start="2026-09-01" duration="2" complete="100" expand="true" />
+            <task id="8" name="Integracion de ramas del equipo" color="#8b1d3f" meeting="false" start="2026-09-04" duration="1" complete="100" expand="true" />
+            <task id="9" name="Catalogo, rutas, carrito y checkout" color="#8b1d3f" meeting="false" start="2026-09-08" duration="1" complete="100" expand="true" />
+            <task id="10" name="Conexion con la API" color="#8b1d3f" meeting="false" start="2026-09-09" duration="1" complete="100" expand="true" />
+            <task id="11" name="DESVIO: periodo sin actividad" color="#8b1d3f" meeting="false" start="2026-09-10" duration="13" complete="0" expand="true" />
+            <task id="12" name="Carrito global, detalle, edad y 404" color="#8b1d3f" meeting="false" start="2026-09-28" duration="1" complete="100" expand="true" />
+            <task id="13" name="JSON, privacidad, licencias y documentacion" color="#8b1d3f" meeting="false" start="2026-10-01" duration="1" complete="100" expand="true" />
+        </task>
+    </tasks>
+    <resources />
+    <allocations />
+    <vacations />
+    <previous />
+    <roles roleset-name="Default" />
+</project>
