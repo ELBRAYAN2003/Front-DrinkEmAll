@@ -1,0 +1,148 @@
+/* Paginas legales: texto largo, pensado para leerse. */
+
+.legal {
+  padding-bottom: 80px;
+}
+
+.legal-doc {
+  max-width: 760px;
+  margin-inline: auto;
+}
+
+.legal-head {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+
+  h1 {
+    font-size: clamp(27px, 3.4vw, 40px);
+    line-height: 1.15;
+  }
+}
+
+.legal-fecha {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.legal-aviso {
+  margin-top: 26px;
+  padding: 18px 20px;
+  border-left: 3px solid var(--wine);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  background: var(--wine-soft);
+  font-size: 14.5px;
+  line-height: 1.6;
+}
+
+.legal-doc section {
+  margin-top: 36px;
+
+  h2 {
+    font-size: 21px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 14px;
+  }
+
+  h3 {
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-top: 20px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 15px;
+    line-height: 1.7;
+    margin-bottom: 12px;
+  }
+
+  b {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  code {
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--surface-2);
+    font-size: 13.5px;
+    color: var(--wine);
+  }
+}
+
+.legal-lista {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+
+  li {
+    position: relative;
+    padding-left: 18px;
+    font-size: 15px;
+    line-height: 1.65;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 11px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+  }
+}
+
+.legal-nota {
+  padding: 12px 16px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  font-size: 14px !important;
+  color: var(--muted);
+}
+
+/* Derechos ARCO: cada letra del acronimo destacada. */
+.arco {
+  display: grid;
+  gap: 14px;
+  margin-block: 16px 18px;
+
+  li {
+    display: flex;
+    gap: 16px;
+    padding: 16px 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+  }
+
+  h3 {
+    margin-top: 0 !important;
+    font-family: var(--display) !important;
+    font-size: 18px !important;
+    font-weight: 400 !important;
+  }
+
+  p {
+    margin-bottom: 0 !important;
+    font-size: 14.5px !important;
+    color: var(--body);
+  }
+}
+
+.arco-letra {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--wine);
+  color: #fff;
+  font-family: var(--display);
+  font-size: 20px;
+}

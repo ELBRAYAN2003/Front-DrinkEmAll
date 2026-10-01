@@ -75,7 +75,8 @@ export default function Footer() {
       <div className="wrap footer-bottom">
         <p className="copy">
           © {new Date().getFullYear()} DrinkEmAll. Bebe con moderacion. Venta
-          prohibida a menores de 18 anos.
+          prohibida a menores de 18 anos.{' '}
+          <Link to="/privacidad">Politica de privacidad</Link>
         </p>
 
         <ul className="payments">

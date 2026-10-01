@@ -8,6 +8,7 @@ import CatalogPage from "./pages/CatalogPage.jsx";
 import CheckoutPage from "./pages/CheckoutPage.jsx";
 import HomePage from "./pages/HomePage.jsx";
 import NotFoundPage from "./pages/NotFoundPage.jsx";
+import PrivacyPage from "./pages/PrivacyPage.jsx";
 import ProductPage from "./pages/ProductPage.jsx";
 
 import "./components/ui/ui.css";
@@ -16,6 +17,7 @@ import "./components/home/home.css";
 import "./pages/catalog.css";
 import "./pages/checkout.css";
 import "./pages/product.css";
+import "./pages/legal.css";
 
 export default function App() {
   return (
@@ -29,6 +31,7 @@ export default function App() {
           <Route path="/catalogo" element={<CatalogPage />} />
           <Route path="/catalogo/:categoria" element={<CatalogPage />} />
           <Route path="/producto/:id" element={<ProductPage />} />
+          <Route path="/privacidad" element={<PrivacyPage />} />
           <Route path="/carrito" element={<CartPage />} />
           <Route path="/checkout" element={<CheckoutPage />} />
           {/* Cualquier otra URL: antes renderizaba cabecera y pie con el
