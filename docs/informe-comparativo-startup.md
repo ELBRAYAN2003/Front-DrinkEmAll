@@ -1,7 +1,10 @@
-# Declaración de triple impacto y diferenciación
+# Informe Comparativo: Startup vs. Empresa Tradicional
+
+### Declaración de triple impacto y diferenciación
 
 **DrinkEmAll** — e-commerce de bebidas
 Juan José Castelli, Chaco, Argentina
+Espacio curricular: El Emprendedor Digital y el Contexto
 
 **Equipo:** Senger, Brian Leonel Miguel - Baumgatner, Jose Ignacio - Riquel, Gaston Azula
 
