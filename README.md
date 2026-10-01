@@ -108,3 +108,21 @@ backend, no bajo `/api`. De ahi que `VITE_API_FILES` sea una variable aparte.
 El backend toma el origen permitido de su propio `.env` (`CORS_ORIGIN`), por
 defecto `http://localhost:5173`. Si se cambia el puerto del front, hay que
 actualizarlo alla tambien.
+
+## Licencia
+
+Copyright (c) 2026 **Senger, Brian Leonel Miguel - Baumgatner, Jose Ignacio - Riquel, Gaston Azula**.
+
+Este proyecto usa **dos licencias segun el tipo de obra**:
+
+| Que | Licencia | Archivo |
+| --- | --- | --- |
+| Codigo fuente | GNU GPL v3.0 | `LICENSE` |
+| Documentos, arte generado y catalogo de datos | CC BY-SA 4.0 | `LICENSE-CONTENIDO` |
+
+Podes usar, estudiar, modificar y redistribuir el codigo, siempre que las obras
+derivadas se distribuyan bajo la misma licencia y con su fuente disponible.
+
+Creative Commons desaconseja sus licencias para codigo fuente, de ahi la
+separacion. El fundamento completo esta en
+[`docs/justificacion-licenciamiento.md`](docs/justificacion-licenciamiento.md).
