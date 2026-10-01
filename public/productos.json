@@ -1,0 +1,273 @@
+{
+  "catalogo": "DrinkEmAll",
+  "descripcion": "Catalogo comercial de productos ficticios generados por IA. Datos de demostracion: ninguna marca ni producto existe.",
+  "version": "1.1.0",
+  "generado": "2026-10-01",
+  "total": 24,
+  "productos": [
+    {
+      "id": "p-1",
+      "nombre": "Malbec Reserva de Altura 750ml",
+      "descripcion": "Ciruela madura y un dejo de vainilla. Doce meses en roble frances. Cuerpo medio, taninos redondos.",
+      "precio_simulado": 52,
+      "imagen_ia_url": "/img/productos/p-1.svg",
+      "categoria": "Vinos tintos",
+      "categoria_slug": "tinto",
+      "marca": "Finca del Sauce",
+      "stock": 17
+    },
+    {
+      "id": "p-2",
+      "nombre": "Torrontes Cosecha Temprana 750ml",
+      "descripcion": "Jazmin y ralladura de pomelo. Fermentado en tanque de acero. Fresco, seco y muy facil de tomar.",
+      "precio_simulado": 38,
+      "imagen_ia_url": "/img/productos/p-2.svg",
+      "categoria": "Vinos blancos",
+      "categoria_slug": "blanco",
+      "marca": "Alto Calchaqui",
+      "stock": 110
+    },
+    {
+      "id": "p-3",
+      "nombre": "IPA Sesion Doble Lupulo 473ml",
+      "descripcion": "Mango, maracuya y pino. Amargor medio, 4.8% ABV. Lata unitaria, se vende por seis.",
+      "precio_simulado": 9,
+      "imagen_ia_url": "/img/productos/p-3.svg",
+      "categoria": "Cervezas",
+      "categoria_slug": "cerveza",
+      "marca": "Barrio Nueve",
+      "stock": 240
+    },
+    {
+      "id": "p-4",
+      "nombre": "Cabernet Franc Parcela 4 750ml",
+      "descripcion": "Pimiento asado y frutos negros. Guarda de dieciocho meses. Ideal con carnes a la parrilla.",
+      "precio_simulado": 71,
+      "imagen_ia_url": "/img/productos/p-4.svg",
+      "categoria": "Vinos tintos",
+      "categoria_slug": "tinto",
+      "marca": "Vina Trelew",
+      "stock": 140
+    },
+    {
+      "id": "p-5",
+      "nombre": "Blend de Corte Cinco Barricas 750ml",
+      "descripcion": "Cassis, tabaco y cacao amargo. Corte de malbec, merlot y syrah. Se abre mejor tras media hora.",
+      "precio_simulado": 58,
+      "imagen_ia_url": "/img/productos/p-5.svg",
+      "categoria": "Vinos tintos",
+      "categoria_slug": "tinto",
+      "marca": "Casa Miramar",
+      "stock": 62
+    },
+    {
+      "id": "p-6",
+      "nombre": "Gin Botanico Serie Limitada 700ml",
+      "descripcion": "Enebro, cardamomo y citricos. Destilado en alambique de cobre. Cuarenta y dos grados.",
+      "precio_simulado": 84,
+      "imagen_ia_url": "/img/productos/p-6.svg",
+      "categoria": "Destilados",
+      "categoria_slug": "destilado",
+      "marca": "Destileria Sur",
+      "stock": 0
+    },
+    {
+      "id": "p-7",
+      "nombre": "Chardonnay sin Madera 750ml",
+      "descripcion": "Manzana verde y almendra. Sin paso por roble. Servir bien frio, entre 8 y 10 grados.",
+      "precio_simulado": 44,
+      "imagen_ia_url": "/img/productos/p-7.svg",
+      "categoria": "Vinos blancos",
+      "categoria_slug": "blanco",
+      "marca": "Finca del Sauce",
+      "stock": 120
+    },
+    {
+      "id": "p-8",
+      "nombre": "Rosado de Prensa Directa 750ml",
+      "descripcion": "Frutilla, sandia y hierbas. Prensado suave, color palido. Aperitivo de tarde.",
+      "precio_simulado": 36,
+      "imagen_ia_url": "/img/productos/p-8.svg",
+      "categoria": "Vinos rosados",
+      "categoria_slug": "rosado",
+      "marca": "Vina Trelew",
+      "stock": 88
+    },
+    {
+      "id": "p-9",
+      "nombre": "Stout Imperial Cafe y Cacao 473ml",
+      "descripcion": "Cafe tostado y chocolate negro. Nueve grados, para tomar de a poco. Guarda bien hasta dos anos.",
+      "precio_simulado": 11,
+      "imagen_ia_url": "/img/productos/p-9.svg",
+      "categoria": "Cervezas",
+      "categoria_slug": "cerveza",
+      "marca": "Barrio Nueve",
+      "stock": 76
+    },
+    {
+      "id": "p-10",
+      "nombre": "Espumante Metodo Tradicional 750ml",
+      "descripcion": "Burbuja fina y persistente. Veinticuatro meses sobre lias. Brut nature, sin azucar agregada.",
+      "precio_simulado": 62,
+      "imagen_ia_url": "/img/productos/p-10.svg",
+      "categoria": "Espumantes",
+      "categoria_slug": "espumante",
+      "marca": "Casa Miramar",
+      "stock": 54
+    },
+    {
+      "id": "p-11",
+      "nombre": "Vermut Blanco de Autor 750ml",
+      "descripcion": "Manzanilla, ajenjo y naranja. Macerado en frio. Con hielo y una rodaja de naranja.",
+      "precio_simulado": 33,
+      "imagen_ia_url": "/img/productos/p-11.svg",
+      "categoria": "Destilados",
+      "categoria_slug": "destilado",
+      "marca": "Destileria Sur",
+      "stock": 90
+    },
+    {
+      "id": "p-12",
+      "nombre": "Kombucha de Jengibre 473ml",
+      "descripcion": "Jengibre fresco y limon. Sin alcohol, sin azucar agregada. Fermentado treinta dias.",
+      "precio_simulado": 6,
+      "imagen_ia_url": "/img/productos/p-12.svg",
+      "categoria": "Sin alcohol",
+      "categoria_slug": "sin-alcohol",
+      "marca": "Fermento Vivo",
+      "stock": 300
+    },
+    {
+      "id": "p-13",
+      "nombre": "Syrah de Guarda Larga 750ml",
+      "descripcion": "Pimienta negra y mora. Veinte meses en barrica. Para descorchar con tiempo.",
+      "precio_simulado": 66,
+      "imagen_ia_url": "/img/productos/p-13.svg",
+      "categoria": "Vinos tintos",
+      "categoria_slug": "tinto",
+      "marca": "Casa Miramar",
+      "stock": 48
+    },
+    {
+      "id": "p-14",
+      "nombre": "Pinot Noir de Clima Frio 750ml",
+      "descripcion": "Frutilla, hongo y tierra humeda. Delicado pero persistente. Servir apenas fresco.",
+      "precio_simulado": 78,
+      "imagen_ia_url": "/img/productos/p-14.svg",
+      "categoria": "Vinos tintos",
+      "categoria_slug": "tinto",
+      "marca": "Vina Trelew",
+      "stock": 33
+    },
+    {
+      "id": "p-15",
+      "nombre": "Sauvignon Blanc de Rio 750ml",
+      "descripcion": "Pomelo y hoja de tomate. Acidez filosa. Ideal con pescados.",
+      "precio_simulado": 41,
+      "imagen_ia_url": "/img/productos/p-15.svg",
+      "categoria": "Vinos blancos",
+      "categoria_slug": "blanco",
+      "marca": "Alto Calchaqui",
+      "stock": 92
+    },
+    {
+      "id": "p-16",
+      "nombre": "Semillon de Parcela Vieja 750ml",
+      "descripcion": "Membrillo y cera de abeja. Vinas de mas de sesenta anos. Gana con el tiempo en copa.",
+      "precio_simulado": 49,
+      "imagen_ia_url": "/img/productos/p-16.svg",
+      "categoria": "Vinos blancos",
+      "categoria_slug": "blanco",
+      "marca": "Finca del Sauce",
+      "stock": 40
+    },
+    {
+      "id": "p-17",
+      "nombre": "Rosado de Malbec Fresco 750ml",
+      "descripcion": "Cereza y pomelo rosado. Muy seco, poco alcohol. Para la tarde.",
+      "precio_simulado": 34,
+      "imagen_ia_url": "/img/productos/p-17.svg",
+      "categoria": "Vinos rosados",
+      "categoria_slug": "rosado",
+      "marca": "Casa Miramar",
+      "stock": 130
+    },
+    {
+      "id": "p-18",
+      "nombre": "Extra Brut de Guarda 750ml",
+      "descripcion": "Manzana al horno y pan tostado. Treinta meses sobre lias. Burbuja fina.",
+      "precio_simulado": 71,
+      "imagen_ia_url": "/img/productos/p-18.svg",
+      "categoria": "Espumantes",
+      "categoria_slug": "espumante",
+      "marca": "Vina Trelew",
+      "stock": 26
+    },
+    {
+      "id": "p-19",
+      "nombre": "Golden Ale Facil de Tomar 473ml",
+      "descripcion": "Cereal y un toque citrico. Cuatro grados y medio. La cerveza de entrada.",
+      "precio_simulado": 7,
+      "imagen_ia_url": "/img/productos/p-19.svg",
+      "categoria": "Cervezas",
+      "categoria_slug": "cerveza",
+      "marca": "Barrio Nueve",
+      "stock": 320
+    },
+    {
+      "id": "p-20",
+      "nombre": "Cerveza de Trigo Turbia 473ml",
+      "descripcion": "Banana y clavo de olor. Sin filtrar. Servir en vaso alto.",
+      "precio_simulado": 8,
+      "imagen_ia_url": "/img/productos/p-20.svg",
+      "categoria": "Cervezas",
+      "categoria_slug": "cerveza",
+      "marca": "Barrio Nueve",
+      "stock": 180
+    },
+    {
+      "id": "p-21",
+      "nombre": "Aperitivo Amargo de Hierbas 750ml",
+      "descripcion": "Genciana, naranja amarga y ruibarbo. Macerado tres meses. Con soda y hielo.",
+      "precio_simulado": 39,
+      "imagen_ia_url": "/img/productos/p-21.svg",
+      "categoria": "Destilados",
+      "categoria_slug": "destilado",
+      "marca": "Destileria Sur",
+      "stock": 70
+    },
+    {
+      "id": "p-22",
+      "nombre": "Whisky de Malta Doble Barrica 700ml",
+      "descripcion": "Caramelo, humo y nuez. Terminado en barrica de jerez. Cuarenta y seis grados.",
+      "precio_simulado": 128,
+      "imagen_ia_url": "/img/productos/p-22.svg",
+      "categoria": "Destilados",
+      "categoria_slug": "destilado",
+      "marca": "Destileria Sur",
+      "stock": 0
+    },
+    {
+      "id": "p-23",
+      "nombre": "Gaseosa Artesanal de Pomelo 473ml",
+      "descripcion": "Pomelo rosado exprimido. Poca azucar, mucha burbuja. Bien fria.",
+      "precio_simulado": 5,
+      "imagen_ia_url": "/img/productos/p-23.svg",
+      "categoria": "Sin alcohol",
+      "categoria_slug": "sin-alcohol",
+      "marca": "Fermento Vivo",
+      "stock": 400
+    },
+    {
+      "id": "p-24",
+      "nombre": "Vino Desalcoholizado Blanco 750ml",
+      "descripcion": "Aromatico y liviano. Menos de medio grado. Para brindar sin alcohol.",
+      "precio_simulado": 22,
+      "imagen_ia_url": "/img/productos/p-24.svg",
+      "categoria": "Sin alcohol",
+      "categoria_slug": "sin-alcohol",
+      "marca": "Alto Calchaqui",
+      "stock": 65
+    }
+  ]
+}

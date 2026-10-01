@@ -1,19 +1,15 @@
 import { useEffect, useState } from 'react'
 import { hayApi } from '../lib/api.js'
 import { listarCategorias, listarFiltros, listarProductos, obtenerProducto } from '../api/catalog.js'
-import { allProducts, brands as marcasMock, categories as categoriasMock } from '../data/home.js'
+import { categoriasLocales, marcasLocales, productosLocales } from '../data/catalogoLocal.js'
 
 // Fuente de datos del catalogo.
 //
 // Con VITE_API_URL configurada pide a la API: filtra, ordena y pagina en el
-// servidor. Sin ella devuelve la maqueta. La pagina de catalogo no necesita
-// saber cual de las dos esta activa.
+// servidor. Sin ella lee el catalogo estatico de public/productos.json. La
+// pagina de catalogo no necesita saber cual de las dos esta activa.
 
 const VACIO = { page: 1, pageSize: 0, total: 0, totalPages: 1 }
-
-// La maqueta usa el id como segmento de URL; la API trae el slug del nombre.
-// Igualar la forma acá evita que la pagina tenga dos caminos distintos.
-const CATEGORIAS_MOCK = categoriasMock.map((c) => ({ ...c, slug: c.id }))
 
 /**
  * Categorias que realmente tienen productos.
@@ -23,7 +19,7 @@ const CATEGORIAS_MOCK = categoriasMock.map((c) => ({ ...c, slug: c.id }))
  * pagina que dice "no hay productos".
  */
 export function useCategorias() {
-  const [categorias, setCategorias] = useState(hayApi ? [] : CATEGORIAS_MOCK)
+  const [categorias, setCategorias] = useState(hayApi ? [] : categoriasLocales)
 
   useEffect(() => {
     if (!hayApi) return
@@ -32,7 +28,7 @@ export function useCategorias() {
       .then((todas) => setCategorias(todas.filter((c) => c.count > 0)))
       // Si la API no responde, el sidebar cae a las categorias de maqueta en
       // lugar de quedar vacio.
-      .catch(() => setCategorias(CATEGORIAS_MOCK))
+      .catch(() => setCategorias(categoriasLocales))
     return () => ctrl.abort()
   }, [])
 
@@ -49,7 +45,7 @@ export function useFiltros() {
   const [filtros, setFiltros] = useState(() =>
     hayApi
       ? { marcas: [], precio: null, cargando: true }
-      : { marcas: marcasMock.map((name) => ({ name, count: 0 })), precio: null, cargando: false },
+      : { marcas: marcasLocales, precio: null, cargando: false },
   )
 
   useEffect(() => {
@@ -89,7 +85,7 @@ export function useProductos({
   const [estado, setEstado] = useState(() =>
     hayApi
       ? { productos: [], meta: VACIO, cargando: true, error: null }
-      : { productos: allProducts, meta: VACIO, cargando: false, error: null },
+      : { productos: productosLocales, meta: VACIO, cargando: false, error: null },
   )
 
   // Un array cambia de identidad en cada render y dispararia el efecto siempre.
@@ -219,7 +215,7 @@ export function useProducto(id) {
   // Sin API la busqueda es sincrona: resolverla en el render evita que el
   // estado quede viejo cuando cambia el id.
   if (!hayApi) {
-    const producto = allProducts.find((p) => p.id === id) ?? null
+    const producto = productosLocales.find((p) => p.id === id) ?? null
     return { producto, cargando: false, error: null }
   }
 
