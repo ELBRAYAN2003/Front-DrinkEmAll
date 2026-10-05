@@ -27,7 +27,11 @@ export class ApiError extends Error {
 export async function apiGet(ruta, { params = {}, signal } = {}) {
   if (!hayApi) throw new ApiError('No hay VITE_API_URL configurada', 0)
 
-  const url = new URL(`${API_URL}${ruta}`)
+  // La base permite que VITE_API_URL sea relativa ('/api'), que es lo que se
+  // usa cuando el front y la API se sirven desde el mismo dominio: asi no hay
+  // host escrito en el build ni hace falta CORS. Si la URL ya es absoluta, el
+  // segundo argumento se ignora.
+  const url = new URL(`${API_URL}${ruta}`, window.location.origin)
   for (const [clave, valor] of Object.entries(params)) {
     // Los parametros vacios se omiten: el backend los valida con Zod y un
     // string vacio no pasa el esquema.

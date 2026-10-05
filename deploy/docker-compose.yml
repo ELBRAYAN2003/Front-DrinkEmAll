@@ -1,0 +1,87 @@
+# Stack de DrinkEmAll.
+#
+# Espera que los dos repositorios esten clonados como hermanos:
+#   drinkemall/
+#     Front-DrinkEmAll/deploy/   <- este archivo
+#     Back-DrinkEmAll/
+#
+# Los limites de memoria no son decorativos: el VPS comparte RAM con un
+# servidor de Minecraft que usa ~11 GB de los 15 GB. Sin topes, un pico de
+# MySQL puede hacer que el kernel mate un proceso cualquiera.
+
+name: drinkemall
+
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?falta definirla en .env}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD:?falta definirla en .env}
+    volumes:
+      - dbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p${DB_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 40s
+    # Sin puertos publicados: la base solo se alcanza desde la red interna.
+    mem_limit: 640m
+
+  api:
+    build:
+      context: ../../Back-DrinkEmAll
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?falta definirla en .env}
+      JWT_EXPIRES_IN: 1d
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?falta definirla en .env}
+      JWT_REFRESH_EXPIRES_IN: 7d
+      CORS_ORIGIN: https://drinkemall.sbcorp.site
+      IVA_PERCENTAGE: 21
+      LOW_STOCK_THRESHOLD: 10
+      # Solo en el primer arranque; despues se deja en false.
+      SEED_ON_START: ${SEED_ON_START:-false}
+    volumes:
+      - uploads:/app/uploads
+    mem_limit: 448m
+
+  web:
+    build:
+      context: ..
+      args:
+        VITE_API_URL: /api
+        VITE_API_FILES: ""
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+      - caddy_logs:/var/log/caddy
+    mem_limit: 160m
+
+volumes:
+  dbdata:
+  uploads:
+  caddy_data:
+  caddy_config:
+  caddy_logs:
