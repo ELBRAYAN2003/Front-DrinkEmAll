@@ -1,14 +1,17 @@
-// Catalogo local, leido de public/productos.json.
+// Catalogo local, leido de public/productos.json con la Fetch API.
 //
 // Ese archivo es el almacenamiento estatico del catalogo: cuando no hay API
 // configurada, los productos que muestra la tienda salen de ahi y no de una
 // constante escrita en el codigo.
 //
-// Se importa por ruta en vez de pedirlo con fetch para que los hooks sigan
-// siendo sincronos. El archivo igual queda servido en /productos.json, asi
-// que hay una sola fuente y no se puede desincronizar.
+// Se pide con fetch en lugar de importarlo: el JSON queda fuera del bundle, lo
+// cachea el navegador como cualquier otro archivo y se puede corregir un precio
+// editando /productos.json en el servidor sin volver a compilar la tienda. El
+// costo es que la lectura es asincrona, y de eso se ocupan los hooks.
 
-import catalogo from '../../public/productos.json'
+// BASE_URL respeta el "base" de Vite: la ruta sigue sirviendo aunque la tienda
+// se publique dentro de un subdirectorio.
+const RUTA = `${import.meta.env.BASE_URL}productos.json`
 
 /** Producto del archivo -> forma que consumen los componentes. */
 function adaptar(p) {
@@ -38,23 +41,60 @@ function adaptar(p) {
   }
 }
 
-export const productosLocales = (catalogo.productos ?? []).map(adaptar)
+/** Categorias con su conteo, derivadas de los propios productos. */
+function derivarCategorias(productos) {
+  return Object.values(
+    productos.reduce((acc, p) => {
+      acc[p.category] ??= { id: p.category, slug: p.category, name: p.categoryName, count: 0 }
+      acc[p.category].count++
+      return acc
+    }, {}),
+  ).sort((a, b) => a.name.localeCompare(b.name, 'es'))
+}
 
-/** Categorias con su conteo, derivadas del propio archivo. */
-export const categoriasLocales = Object.values(
-  productosLocales.reduce((acc, p) => {
-    acc[p.category] ??= { id: p.category, slug: p.category, name: p.categoryName, count: 0 }
-    acc[p.category].count++
-    return acc
-  }, {}),
-).sort((a, b) => a.name.localeCompare(b.name, 'es'))
+/** Marcas con su conteo, tambien derivadas de los productos. */
+function derivarMarcas(productos) {
+  return Object.values(
+    productos.reduce((acc, p) => {
+      if (!p.brand) return acc
+      acc[p.brand] ??= { name: p.brand, count: 0 }
+      acc[p.brand].count++
+      return acc
+    }, {}),
+  ).sort((a, b) => a.name.localeCompare(b.name, 'es'))
+}
 
-/** Marcas con su conteo, tambien derivadas del archivo. */
-export const marcasLocales = Object.values(
-  productosLocales.reduce((acc, p) => {
-    if (!p.brand) return acc
-    acc[p.brand] ??= { name: p.brand, count: 0 }
-    acc[p.brand].count++
-    return acc
-  }, {}),
-).sort((a, b) => a.name.localeCompare(b.name, 'es'))
+async function pedirCatalogo() {
+  const respuesta = await fetch(RUTA, { headers: { Accept: 'application/json' } })
+  if (!respuesta.ok) {
+    throw new Error(`No se pudo leer el catalogo estatico (HTTP ${respuesta.status})`)
+  }
+
+  const archivo = await respuesta.json()
+  const productos = (archivo.productos ?? []).map(adaptar)
+
+  return {
+    productos,
+    categorias: derivarCategorias(productos),
+    marcas: derivarMarcas(productos),
+  }
+}
+
+// El archivo es el mismo durante toda la visita, asi que se guarda la promesa:
+// los cuatro hooks que lo necesitan comparten un unico pedido. Si falla se
+// borra, para que el proximo intento vuelva a pedirlo en vez de repetir el
+// error para siempre.
+let pedido = null
+
+/**
+ * Catalogo estatico ya adaptado: { productos, categorias, marcas }.
+ *
+ * Una sola lectura de red por visita, aunque se llame desde varios hooks.
+ */
+export function cargarCatalogoLocal() {
+  pedido ??= pedirCatalogo().catch((error) => {
+    pedido = null
+    throw error
+  })
+  return pedido
+}
