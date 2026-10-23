@@ -329,11 +329,44 @@
     &:focus {
       border-color: var(--wine);
     }
+
+    &.is-invalid {
+      border-color: var(--danger);
+
+      &:focus {
+        border-color: var(--danger);
+      }
+    }
   }
 }
 
 .field-wide {
   grid-column: 1 / -1;
+}
+
+/* Mensaje de una regla de validacion que no paso. */
+.field-error {
+  font-style: normal;
+  font-size: 12.5px;
+  line-height: 1.35;
+  color: var(--danger);
+}
+
+/* Aviso general del paso, para quien aprieta Continuar sin mirar los campos. */
+.checkout-aviso {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 11px 14px;
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  color: var(--danger);
+
+  .icon {
+    flex: none;
+  }
 }
 
 .options {
