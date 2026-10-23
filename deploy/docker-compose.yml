@@ -13,7 +13,7 @@ name: drinkemall
 
 services:
   db:
-    image: mysql:8.4
+    image: ${REGISTRY:-docker.io/library}/mysql:8.4
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:?falta definirla en .env}
@@ -34,6 +34,8 @@ services:
   api:
     build:
       context: ../../Back-DrinkEmAll
+      args:
+        REGISTRY: ${REGISTRY:-docker.io/library}
     restart: unless-stopped
     depends_on:
       db:
@@ -64,6 +66,7 @@ services:
     build:
       context: ..
       args:
+        REGISTRY: ${REGISTRY:-docker.io/library}
         VITE_API_URL: /api
         VITE_API_FILES: ""
     restart: unless-stopped

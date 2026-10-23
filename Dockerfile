@@ -1,7 +1,11 @@
 # Frontend: se compila con node y el resultado estatico lo sirve Caddy.
 # La imagen final no lleva node ni node_modules, solo los archivos compilados.
 
-FROM node:22-alpine AS build
+# Prefijo del registro. Por defecto Docker Hub; se puede apuntar a un espejo
+# cuando la cuota de descargas anonimas de Hub esta agotada.
+ARG REGISTRY=docker.io/library
+
+FROM ${REGISTRY}/node:22-alpine AS build
 WORKDIR /app
 RUN corepack enable
 
@@ -19,5 +23,5 @@ ENV VITE_API_URL=$VITE_API_URL
 ENV VITE_API_FILES=$VITE_API_FILES
 RUN pnpm build
 
-FROM caddy:2-alpine
+FROM ${REGISTRY}/caddy:2-alpine
 COPY --from=build /app/dist /srv
