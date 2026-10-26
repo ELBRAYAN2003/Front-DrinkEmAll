@@ -3,17 +3,6 @@
 
 import { productImage, tileImage } from '../lib/placeholder.js'
 
-export const topBar = {
-  message: 'Envio sin cargo en pedidos de mas de $80',
-  links: [
-    { label: 'Seguir mi pedido', href: '#' },
-    { label: 'Ayuda', href: '#' },
-    { label: 'Contacto', href: '#' },
-  ],
-  languages: ['ES', 'EN', 'PT'],
-  currencies: ['ARS $', 'USD $', 'EUR €'],
-}
-
 export const searchCategories = [
   'Todas las categorias',
   'Vinos',

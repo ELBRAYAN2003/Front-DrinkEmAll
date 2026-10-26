@@ -70,82 +70,6 @@
   }
 }
 
-/* --- Franja de servicio -------------------------------------------------- */
-.header-top {
-  position: relative;
-  z-index: 1;
-  /* Mismo azul, mas hundido: se distingue por profundidad y no por ser un
-     color ajeno pegado encima. */
-  background: rgba(0, 0, 0, 0.16);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
-  font-size: 12.5px;
-  color: rgba(255, 255, 255, 0.82);
-}
-
-.header-top-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  min-height: 36px;
-}
-
-.header-note {
-  white-space: nowrap;
-
-  @media (max-width: 780px) {
-    display: none;
-  }
-}
-
-.header-top-side {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-left: auto;
-  white-space: nowrap;
-}
-
-.utility-links {
-  display: flex;
-  gap: 16px;
-
-  a:hover {
-    color: #fff;
-  }
-
-  li + li {
-    position: relative;
-    padding-left: 16px;
-
-    &::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      height: 11px;
-      border-left: 1px solid rgba(255, 255, 255, 0.28);
-      transform: translateY(-50%);
-    }
-  }
-
-  @media (max-width: 980px) {
-    display: none;
-  }
-}
-
-.bare-select {
-  background: transparent;
-  border: 0;
-  color: inherit;
-  padding: 2px 4px;
-  cursor: pointer;
-
-  option {
-    color: var(--ink);
-  }
-}
-
 /* --- Fila principal ------------------------------------------------------ */
 .header-main {
   position: relative;
@@ -590,9 +514,12 @@
 }
 
 /* --- Pie ------------------------------------------------------------------ */
+/* La linea de arriba se desvanece en las puntas en vez de cortar de lado a lado. */
 .site-footer {
   background: var(--cream);
-  border-top: 1px solid var(--line);
+  background-image: linear-gradient(90deg, transparent, var(--line) 18%, var(--line) 82%, transparent);
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
 }
 
 .footer-top {
@@ -823,6 +750,32 @@
 
   &:hover {
     color: inherit;
+  }
+}
+
+/* "Seguir mi pedido" es el tercer boton de la fila: el texto solo aparece con
+   ancho de sobra, para no apretar el menu de categorias. Sin el, queda el
+   camion como icono. */
+.action-track .action-text {
+  @media (max-width: 1340px) {
+    display: none;
+  }
+}
+
+.drawer-pendiente {
+  display: block;
+  padding: 12px 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: default;
+
+  small {
+    margin-left: 6px;
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
   }
 }
 
