@@ -1,7 +1,6 @@
 import About from '../components/home/About.jsx'
 import Brands from '../components/home/Brands.jsx'
 import Categories from '../components/home/Categories.jsx'
-import ContactStrip from '../components/home/ContactStrip.jsx'
 import Hero from '../components/home/Hero.jsx'
 import Location from '../components/home/Location.jsx'
 import Newsletter from '../components/home/Newsletter.jsx'
@@ -17,10 +16,9 @@ export default function HomePage() {
       <Categories />
       <Trending />
       <SpecialProducts />
+      <Brands />
       <About />
       <Location />
-      <Brands />
-      <ContactStrip />
       <Newsletter />
     </main>
   )

@@ -37,9 +37,10 @@
   img {
     width: 84px;
     height: 84px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: var(--radius);
-    background: var(--surface-2);
+    border: 1px solid var(--line);
+    background: var(--surface);
   }
 
   @media (max-width: 640px) {
@@ -449,9 +450,10 @@
   img {
     width: 48px;
     height: 48px;
-    object-fit: cover;
+    object-fit: contain;
     border-radius: var(--radius);
-    background: var(--surface-2);
+    border: 1px solid var(--line);
+    background: var(--surface);
   }
 
   span {

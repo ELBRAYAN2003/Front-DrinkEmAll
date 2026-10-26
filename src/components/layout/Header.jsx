@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import Icon from '../ui/Icon.jsx'
-import { topBar } from '../../data/home.js'
 import { useCarrito } from '../../hooks/useCarrito.js'
 import { useCategorias } from '../../hooks/useCatalogo.js'
 
@@ -80,38 +79,7 @@ export default function Header() {
 
   return (
     <header className="site-header">
-      {/* Fila 1: servicio */}
-      <div className="header-top">
-        <div className="wrap header-top-inner">
-          <p className="header-note">{topBar.message}</p>
-
-          <div className="header-top-side">
-            <ul className="utility-links">
-              {topBar.links.map((l) => (
-                <li key={l.label}>
-                  <a href={l.href}>{l.label}</a>
-                </li>
-              ))}
-            </ul>
-
-            <label className="sr-only" htmlFor="lang">Idioma</label>
-            <select id="lang" className="bare-select" defaultValue={topBar.languages[0]}>
-              {topBar.languages.map((l) => (
-                <option key={l}>{l}</option>
-              ))}
-            </select>
-
-            <label className="sr-only" htmlFor="curr">Moneda</label>
-            <select id="curr" className="bare-select" defaultValue={topBar.currencies[0]}>
-              {topBar.currencies.map((c) => (
-                <option key={c}>{c}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Fila 2: marca, navegacion, buscador y cuenta, toda sobre el azul */}
+      {/* Marca, navegacion, buscador y cuenta, toda sobre el azul */}
       <div className="header-main">
         <form className="wrap header-main-inner" role="search" onSubmit={buscar}>
           <button
@@ -172,6 +140,16 @@ export default function Header() {
           </div>
 
           <div className="header-account">
+            {/* Texto y no enlace, como "Mi cuenta": todavia no hay seguimiento
+                de pedidos. Antes era un enlace a "#" en la franja de arriba. */}
+            <span className="action action-track is-pendiente" title="Proximamente">
+              <Icon name="truck" size={22} />
+              <span className="action-text">
+                <small>Seguir</small>
+                <b>Mi pedido</b>
+              </span>
+            </span>
+
             {/* Texto y no enlace: no hay sistema de cuentas todavia. */}
             <span className="action is-pendiente" title="Proximamente">
               <Icon name="user" size={22} />
@@ -218,6 +196,11 @@ export default function Header() {
                 </Link>
               </li>
             ))}
+            <li>
+              <span className="drawer-pendiente">
+                Seguir mi pedido <small>Proximamente</small>
+              </span>
+            </li>
           </ul>
         </div>
         <button type="button" className="drawer-scrim" onClick={() => setOpen(false)} aria-label="Cerrar menu" />

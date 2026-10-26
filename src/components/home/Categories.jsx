@@ -31,6 +31,20 @@ export default function Categories() {
             </li>
           ))}
         </ul>
+
+        {/* La foto de Cervezas es CC BY-SA 4.0 y recortada: la licencia exige
+            nombrar al autor y avisar que se modifico. */}
+        <p className="categories-credit">
+          Foto de Cervezas:{' '}
+          <a
+            href="https://commons.wikimedia.org/wiki/File:Miller_Genuine_Draft_bottle.jpg"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Miller Genuine Draft bottle
+          </a>{' '}
+          por Kimjon12 (CC BY-SA 4.0), recortada, via Wikimedia Commons.
+        </p>
       </div>
     </section>
   )
