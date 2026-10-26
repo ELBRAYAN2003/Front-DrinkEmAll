@@ -130,7 +130,7 @@ export default function Hero() {
               key={categoria.id}
               className="hero-promo"
               to={`/catalogo/${categoria.slug}`}
-              style={{ '--promo-bg': `hsl(${categoria.hue} 32% 94%)`, '--promo-ink': '#1c1418' }}
+              style={{ '--promo-bg': `hsl(${categoria.hue} 32% 94%)`, '--promo-ink': 'var(--ink)' }}
             >
               <span className="hero-promo-copy">
                 {/* "Desde" sobre el precio real del mas barato de la categoria,

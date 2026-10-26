@@ -18,7 +18,7 @@
     color 0.2s var(--ease);
 
   &:hover {
-    background: var(--wine);
+    background: var(--brand);
     color: #fff;
   }
 }
@@ -154,7 +154,7 @@
   }
 
   &:hover:not(:disabled) {
-    background: var(--wine);
+    background: var(--brand);
     color: #fff;
   }
 
@@ -245,7 +245,7 @@
   background: var(--ink);
 
   &.is-off {
-    background: var(--wine);
+    background: var(--brand);
   }
   &.is-new {
     background: var(--ok);
@@ -298,7 +298,7 @@
   line-height: 1.35;
 
   a:hover {
-    color: var(--wine);
+    color: var(--brand);
   }
 }
 
@@ -309,7 +309,7 @@
   font-size: 18px;
 
   b {
-    color: var(--wine);
+    color: var(--brand);
     font-weight: 600;
   }
 

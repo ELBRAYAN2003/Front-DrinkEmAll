@@ -9,6 +9,9 @@
 // editando /productos.json en el servidor sin volver a compilar la tienda. El
 // costo es que la lectura es asincrona, y de eso se ocupan los hooks.
 
+import { fotoDeCategoria } from '../lib/categoriaFoto.js'
+import { tileImage } from '../lib/placeholder.js'
+
 // BASE_URL respeta el "base" de Vite: la ruta sigue sirviendo aunque la tienda
 // se publique dentro de un subdirectorio.
 const RUTA = `${import.meta.env.BASE_URL}productos.json`
@@ -45,7 +48,17 @@ function adaptar(p) {
 function derivarCategorias(productos) {
   return Object.values(
     productos.reduce((acc, p) => {
-      acc[p.category] ??= { id: p.category, slug: p.category, name: p.categoryName, count: 0 }
+      if (!acc[p.category]) {
+        const foto = fotoDeCategoria(p.category)
+        acc[p.category] = {
+          id: p.category,
+          slug: p.category,
+          name: p.categoryName,
+          count: 0,
+          image: foto ?? tileImage(),
+          conFoto: Boolean(foto),
+        }
+      }
       acc[p.category].count++
       return acc
     }, {}),
