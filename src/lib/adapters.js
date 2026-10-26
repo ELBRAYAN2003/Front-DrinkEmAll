@@ -8,6 +8,7 @@
 
 import { urlDeArchivo } from './api.js'
 import { productImage, tileImage } from './placeholder.js'
+import { fotoDeCategoria } from './categoriaFoto.js'
 
 /**
  * Nombre de categoria -> segmento de URL.
@@ -82,21 +83,25 @@ export function adaptarProducto(p) {
 
 /** Categoria de la API -> categoria que espera el sidebar. */
 export function adaptarCategoria(c) {
-  // La API no expone una foto por categoria, asi que se genera una placa de
-  // color. El tono sale del nombre: cada categoria recibe siempre el mismo y
-  // dos categorias distintas no se confunden entre si.
-  const hue = tonoDe(c.name ?? '')
+  // El tono sale del nombre: cada categoria recibe siempre el mismo y dos
+  // categorias distintas no se confunden entre si. Se acota a la familia del
+  // azul de marca (195 a 244) para que ningun fondo generado salga rosado.
+  const hue = 195 + (tonoDe(c.name ?? '') % 50)
+  const slug = slugDeCategoria(c.name)
+  const foto = fotoDeCategoria(slug)
 
   return {
     id: String(c.id),
     name: c.name,
     // La ruta viaja por slug; el id es lo que despues se le manda a la API.
-    slug: slugDeCategoria(c.name),
+    slug,
     description: c.description ?? null,
     // Cuantos productos activos tiene. Permite esconder las vacias en lugar de
     // ofrecer un camino que termina en "no hay productos".
     count: Number(c.count ?? 0),
     hue,
-    image: tileImage({ hue }),
+    // Sin foto de categoria, una placa de color generada.
+    image: foto ?? tileImage({ hue }),
+    conFoto: Boolean(foto),
   }
 }

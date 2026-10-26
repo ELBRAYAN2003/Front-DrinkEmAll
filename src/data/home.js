@@ -452,39 +452,14 @@ export const productsByTab = Object.fromEntries(
 
 export const specialProducts = CATALOG.filter((p) => p.oldPrice).slice(0, 8)
 
-export const gallery = [
-  { id: 'g1', title: 'Como leer una etiqueta sin marearte', tag: 'Guias', hue: 344 },
-  { id: 'g2', title: 'Seis maridajes que nunca fallan', tag: 'Cocina', hue: 28 },
-  { id: 'g3', title: 'A que temperatura servir cada vino', tag: 'Basicos', hue: 196 },
-  { id: 'g4', title: 'Que es realmente una IPA', tag: 'Cerveza', hue: 88 },
-].map((post) => ({ ...post, image: tileImage({ hue: post.hue }) }))
-
-export const testimonials = [
-  {
-    id: 't1',
-    quote:
-      'Pedi un combo para un cumpleanos y llego al otro dia, bien embalado y frio. La ficha de cata fue un golazo.',
-    name: 'Marina Ledesma',
-    role: 'Compro tres veces',
-    hue: 344,
-  },
-  {
-    id: 't2',
-    quote:
-      'Me asesoraron por chat para elegir un tinto de guarda sin gastar una fortuna. Acertaron de una.',
-    name: 'Diego Ferreyra',
-    role: 'Cliente desde 2024',
-    hue: 28,
-  },
-  {
-    id: 't3',
-    quote:
-      'La rotacion de cervezas artesanales es lo mejor que tienen. Siempre hay algo nuevo para probar.',
-    name: 'Sol Barrientos',
-    role: 'Suscripta al club',
-    hue: 196,
-  },
-]
+// Donde esta el local. `consulta` es lo que se le pide a Google Maps: mientras no
+// haya una calle y altura confirmadas apunta a la ciudad. Con la direccion
+// exacta se reemplaza ese texto y el mapa y el enlace "Abrir en Google Maps"
+// quedan apuntando al local.
+export const ubicacion = {
+  lugar: 'Juan Jose Castelli, Chaco',
+  consulta: 'Juan José Castelli, Chaco, Argentina',
+}
 
 export const brands = ['Finca del Sauce', 'Alto Calchaqui', 'Barrio Nueve', 'Vina Trelew', 'Casa Miramar', 'Destileria Sur']
 

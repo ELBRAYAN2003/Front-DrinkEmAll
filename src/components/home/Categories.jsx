@@ -21,7 +21,9 @@ export default function Categories() {
           {categorias.map((c) => (
             <li key={c.id}>
               <Link to={`/catalogo/${c.slug}`} className="cat-card">
-                <img src={c.image} alt="" loading="lazy" />
+                <span className={`cat-media ${c.conFoto ? 'has-photo' : ''}`.trim()}>
+                  <img src={c.image} alt="" loading="lazy" />
+                </span>
                 <span className="cat-body">
                   <b>{c.name}</b>
                 </span>

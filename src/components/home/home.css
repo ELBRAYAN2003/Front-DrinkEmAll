@@ -316,19 +316,44 @@
   }
 }
 
+/* El circulo es un contenedor propio y no la imagen: la foto es de una botella
+   sobre fondo blanco, y para que ese blanco no recorte el circulo se mezcla en
+   "multiplicar" contra el fondo celeste. `isolation` encierra la mezcla dentro
+   del circulo para que no se multiplique contra el resto de la pagina. */
+.cat-media {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  isolation: isolate;
+  background: var(--brand-soft);
+  transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  &.has-photo {
+    background: radial-gradient(circle at 30% 22%, #f4f8fd 0%, #d9e7f6 58%, #bdd4ee 100%);
+
+    img {
+      width: 84%;
+      height: 84%;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+    }
+  }
+}
+
 .cat-card {
   display: grid;
   gap: 12px;
   text-align: center;
 
-  img {
-    aspect-ratio: 1;
-    object-fit: cover;
-    border-radius: 50%;
-    transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
-  }
-
-  &:hover img {
+  &:hover .cat-media {
     transform: translateY(-6px);
     box-shadow: var(--shadow-md);
   }
@@ -399,147 +424,288 @@
   }
 }
 
-/* Blog / galeria ------------------------------------------------------------ */
-.gallery-grid {
+/* Quienes somos -------------------------------------------------------------- */
+.about {
+  background: var(--brand-soft);
+}
+
+.about-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--gap);
-
-  @media (max-width: 1000px) {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  @media (max-width: 520px) {
-    grid-template-columns: 1fr;
-  }
-}
-
-.post {
-  display: grid;
-  gap: 14px;
-}
-
-.post-media {
-  position: relative;
-  display: block;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-
-  img {
-    aspect-ratio: 4 / 3;
-    object-fit: cover;
-    transition: transform 0.5s var(--ease);
-  }
-
-  .post:hover & img {
-    transform: scale(1.06);
-  }
-}
-
-.post-tag {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.92);
-  color: var(--ink);
-  font-style: normal;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-}
-
-.post-body {
-  display: grid;
-  gap: 8px;
-
-  h3 {
-    font-size: 17px;
-    line-height: 1.35;
-  }
-
-  .post:hover & h3 {
-    color: var(--brand);
-  }
-}
-
-.post-cta {
-  display: inline-flex;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 56px;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: var(--gold);
-}
-
-/* Opiniones ----------------------------------------------------------------- */
-.testimonials {
-  background: var(--surface-2);
-}
-
-.testi-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--gap);
 
   @media (max-width: 900px) {
     grid-template-columns: 1fr;
-    max-width: 560px;
-    margin-inline: auto;
+    gap: 32px;
   }
 }
 
-.testi {
+/* Collage: una foto alta a la izquierda y dos apiladas a la derecha. */
+.about-photos {
   display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
   gap: 14px;
+  height: 520px;
+
+  @media (max-width: 620px) {
+    height: 400px;
+    gap: 10px;
+  }
+
+  figure {
+    margin: 0;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s var(--ease);
+  }
+
+  figure:hover img {
+    transform: scale(1.05);
+  }
+}
+
+.about-photo-tall {
+  grid-row: 1 / 3;
+}
+
+.about-copy {
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+
+  h2 {
+    font-size: clamp(28px, 3.4vw, 40px);
+    line-height: 1.15;
+  }
+
+  p {
+    font-size: 16px;
+  }
+}
+
+.about-pillars {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+  margin-top: 56px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    margin-top: 40px;
+  }
+}
+
+.pillar {
+  display: grid;
+  gap: 12px;
   align-content: start;
   padding: 30px;
+  border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background: var(--surface);
-  border: 1px solid var(--line);
+  box-shadow: var(--shadow-sm);
+
+  h3 {
+    font-size: 22px;
+  }
 
   p {
     font-size: 15px;
   }
 
-  footer {
-    display: flex;
-    align-items: center;
+  ul {
+    display: grid;
     gap: 12px;
-    margin-top: 4px;
-    padding-top: 16px;
-    border-top: 1px solid var(--line);
+  }
 
-    b {
-      display: block;
-      font-size: 14px;
-      color: var(--ink);
-      font-weight: 600;
+  li {
+    display: grid;
+    grid-template-columns: 18px 1fr;
+    gap: 10px;
+    font-size: 14.5px;
+    line-height: 1.45;
+
+    .icon {
+      margin-top: 2px;
+      color: var(--brand);
     }
 
-    small {
-      font-size: 12px;
-      color: var(--muted);
+    b {
+      color: var(--ink);
+      font-weight: 600;
     }
   }
 }
 
-.testi-quote {
-  color: var(--brand-soft);
-  stroke: none;
-  fill: currentColor;
-}
-
-.testi-avatar {
+.pillar-icon {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  flex: none;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
-  font-family: var(--display);
-  font-size: 18px;
-  color: #fff;
-  background: hsl(var(--avatar-hue) 42% 38%);
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.about-credits {
+  margin-top: 28px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+  text-align: center;
+
+  a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
+
+/* Ubicacion ----------------------------------------------------------------- */
+/* Fondo arena con puntos y circulos celestes muy tenues: se despega de la
+   seccion celeste de arriba sin repetir el azul fuerte de la cabecera. */
+.location {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(180deg, #faf7f4 0%, #f1ebe3 100%);
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  &::before {
+    background-image:
+      radial-gradient(circle at 12% 18%, rgba(44, 102, 168, 0.14) 0 2px, transparent 3px),
+      radial-gradient(circle at 34% 62%, rgba(44, 102, 168, 0.1) 0 3px, transparent 4px),
+      radial-gradient(circle at 58% 30%, rgba(44, 102, 168, 0.13) 0 1.5px, transparent 2.5px),
+      radial-gradient(circle at 76% 78%, rgba(44, 102, 168, 0.1) 0 2.5px, transparent 3.5px),
+      radial-gradient(circle at 90% 44%, rgba(44, 102, 168, 0.13) 0 2px, transparent 3px);
+    background-size: 260px 240px;
+  }
+
+  &::after {
+    background-image:
+      radial-gradient(circle at 94% 6%, rgba(44, 102, 168, 0.07) 0 150px, transparent 151px),
+      radial-gradient(circle at 3% 98%, rgba(44, 102, 168, 0.06) 0 190px, transparent 191px);
+  }
+}
+
+.location-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 52px;
+  align-items: center;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.location-copy {
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+
+  h2 {
+    font-size: clamp(28px, 3.4vw, 40px);
+    line-height: 1.15;
+  }
+
+  > p {
+    font-size: 16px;
+  }
+}
+
+.location-points {
+  display: grid;
+  gap: 18px;
+  margin-block: 6px 8px;
+
+  li {
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 14px;
+    align-items: start;
+    font-size: 14.5px;
+    line-height: 1.5;
+  }
+
+  b {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 15.5px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+}
+
+.location-point-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  border: 1px solid #cddff2;
+  color: var(--brand);
+}
+
+.location-map {
+  height: 420px;
+  overflow: hidden;
+  border: 5px solid #fff;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px rgba(16, 28, 44, 0.18);
+  background: radial-gradient(circle at 30% 22%, #f4f8fd 0%, #d9e7f6 58%, #bdd4ee 100%);
+
+  @media (max-width: 620px) {
+    height: 340px;
+  }
+
+  iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+}
+
+/* El mapa no se pide hasta que la persona lo pide: cargarlo conecta con Google
+   y la Politica de Privacidad promete que el sitio no transmite a terceros. */
+.location-gate {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 14px;
+  height: 100%;
+  padding: 24px;
+  text-align: center;
+  color: var(--body);
+
+  .icon {
+    color: var(--brand);
+  }
+
+  p {
+    max-width: 380px;
+    font-size: 14px;
+  }
 }
 
 /* Marcas -------------------------------------------------------------------- */
@@ -565,6 +731,49 @@
       color: var(--brand);
     }
   }
+}
+
+/* Con logos: en gris y apagados, y a color al pasar el mouse, para que la fila
+   se lea como una sola tira y no como ocho marcas gritando a la vez. */
+.brands-logos {
+  justify-content: space-evenly;
+  gap: 20px 48px;
+  padding-bottom: 14px;
+
+  a {
+    display: grid;
+    place-items: center;
+    height: 56px;
+    padding-inline: 6px;
+  }
+
+  img {
+    display: block;
+    width: auto;
+    max-width: 130px;
+    max-height: 38px;
+    object-fit: contain;
+    filter: grayscale(1);
+    opacity: 0.6;
+    transition:
+      filter 0.3s var(--ease),
+      opacity 0.3s var(--ease),
+      transform 0.3s var(--ease);
+  }
+
+  a:hover img,
+  a:focus-visible img {
+    filter: none;
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}
+
+.brands-note {
+  padding-bottom: 18px;
+  font-size: 11.5px;
+  text-align: center;
+  color: var(--muted);
 }
 
 /* Franja de contacto -------------------------------------------------------- */
