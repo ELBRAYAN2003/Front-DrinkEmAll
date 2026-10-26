@@ -1,0 +1,839 @@
+/* Cabecera y pie.
+
+   La cabecera no es una barra continua: es una composicion de paneles con
+   posiciones propias. El panel de cuenta flota por encima del extremo
+   derecho, la barra central se parte en un tramo azul (marca + menu) y uno
+   oscuro (servicio), y el buscador cuelga del borde inferior. */
+
+/* Cabecera de tres filas:
+     1. servicio  (gris claro): aviso + links + idioma/moneda
+     2. marca     (blanca):     logo + cuenta/favoritos/carrito
+     3. navegacion (azul):      categorias + menu principal          */
+
+/* Cabecera sobre fondo azul continuo:
+     1. franja fina de servicio (azul mas hundido)
+     2. fila unica: marca + categorias + menu + buscador + cuenta          */
+
+.site-header {
+  position: relative;
+  z-index: 50;
+  background: linear-gradient(135deg, #3f83c4 0%, #2c66a8 55%, #245a97 100%);
+}
+
+/* Burbujas: dos mosaicos que suben. Al desplazar el background-position
+   exactamente la altura del mosaico, el bucle cierra sin salto. */
+.site-header::before,
+.site-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.site-header::before {
+  background-image:
+    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.22) 0 2px, transparent 3px),
+    radial-gradient(circle at 34% 62%, rgba(255, 255, 255, 0.16) 0 3px, transparent 4px),
+    radial-gradient(circle at 58% 30%, rgba(255, 255, 255, 0.2) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 76% 78%, rgba(255, 255, 255, 0.15) 0 2.5px, transparent 3.5px),
+    radial-gradient(circle at 90% 44%, rgba(255, 255, 255, 0.2) 0 2px, transparent 3px);
+  background-size: 260px 240px;
+  animation: bubbles-near 16s linear infinite;
+}
+
+.site-header::after {
+  background-image:
+    radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.12) 0 4px, transparent 5px),
+    radial-gradient(circle at 47% 25%, rgba(255, 255, 255, 0.1) 0 5px, transparent 6px),
+    radial-gradient(circle at 68% 58%, rgba(255, 255, 255, 0.11) 0 3px, transparent 4px);
+  background-size: 380px 340px;
+  animation: bubbles-far 27s linear infinite;
+}
+
+@keyframes bubbles-near {
+  to {
+    background-position: 0 -240px;
+  }
+}
+
+@keyframes bubbles-far {
+  to {
+    background-position: 0 -340px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header::before,
+  .site-header::after {
+    animation: none;
+  }
+}
+
+/* --- Franja de servicio -------------------------------------------------- */
+.header-top {
+  position: relative;
+  z-index: 1;
+  /* Mismo azul, mas hundido: se distingue por profundidad y no por ser un
+     color ajeno pegado encima. */
+  background: rgba(0, 0, 0, 0.16);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  font-size: 12.5px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.header-top-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 36px;
+}
+
+.header-note {
+  white-space: nowrap;
+
+  @media (max-width: 780px) {
+    display: none;
+  }
+}
+
+.header-top-side {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.utility-links {
+  display: flex;
+  gap: 16px;
+
+  a:hover {
+    color: #fff;
+  }
+
+  li + li {
+    position: relative;
+    padding-left: 16px;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      height: 11px;
+      border-left: 1px solid rgba(255, 255, 255, 0.28);
+      transform: translateY(-50%);
+    }
+  }
+
+  @media (max-width: 980px) {
+    display: none;
+  }
+}
+
+.bare-select {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  padding: 2px 4px;
+  cursor: pointer;
+
+  option {
+    color: var(--ink);
+  }
+}
+
+/* --- Fila principal ------------------------------------------------------ */
+.header-main {
+  position: relative;
+  z-index: 1;
+}
+
+.header-main-inner {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 58px;
+}
+
+.burger {
+  display: none;
+  place-items: center;
+  color: #fff;
+
+  @media (max-width: 1000px) {
+    display: grid;
+  }
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  flex: none;
+}
+
+.logo-mark {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #fff;
+  color: #2c66a8;
+  font-family: var(--display);
+  font-size: 18px;
+}
+
+.logo-text {
+  font-family: var(--display);
+  font-size: 21px;
+  white-space: nowrap;
+  color: #fff;
+  letter-spacing: -0.01em;
+
+  em {
+    font-style: normal;
+    color: var(--gold);
+  }
+}
+
+.cat-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  flex: none;
+  padding: 8px 18px 8px 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff;
+  border-right: 1px solid rgba(255, 255, 255, 0.24);
+
+  @media (max-width: 1240px) {
+    display: none;
+  }
+}
+
+/* --- Menu ---------------------------------------------------------------- */
+.mainnav {
+  display: flex;
+  align-items: stretch;
+  /* Permite que el menu ceda ancho cuando el buscador se abre, en lugar de
+     desbordar la fila. El mega menu no se recorta: su bloque contenedor es
+     .header-main, que queda fuera de este overflow. */
+  min-width: 0;
+  overflow: hidden;
+
+  @media (max-width: 1000px) {
+    display: none;
+  }
+}
+
+.menu {
+  display: flex;
+  align-items: stretch;
+
+  > li {
+    /* Sin posicionar: el mega menu se ancla en .header-main, que ocupa todo
+       el ancho, y no en el item. */
+    position: static;
+    display: flex;
+    align-items: center;
+
+    > a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 13px;
+      font-size: 12.5px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      /* Sin esto los rotulos de dos palabras se parten y descuadran la fila. */
+      white-space: nowrap;
+      color: rgba(255, 255, 255, 0.92);
+      transition: color 0.2s var(--ease);
+    }
+
+    &:hover > a {
+      color: #fff;
+    }
+  }
+}
+
+.tag {
+  font-style: normal;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff;
+  background: var(--gold);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+
+/* --- Buscador -------------------------------------------------------------
+   Se expande al pasar el mouse. Va EN EL FLUJO, no en absoluto: asi corre al
+   menu hacia la izquierda en lugar de superponerse a el. Como .search-box
+   lleva margin-left:auto, lo primero que consume es el espacio libre; recien
+   despues empuja. */
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: none;
+  height: 44px;
+  margin-left: auto;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.search-input {
+  width: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: #fff;
+  font: inherit;
+  font-size: 15px;
+  line-height: 44px;
+  transition:
+    width 0.4s var(--ease),
+    padding 0.4s var(--ease);
+
+  &::placeholder {
+    color: rgba(255, 255, 255, 0.62);
+  }
+}
+
+.search-btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  transition: background-color 0.4s var(--ease), color 0.4s var(--ease);
+}
+
+/* focus-within ademas de hover: con solo hover, quien navega por teclado no
+   llega a ver lo que escribe. */
+.search-box:hover,
+.search-box:focus-within {
+  .search-input {
+    width: min(240px, 22vw);
+    padding: 0 6px 0 18px;
+  }
+
+  .search-btn {
+    background: #fff;
+    color: #2c66a8;
+  }
+}
+
+/* --- Cuenta -------------------------------------------------------------- */
+.header-account {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex: none;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.92);
+  transition: color 0.2s var(--ease);
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+.action-icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+}
+
+.dot {
+  position: absolute;
+  top: -7px;
+  right: -9px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--gold);
+  color: #fff;
+  font-style: normal;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: center;
+}
+
+.action-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.18;
+
+  small {
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  b {
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+
+  @media (max-width: 1140px) {
+    display: none;
+  }
+}
+
+/* --- Mega menu ----------------------------------------------------------- */
+.mega {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 5;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0 0 6px 6px;
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition:
+    opacity 0.22s var(--ease),
+    transform 0.22s var(--ease),
+    visibility 0.22s;
+}
+
+.has-mega:hover .mega,
+.has-mega:focus-within .mega {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+
+.mega-inner {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) 260px;
+  gap: 32px;
+  padding-block: 30px;
+
+  @media (max-width: 1100px) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    .mega-promo {
+      display: none;
+    }
+  }
+}
+
+.mega-col {
+  h4 {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  li + li {
+    margin-top: 8px;
+  }
+
+  a {
+    font-size: 14px;
+    transition:
+      padding-left 0.2s var(--ease),
+      color 0.2s var(--ease);
+
+    &:hover {
+      color: var(--wine);
+      padding-left: 4px;
+    }
+  }
+}
+
+.mega-promo {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 4px;
+  padding: 22px;
+  border-radius: var(--radius);
+  color: #fff;
+  background: linear-gradient(
+    140deg,
+    hsl(var(--promo-hue) 45% 40%),
+    hsl(var(--promo-hue) 55% 22%)
+  );
+
+  strong {
+    font-family: var(--display);
+    font-size: 21px;
+    font-weight: 400;
+  }
+}
+
+.mega-promo-sub {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.mega-promo-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+/* --- Panel movil ---------------------------------------------------------- */
+.drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  visibility: hidden;
+
+  &.is-open {
+    visibility: visible;
+
+    .drawer-scrim {
+      opacity: 1;
+    }
+    .drawer-panel {
+      transform: none;
+    }
+  }
+}
+
+.drawer-scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  background: rgba(28, 20, 24, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s var(--ease);
+}
+
+.drawer-panel {
+  position: relative;
+  z-index: 1;
+  width: min(320px, 84vw);
+  height: 100%;
+  overflow-y: auto;
+  padding: 20px;
+  background: var(--surface);
+  transform: translateX(-100%);
+  transition: transform 0.3s var(--ease);
+
+  .logo-text {
+    color: var(--ink);
+  }
+}
+
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+
+.drawer-menu {
+  margin-top: 12px;
+
+  > li > a {
+    display: block;
+    padding: 12px 0;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--ink);
+    border-bottom: 1px solid var(--line);
+  }
+
+  ul {
+    padding: 8px 0 8px 14px;
+
+    a {
+      display: block;
+      padding: 6px 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+  }
+}
+
+/* --- Pie ------------------------------------------------------------------ */
+.site-footer {
+  background: var(--cream);
+  border-top: 1px solid var(--line);
+}
+
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.6fr repeat(3, 1fr);
+  gap: 40px;
+  padding-block: 60px;
+
+  @media (max-width: 980px) {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    padding-block: 44px;
+  }
+  @media (max-width: 560px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.footer-brand {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  max-width: 380px;
+
+  p {
+    font-size: 14px;
+  }
+
+  .logo {
+    padding-inline: 0;
+  }
+
+  .logo-mark {
+    background: var(--wine);
+    color: #fff;
+  }
+
+  .logo-text {
+    color: var(--ink);
+  }
+}
+
+.footer-contact {
+  display: grid;
+  gap: 10px;
+  font-size: 14px;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .icon {
+    color: var(--wine);
+  }
+}
+
+.footer-col {
+  h4 {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+
+  li + li {
+    margin-top: 9px;
+  }
+
+  a {
+    font-size: 14px;
+
+    &:hover {
+      color: var(--wine);
+    }
+  }
+}
+
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding-block: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.payments {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+
+  li {
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    font-size: 12px;
+  }
+}
+
+.social {
+  display: flex;
+  gap: 8px;
+
+  a {
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    transition:
+      background-color 0.2s var(--ease),
+      color 0.2s var(--ease);
+
+    &:hover {
+      background: var(--wine);
+      border-color: var(--wine);
+      color: #fff;
+    }
+  }
+}
+
+/* Cantidad de productos al lado de cada categoria del desplegable y del panel
+   movil. Ayuda a elegir: una categoria con 1 producto y otra con 697 no son lo
+   mismo aunque ocupen el mismo renglon. */
+.mega-count {
+  font-style: normal;
+  font-size: 12px;
+  opacity: 0.5;
+  margin-left: 4px;
+}
+
+/* --- Puerta de edad --------------------------------------------------------
+   Cubre todo el sitio hasta que la persona responde. Sin boton de cerrar: la
+   unica salida es elegir una de las dos opciones. */
+
+.agegate {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(20, 12, 16, 0.72);
+  backdrop-filter: blur(6px);
+}
+
+.agegate-panel {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+  width: min(420px, 100%);
+  padding: 34px 30px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+
+  h2 {
+    font-size: 25px;
+  }
+
+  p {
+    font-size: 14.5px;
+    color: var(--body);
+  }
+}
+
+.agegate-marca {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  margin-bottom: 4px;
+  border-radius: 50%;
+  background: var(--wine);
+  color: #fff;
+  font-family: var(--display);
+  font-size: 23px;
+}
+
+.agegate-pregunta {
+  margin-top: 6px;
+  font-weight: 600;
+  color: var(--ink) !important;
+}
+
+.agegate-botones {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 8px;
+  width: 100%;
+
+  .btn {
+    flex: 1;
+    min-width: 140px;
+  }
+}
+
+.agegate-nota {
+  margin-top: 4px;
+  font-size: 12.5px;
+  color: var(--muted) !important;
+}
+
+/* Elementos cuya seccion todavia no existe: se muestran, pero no se comportan
+   como enlaces. Un enlace que no lleva a ningun lado es peor que su ausencia. */
+.footer-pendiente {
+  color: var(--muted);
+  cursor: default;
+}
+
+.action.is-pendiente {
+  cursor: default;
+
+  &:hover {
+    color: inherit;
+  }
+}
+
+.social span {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  cursor: default;
+}

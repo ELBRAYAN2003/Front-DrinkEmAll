@@ -1,0 +1,13 @@
+Bloque,Tarea,Inicio,Duracion (dias),Avance %
+Planificado,"Semana 4: diseno visual y estructura CSS",2026-09-14,5,100
+Planificado,"Semana 5: Flexbox/Grid, productos.json, embudo",2026-09-21,5,100
+Planificado,"Semana 6: pruebas, legales y entrega",2026-09-28,5,100
+Ejecucion real,"Inicializacion del repositorio",2026-08-25,1,100
+Ejecucion real,"Home completa (reemplazo del scaffold)",2026-08-31,2,100
+Ejecucion real,"Rediseno de cabecera y hero",2026-09-01,2,100
+Ejecucion real,"Integracion de ramas del equipo",2026-09-04,1,100
+Ejecucion real,"Catalogo, rutas, carrito y checkout",2026-09-08,1,100
+Ejecucion real,"Conexion con la API",2026-09-09,1,100
+Ejecucion real,"DESVIO: periodo sin actividad",2026-09-10,13,0
+Ejecucion real,"Carrito global, detalle, edad y 404",2026-09-28,1,100
+Ejecucion real,"JSON, privacidad, licencias y documentacion",2026-10-01,1,100

@@ -1,0 +1,34 @@
+# Caddy resuelve el certificado TLS solo contra Let's Encrypt la primera vez
+# que recibe trafico en el dominio. No hay que correr certbot ni renovar a mano.
+
+drinkemall.sbcorp.site {
+	encode gzip zstd
+
+	# La API y las fotos de producto las sirve el backend.
+	handle /api/* {
+		reverse_proxy api:3000
+	}
+
+	handle /uploads/* {
+		reverse_proxy api:3000
+	}
+
+	# El resto es la aplicacion. try_files devuelve index.html en cualquier
+	# ruta desconocida: sin eso, entrar directo a /catalogo daria 404 porque
+	# el enrutado lo hace React y no el servidor.
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+
+	log {
+		output file /var/log/caddy/access.log
+	}
+}

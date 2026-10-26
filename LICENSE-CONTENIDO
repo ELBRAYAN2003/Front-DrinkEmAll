@@ -1,0 +1,48 @@
+LICENCIA DE LAS PRODUCCIONES NO-SOFTWARE
+========================================
+
+Copyright (c) 2026
+Senger, Brian Leonel Miguel - Baumgatner, Jose Ignacio - Riquel, Gaston Azula
+
+El archivo LICENSE de este repositorio aplica al CODIGO FUENTE y se rige por la
+GNU General Public License version 3.
+
+Las producciones que NO son software se licencian por separado bajo
+
+    Creative Commons Atribucion-CompartirIgual 4.0 Internacional
+    (CC BY-SA 4.0)
+
+Resumen:  https://creativecommons.org/licenses/by-sa/4.0/deed.es
+Texto legal: https://creativecommons.org/licenses/by-sa/4.0/legalcode.es
+
+
+ALCANCE
+-------
+
+Quedan comprendidas bajo CC BY-SA 4.0:
+
+  - Los documentos de la carpeta docs/ (declaraciones, informes y
+    justificaciones del portafolio).
+  - El arte de producto generado en public/img/productos/.
+  - El catalogo de datos public/productos.json.
+  - Los textos de contenido del sitio.
+
+Queda EXCLUIDO el codigo fuente, incluido el codigo que genera el arte
+(src/lib/placeholder.js), que se rige por la GPL v3.
+
+
+POR QUE DOS LICENCIAS
+---------------------
+
+Creative Commons desaconseja expresamente el uso de sus licencias para codigo
+fuente: no distinguen entre codigo fuente y codigo objeto, no contemplan
+clausulas de patentes y no son compatibles con el ecosistema de licencias de
+software. Aplicarlas al codigo dejaria sin garantizar el acceso al fuente, que
+es justamente lo que una licencia de software libre busca asegurar.
+
+Por eso el codigo va bajo GPL v3 y las obras no-software bajo CC BY-SA 4.0.
+Ambas son licencias de tipo compartir-igual, de modo que el criterio es el
+mismo en los dos casos.
+
+El fundamento completo de esta decision esta en
+docs/justificacion-licenciamiento.md
