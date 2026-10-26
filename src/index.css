@@ -16,6 +16,10 @@
   --line: #e1e7ef;
   --surface: #ffffff;
   --surface-2: #faf7f4;
+  /* Fondos de las bandas de la home. Tienen que distinguirse del blanco a simple
+     vista (diferencia de color de 9 a 11) y a la vez desvanecerse en los bordes. */
+  --sand: #f1e8db;
+  --sky: #e3eef9;
   --cream: #f4efe9;
 
   /* Hielo (cabecera) */
