@@ -471,7 +471,7 @@
       color 0.2s var(--ease);
 
     &:hover {
-      color: var(--wine);
+      color: var(--brand);
       padding-left: 4px;
     }
   }
@@ -536,7 +536,7 @@
   position: absolute;
   inset: 0;
   width: 100%;
-  background: rgba(28, 20, 24, 0.5);
+  background: rgba(16, 28, 44, 0.5);
   opacity: 0;
   transition: opacity 0.3s var(--ease);
 }
@@ -626,7 +626,7 @@
   }
 
   .logo-mark {
-    background: var(--wine);
+    background: var(--brand);
     color: #fff;
   }
 
@@ -647,7 +647,7 @@
   }
 
   .icon {
-    color: var(--wine);
+    color: var(--brand);
   }
 }
 
@@ -670,7 +670,7 @@
     font-size: 14px;
 
     &:hover {
-      color: var(--wine);
+      color: var(--brand);
     }
   }
 }
@@ -719,8 +719,8 @@
       color 0.2s var(--ease);
 
     &:hover {
-      background: var(--wine);
-      border-color: var(--wine);
+      background: var(--brand);
+      border-color: var(--brand);
       color: #fff;
     }
   }
@@ -747,7 +747,7 @@
   display: grid;
   place-items: center;
   padding: 20px;
-  background: rgba(20, 12, 16, 0.72);
+  background: rgba(12, 22, 38, 0.72);
   backdrop-filter: blur(6px);
 }
 
@@ -779,7 +779,7 @@
   height: 46px;
   margin-bottom: 4px;
   border-radius: 50%;
-  background: var(--wine);
+  background: var(--brand);
   color: #fff;
   font-family: var(--display);
   font-size: 23px;

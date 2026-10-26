@@ -82,7 +82,7 @@
 .cart-line-total {
   font-size: 17px;
   font-weight: 600;
-  color: var(--wine);
+  color: var(--brand);
   min-width: 90px;
   text-align: right;
 }
@@ -97,8 +97,8 @@
   transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
 
   &:hover {
-    background: var(--wine-soft);
-    color: var(--wine);
+    background: var(--brand-soft);
+    color: var(--brand);
   }
 }
 
@@ -145,7 +145,7 @@
   color: var(--body);
 
   &:hover {
-    color: var(--wine);
+    color: var(--brand);
   }
 }
 
@@ -206,7 +206,7 @@
 
   b {
     font-size: 24px;
-    color: var(--wine);
+    color: var(--brand);
   }
 }
 
@@ -233,7 +233,7 @@
   color: var(--body);
 
   &:hover {
-    color: var(--wine);
+    color: var(--brand);
   }
 }
 
@@ -277,13 +277,13 @@
   }
 
   .is-active button {
-    background: var(--wine-soft);
-    color: var(--wine);
+    background: var(--brand-soft);
+    color: var(--brand);
     font-weight: 600;
   }
 
   .is-active .steps-num {
-    background: var(--wine);
+    background: var(--brand);
     color: #fff;
   }
 }
@@ -327,7 +327,7 @@
     transition: border-color 0.2s var(--ease);
 
     &:focus {
-      border-color: var(--wine);
+      border-color: var(--brand);
     }
 
     &.is-invalid {
@@ -387,7 +387,7 @@
 
   input {
     margin-top: 3px;
-    accent-color: var(--wine);
+    accent-color: var(--brand);
     flex: none;
   }
 
@@ -409,8 +409,8 @@
   }
 
   &.is-picked {
-    border-color: var(--wine);
-    background: var(--wine-soft);
+    border-color: var(--brand);
+    background: var(--brand-soft);
   }
 }
 
@@ -473,7 +473,7 @@
   em {
     font-style: normal;
     font-weight: 600;
-    color: var(--wine);
+    color: var(--brand);
   }
 }
 

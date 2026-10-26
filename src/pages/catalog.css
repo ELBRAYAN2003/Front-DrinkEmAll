@@ -14,7 +14,7 @@
   color: var(--muted);
 
   a:hover {
-    color: var(--wine);
+    color: var(--brand);
   }
 
   .icon {
@@ -77,7 +77,7 @@
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--wine);
+  background: var(--brand);
 }
 
 .filters {
@@ -138,12 +138,12 @@
     }
 
     &.is-active {
-      background: var(--wine-soft);
-      color: var(--wine);
+      background: var(--brand-soft);
+      color: var(--brand);
       font-weight: 600;
 
       span {
-        color: var(--wine);
+        color: var(--brand);
       }
     }
   }
@@ -160,7 +160,7 @@
   input {
     width: 16px;
     height: 16px;
-    accent-color: var(--wine);
+    accent-color: var(--brand);
     flex: none;
   }
 
@@ -171,7 +171,7 @@
 
 .facet input[type='range'] {
   width: 100%;
-  accent-color: var(--wine);
+  accent-color: var(--brand);
 }
 
 .facet-range {
@@ -274,13 +274,13 @@
       color 0.2s var(--ease);
 
     &:hover:not(:disabled):not(.is-active) {
-      border-color: var(--wine);
-      color: var(--wine);
+      border-color: var(--brand);
+      color: var(--brand);
     }
 
     &.is-active {
-      background: var(--wine);
-      border-color: var(--wine);
+      background: var(--brand);
+      border-color: var(--brand);
       color: #fff;
     }
 
@@ -367,7 +367,7 @@
   font-family: var(--display);
   font-size: clamp(64px, 12vw, 108px);
   line-height: 1;
-  color: var(--wine-soft) !important;
+  color: var(--brand-soft) !important;
 }
 
 .notfound-botones {

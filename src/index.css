@@ -2,18 +2,18 @@
    componentes: ui.css, layout.css y home.css. */
 
 :root {
-  /* Marca */
-  --wine: #7c1d3f;
-  --wine-dark: #57122b;
-  --wine-soft: #f7ecf0;
+  /* Marca: el azul de la cabecera (#2c66a8 es el tramo medio de su degradado) */
+  --brand: #2c66a8;
+  --brand-dark: #1f4f86;
+  --brand-soft: #eaf1f9;
   --gold: #c08b2c;
   --gold-soft: #fbf3e2;
 
   /* Neutros */
-  --ink: #1c1418;
-  --body: #6d6068;
-  --muted: #938891;
-  --line: #e9e2e5;
+  --ink: #141c26;
+  --body: #5a6573;
+  --muted: #8591a0;
+  --line: #e1e7ef;
   --surface: #ffffff;
   --surface-2: #faf7f4;
   --cream: #f4efe9;
@@ -32,8 +32,8 @@
 
   --radius: 10px;
   --radius-lg: 18px;
-  --shadow-sm: 0 1px 2px rgba(28, 20, 24, 0.06), 0 2px 8px rgba(28, 20, 24, 0.05);
-  --shadow-md: 0 10px 30px rgba(28, 20, 24, 0.10);
+  --shadow-sm: 0 1px 2px rgba(16, 28, 44, 0.06), 0 2px 8px rgba(16, 28, 44, 0.05);
+  --shadow-md: 0 10px 30px rgba(16, 28, 44, 0.12);
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 
   --wrap: 1280px;
@@ -108,7 +108,7 @@ select {
 }
 
 :focus-visible {
-  outline: 2px solid var(--wine);
+  outline: 2px solid var(--brand);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -192,11 +192,11 @@ select {
 }
 
 .btn-primary {
-  background: var(--wine);
+  background: var(--brand);
   color: #fff;
 
   &:hover:not(:disabled) {
-    background: var(--wine-dark);
+    background: var(--brand-dark);
   }
 }
 
@@ -205,8 +205,8 @@ select {
   color: var(--ink);
 
   &:hover:not(:disabled) {
-    border-color: var(--wine);
-    color: var(--wine);
+    border-color: var(--brand);
+    color: var(--brand);
   }
 }
 

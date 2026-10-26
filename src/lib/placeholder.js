@@ -54,7 +54,7 @@ export function productImage({ hue = 348, shape = 'wine', bg = '#f7f2ec' } = {})
 /**
  * Miniatura cuadrada para la galeria / feed social.
  */
-export function tileImage({ hue = 348 } = {}) {
+export function tileImage({ hue = 215 } = {}) {
   return toDataUri(`
     <svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400" role="img">
       <defs>

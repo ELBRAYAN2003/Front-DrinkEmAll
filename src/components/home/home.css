@@ -88,7 +88,7 @@
     font-size: clamp(40px, 6vw, 76px);
     font-weight: 400;
     line-height: 1;
-    color: var(--wine);
+    color: var(--brand);
   }
 
   span {
@@ -160,12 +160,12 @@
     width: 9px;
     height: 9px;
     border-radius: 999px;
-    background: rgba(28, 20, 24, 0.22);
+    background: rgba(16, 28, 44, 0.22);
     transition: width 0.25s var(--ease), background-color 0.25s var(--ease);
 
     &.is-active {
       width: 26px;
-      background: var(--wine);
+      background: var(--brand);
     }
   }
 }
@@ -210,7 +210,7 @@
     font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--wine);
+    color: var(--brand);
   }
 
   strong {
@@ -270,7 +270,7 @@
   }
 
   .icon {
-    color: var(--wine);
+    color: var(--brand);
   }
 
   h3 {
@@ -346,7 +346,7 @@
   }
 
   &:hover b {
-    color: var(--wine);
+    color: var(--brand);
   }
 }
 
@@ -370,13 +370,13 @@
       color 0.25s var(--ease);
 
     &:hover {
-      border-color: var(--wine);
-      color: var(--wine);
+      border-color: var(--brand);
+      color: var(--brand);
     }
 
     &.is-active {
-      background: var(--wine);
-      border-color: var(--wine);
+      background: var(--brand);
+      border-color: var(--brand);
       color: #fff;
     }
   }
@@ -459,7 +459,7 @@
   }
 
   .post:hover & h3 {
-    color: var(--wine);
+    color: var(--brand);
   }
 }
 
@@ -524,7 +524,7 @@
 }
 
 .testi-quote {
-  color: var(--wine-soft);
+  color: var(--brand-soft);
   stroke: none;
   fill: currentColor;
 }
@@ -562,14 +562,14 @@
     transition: color 0.25s var(--ease);
 
     &:hover {
-      color: var(--wine);
+      color: var(--brand);
     }
   }
 }
 
 /* Franja de contacto -------------------------------------------------------- */
 .contact-strip {
-  background: var(--wine);
+  background: var(--brand);
   color: rgba(255, 255, 255, 0.82);
 }
 
