@@ -92,8 +92,12 @@ importe (con el costo de envío), la forma de entrega, el medio de pago elegido
 fecha y el estado del pedido y, si pidió envío a domicilio, el domicilio (calle y
 altura, ciudad, código postal y referencia). El pedido queda asociado a su cuenta.
 
-**No se guardan datos de tarjetas**: solo se aceptan efectivo y transferencia, y el
-pago se confirma a mano. Estos datos se comunican únicamente a las personas del
+**No se guardan datos de tarjetas**. Con efectivo o transferencia el pago se
+confirma a mano. Con **Mercado Pago** usted paga en el sitio de Mercado Pago, que
+procesa la tarjeta o la cuenta bajo sus propios términos y política de privacidad;
+a Mercado Pago se le informan los productos, el importe, el número de pedido y el
+correo de facturación necesarios para cobrar, y de vuelta recibimos el estado y el
+identificador del pago. Estos datos se comunican únicamente a las personas del
 comercio que preparan y entregan el pedido, incluido quien lo reparte, que recibe
 el domicilio, el teléfono y el nombre necesarios para la entrega. No se ceden a
 otros terceros.
