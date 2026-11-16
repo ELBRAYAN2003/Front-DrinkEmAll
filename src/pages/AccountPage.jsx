@@ -105,6 +105,9 @@ export default function AccountPage() {
                 <dd>{usuario.phone || 'Sin cargar'}</dd>
               </div>
             </dl>
+            <Link className="btn btn-primary" to="/mis-pedidos">
+              Mis pedidos
+            </Link>{' '}
             <button type="button" className="btn btn-ghost" onClick={cerrar}>
               Cerrar sesion
             </button>

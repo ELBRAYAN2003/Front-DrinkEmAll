@@ -601,7 +601,10 @@ function PedidoCreado({ pedido, medio, ajustes }) {
         <p className="checkout-ok-nota">
           Al entregar te vamos a pedir el DNI: si quien recibe no es mayor de 18 anos, el pedido no se entrega.
         </p>
-        <Link className="btn btn-primary" to="/catalogo">
+        <Link className="btn btn-primary" to={`/mis-pedidos/${pedido.id}`}>
+          Seguir mi pedido
+        </Link>
+        <Link className="checkout-ok-otro" to="/catalogo">
           Seguir comprando
         </Link>
       </div>

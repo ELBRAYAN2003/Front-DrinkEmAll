@@ -763,7 +763,7 @@
 }
 
 /* En celulares angostos la cabecera no entra: se achican los espacios y se oculta el
-   icono de "Seguir mi pedido", que todavia es un pendiente. Sin esto la pagina se
+   icono de "Seguir mi pedido" (queda en el menu del celular). Sin esto la pagina se
    hace mas ancha que la ventana y, con overflow-x oculto, todo se ve corrido. */
 @media (max-width: 480px) {
   .header-main-inner,
