@@ -525,3 +525,31 @@
   font-size: 13px;
   color: var(--muted) !important;
 }
+
+.checkout-cuenta {
+  margin-bottom: 14px;
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.checkout-edad {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-block: 18px 14px;
+  padding: 12px 14px;
+  border-radius: var(--radius);
+  background: var(--brand-soft);
+  font-size: 13.5px;
+  color: var(--ink);
+
+  .icon {
+    flex: none;
+    margin-top: 2px;
+  }
+}
+
+.checkout-ok-resumen {
+  width: 100%;
+  text-align: left;
+}

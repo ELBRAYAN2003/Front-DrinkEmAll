@@ -122,10 +122,15 @@ const REGLAS = {
     (CODIGO_POSTAL.test(v.trim()) ? null : 'Usa 4 digitos (3500) o el formato CPA (H3500ABC)'),
 }
 
-/** Campos que se validan al salir de cada paso. */
-export const CAMPOS_POR_PASO = {
-  1: ['nombre', 'apellido', 'email', 'telefono'],
-  2: ['direccion', 'ciudad', 'codigoPostal'],
+/**
+ * Campos que se validan al salir de cada paso. El nombre y el correo ya vienen de
+ * la cuenta; en "Tus datos" solo se pide el telefono y, si la cuenta es anterior a
+ * que se pidieran, la fecha de nacimiento y el DNI (`faltantes`).
+ */
+export function camposDelPaso(paso, { retiroEnLocal = false, faltantes = [] } = {}) {
+  if (paso === 1) return ['telefono', ...faltantes]
+  if (paso === 2) return retiroEnLocal ? [] : ['direccion', 'ciudad', 'codigoPostal']
+  return []
 }
 
 export function validarCampo(campo, valor) {
@@ -137,10 +142,9 @@ export function validarCampo(campo, valor) {
  * Errores de un paso, como objeto { campo: mensaje }. Vacio si el paso es
  * valido. Con retiro en el local, el paso de entrega no pide domicilio.
  */
-export function validarPaso(paso, datos, { retiroEnLocal = false } = {}) {
-  if (paso === 2 && retiroEnLocal) return {}
+export function validarPaso(paso, datos, opciones = {}) {
   const errores = {}
-  for (const campo of CAMPOS_POR_PASO[paso] ?? []) {
+  for (const campo of camposDelPaso(paso, opciones)) {
     const error = validarCampo(campo, datos[campo])
     if (error) errores[campo] = error
   }
