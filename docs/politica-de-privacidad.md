@@ -5,7 +5,7 @@ Espacio curricular: Legislación Informática
 
 **Equipo:** Senger, Brian Leonel Miguel - Baumgatner, Jose Ignacio - Riquel, Gaston Azula
 **Compliance Officer:** Senger, Brian Leonel Miguel
-**Última actualización:** 1 de octubre de 2026
+**Última actualización:** 16 de noviembre de 2026
 
 > Este documento es la versión escrita del texto publicado en la plataforma, en
 > la ruta `/privacidad`, accesible desde el pie de todas las páginas.
@@ -14,11 +14,11 @@ Espacio curricular: Legislación Informática
 
 ## Estado del proyecto
 
-DrinkEmAll es por ahora una plataforma en desarrollo con catálogo de
-demostración. El circuito de compra es una simulación: **los datos que se
-ingresan en el formulario no se envían a ningún servidor ni se almacenan**. Esta
-política describe el tratamiento real y vigente, y será revisada cuando la
-plataforma comience a operar comercialmente.
+DrinkEmAll es por ahora una plataforma en
+desarrollo. Para comprar hace falta crear una cuenta, y **los datos de la cuenta y
+de cada pedido se guardan en servidores propios** (puntos 3.2 y 3.3). Esta
+política describe el tratamiento real y vigente, y será revisada cuando cambie la
+forma de operar de la plataforma.
 
 ---
 
@@ -44,85 +44,187 @@ control es la **Agencia de Acceso a la Información Pública (AAIP)**.
 
 ## 3. Datos tratados
 
-### 3.1 Datos que el sitio guarda
+### 3.1 Datos que se guardan en el navegador
 
-Únicamente en el almacenamiento local del navegador, y nunca en servidores
-propios:
+En el almacenamiento local del navegador, que no viaja a los servidores en cada
+pedido:
 
 | Clave | Contenido | Finalidad |
 | --- | --- | --- |
 | `drinkemall.carrito` | Productos agregados y cantidades | Que el carrito sobreviva a una recarga |
 | `drinkemall.edad` | Constancia de declaración de mayoría de edad, con fecha y hora | Acreditar el control de edad |
-| `drinkemall.edad.pedidos` | Constancia prestada al confirmar cada pedido | Acreditar el control por operación |
+| `drinkemall.sesion` | Nombre, correo y teléfono (si se cargó) de la sesión iniciada, y dos códigos de acceso | Mantener la sesión; se borra al cerrarla |
+| `drinkemall.visita` | Fecha de la primera visita | No repetir la invitación a crear una cuenta |
 
-Ninguna de estas claves contiene datos identificatorios: no hay en ellas nombre,
-correo, teléfono ni domicilio.
+Las claves del carrito, de la edad y de la visita no contienen datos
+identificatorios. La de la sesión sí: mientras la sesión está iniciada guarda el
+nombre y el correo.
 
-### 3.2 Datos que el formulario solicita y no se guardan
+### 3.2 Datos de la cuenta, que se guardan en servidores propios
 
-El circuito de compra pide nombre, apellido, correo electrónico, teléfono,
-domicilio, ciudad y código postal. En la versión actual **esos datos permanecen
-en la memoria del navegador mientras la página está abierta y se descartan al
-cerrarla o recargarla**. No se transmiten, no se almacenan y no se comparten con
-terceros.
+Al crear una cuenta se solicitan y se guardan en la base de datos del sitio:
 
-### 3.3 Datos que no se recolectan
+- Nombre y apellido.
+- DNI (documento nacional de identidad), que identifica a la persona que compra.
+  Se admite una sola cuenta por DNI.
+- Fecha de nacimiento, que se usa para comprobar que la persona tiene 18 años o
+  más al crear la cuenta.
+- Correo electrónico, que se usa para ingresar.
+- Teléfono, solo si la persona decide cargarlo.
+- Contraseña. **No se guarda tal como se escribe**: se transforma con un
+  algoritmo de cifrado irreversible (bcrypt), de modo que el responsable no puede
+  conocerla.
+- La fecha de alta y un identificador de cliente, que es el que se asocia a las
+  compras.
+- Un registro de las sesiones abiertas: de cada una se guarda una huella cifrada
+  del código de renovación (no el código en sí), su vencimiento y si fue
+  revocada.
 
-- No se utilizan cookies de seguimiento ni analítica de terceros.
+Además, el servidor web registra en un archivo de acceso la dirección IP, la
+fecha y la dirección visitada de cada pedido que recibe, por razones de seguridad
+y de funcionamiento.
+
+### 3.3 Datos de los pedidos
+
+Al confirmar un pedido se guardan en el servidor: los productos y cantidades, el
+importe (con el costo de envío), la forma de entrega, el medio de pago elegido
+(efectivo o transferencia), el teléfono de contacto, la nota que usted escriba, la
+fecha y el estado del pedido y, si pidió envío a domicilio, el domicilio (calle y
+altura, ciudad, código postal y referencia). El pedido queda asociado a su cuenta.
+
+**No se guardan datos de tarjetas**. Con efectivo o transferencia el pago se
+confirma a mano. Con **Mercado Pago** usted paga en el sitio de Mercado Pago, que
+procesa la tarjeta o la cuenta bajo sus propios términos y política de privacidad;
+a Mercado Pago se le informan los productos, el importe, el número de pedido y el
+correo de facturación necesarios para cobrar, y de vuelta recibimos el estado y el
+identificador del pago. Estos datos se comunican únicamente a las personas del
+comercio que preparan y entregan el pedido, incluido quien lo reparte, que recibe
+el domicilio, el teléfono y el nombre necesarios para la entrega. No se ceden a
+otros terceros.
+
+### 3.3 ter Libreta de la cuenta y datos de facturación
+
+En cada pedido se guarda una copia de los **datos de facturación** que usted elige:
+nombre o razón social, tipo y número de documento (DNI o CUIT) y correo. Es
+necesaria para emitir la factura y se conserva con el pedido, aunque después usted
+edite o borre sus datos guardados.
+
+Si lo pide, puede guardar en su cuenta hasta 10 domicilios y 10 datos de
+facturación para no escribirlos de nuevo. Puede editarlos o borrarlos desde Mi
+cuenta en cualquier momento. Los ve solamente usted y el personal del comercio que
+prepara y factura sus pedidos.
+
+### 3.3 bis Solicitudes de arrepentimiento
+
+Si usa el **botón de arrepentimiento** (no requiere cuenta) se guardan en el
+servidor su nombre, el correo o teléfono de contacto, el número de pedido y el
+mensaje si los escribe, la fecha y un código de identificación. Se usan
+exclusivamente para responder la solicitud dentro de las 24 horas y coordinar la
+devolución, y las ve solamente el personal del comercio. Se conservan mientras
+sea necesario para acreditar el cumplimiento de la normativa de defensa del
+consumidor (plazo exacto pendiente de definir por el comercio).
+
+### 3.4 Datos que no se recolectan
+
+- No se utilizan cookies de seguimiento ni analítica de terceros. La única
+  excepción es el mapa de Google Maps, que **solo se carga si la persona pulsa
+  «Ver el mapa»**: en ese momento Google recibe su conexión y puede usar sus
+  propias cookies. El responsable no recibe esa información.
 - No se elaboran perfiles ni se toman decisiones automatizadas sobre usuarios.
 - No se solicitan datos sensibles en los términos del artículo 2 de la Ley 25.326.
-- No se recolectan datos de personas menores de 18 años.
+- No se recolectan intencionalmente datos de personas menores de 18 años: el alta
+  de cuenta exige una fecha de nacimiento que acredite 18 años cumplidos.
 
 ---
 
 ## 4. Finalidad del tratamiento
 
-Los datos indicados en 3.1 se tratan con estas finalidades y ninguna otra:
+Los datos indicados en 3.1 y 3.2 se tratan con estas finalidades y ninguna otra:
 
 - **Sostener el carrito de compras** entre páginas y recargas.
 - **Acreditar el cumplimiento de la prohibición de venta de alcohol a menores**,
   conservando la constancia de la declaración con su fecha y hora.
+- **Crear y administrar la cuenta**: permitir ingresar y reconocer a la persona en
+  cada visita.
+- **Comprobar la mayoría de edad al crear la cuenta**: el servidor rechaza el alta
+  de quien no tiene 18 años cumplidos.
+- **Identificar a la persona que compra** y permitir verificar su identidad, y con
+  ella su mayoría de edad, al momento de la entrega.
+- **Asociar las compras a la ficha de cliente**, una vez que el circuito de compra
+  esté conectado a los servidores.
+- **Proteger el sitio**: el registro de acceso y el límite de intentos de ingreso
+  se usan para detectar abusos y fallas.
 
-Cuando la plataforma opere comercialmente, los datos de contacto y domicilio se
-tratarán con la finalidad exclusiva de gestionar, facturar y entregar el pedido.
+Los datos no se ceden a terceros ni se usan con fines publicitarios. Los datos de
+contacto y el domicilio de un pedido se tratan con la finalidad exclusiva de
+gestionar, facturar y entregar ese pedido y de acreditar el cumplimiento de la
+normativa sobre venta de alcohol.
 
 ---
 
 ## 5. Base legal y consentimiento
 
 El artículo 5 de la Ley 25.326 exige que el consentimiento sea **libre, expreso e
-informado**. En esta plataforma se presta mediante dos actos afirmativos y
-explícitos: la declaración de mayoría de edad al ingresar y la casilla de
-conformidad al confirmar el pedido. Ninguna de las dos viene marcada por defecto.
+informado**. En esta plataforma se presta mediante actos afirmativos y explícitos:
+la declaración de mayoría de edad al ingresar, la fecha de nacimiento y la casilla
+de aceptación de esta política en el alta de cuenta, y la casilla de conformidad
+al confirmar el pedido. Ninguna viene marcada por defecto.
+
+> Se deja constancia de que la aceptación de esta política se exige en el
+> formulario de alta, pero el sistema todavía no guarda en el servidor una
+> constancia de ella con fecha y hora.
 
 ---
 
-## 6. Mecanismos de protección del lado del cliente
+## 6. Medidas de seguridad
 
-Medidas efectivamente implementadas en la aplicación:
+Medidas efectivamente implementadas:
 
-- **Minimización.** Sólo persiste lo indispensable para que el carrito y la
-  constancia de edad funcionen. Los datos identificatorios del formulario nunca
-  se escriben en disco.
-- **Almacenamiento acotado al dispositivo.** Lo guardado vive en el navegador de
-  la persona usuaria y es accesible únicamente desde el dominio del sitio, por la
-  política de mismo origen.
-- **Supresión a cargo del usuario.** Cualquiera puede borrar la totalidad de los
-  datos desde la configuración de su navegador, sin intervención del responsable
-  y en cualquier momento.
+- **Minimización.** Para la cuenta se piden solo los datos necesarios; el
+  teléfono es opcional en la cuenta. De cada pedido se guarda solo lo necesario para
+  prepararlo y entregarlo.
+- **Contraseñas protegidas.** Se almacenan únicamente cifradas con bcrypt, nunca
+  en texto plano.
+- **Conexión cifrada.** Todo el tráfico viaja por HTTPS, con certificado emitido
+  por Let's Encrypt.
+- **Sesiones acotadas y revocables.** El código de acceso dura un día. El de
+  renovación dura siete, se reemplaza en cada uso y se invalida al cerrar sesión
+  o al cambiar la contraseña, lo que cierra todas las sesiones abiertas.
+- **Límite de intentos.** No se admiten más de diez intentos de ingreso o
+  registro en quince minutos.
+- **Base de datos aislada.** No está expuesta a internet: solo la alcanza el
+  servidor de la aplicación, dentro de la red interna del servicio.
+- **Almacenamiento del navegador acotado.** Lo guardado en el navegador es
+  accesible únicamente desde el dominio del sitio, por la política de mismo
+  origen, y puede borrarse desde la configuración del navegador en cualquier
+  momento.
 - **Degradación segura.** Si el navegador bloquea el almacenamiento —modo privado
-  o configuración restrictiva— el sitio sigue funcionando sin guardar nada.
+  o configuración restrictiva— el sitio sigue funcionando; la sesión dura hasta
+  cerrar la pestaña.
 - **Sin transmisión a terceros.** No hay píxeles, balizas ni bibliotecas externas
-  de seguimiento.
+  de seguimiento, salvo el mapa descripto en 3.4, que solo se carga a pedido.
+
+> Se deja constancia de que lo guardado en el navegador, incluida la sesión,
+> puede ser leído por cualquier código que se ejecute en la página. Por eso el
+> sitio no carga programas de terceros que no controle.
 
 ---
 
 ## 7. Plazo de conservación
 
-Los datos del navegador se conservan hasta que la persona usuaria los elimine. La
-constancia de mayoría de edad asociada a un pedido se conservará, cuando exista
-operación comercial, por el plazo necesario para acreditar el cumplimiento de la
-normativa sobre venta de alcohol.
+Los datos del navegador se conservan hasta que la persona usuaria los elimine; la
+sesión, hasta que cierre sesión. Los datos de la cuenta se conservan mientras la
+cuenta exista y hasta que se solicite su supresión.
+
+El servidor guarda copias de respaldo de la base de datos, que incluyen los datos
+de la cuenta, y un registro de acceso que se rota automáticamente y se conserva
+por un tiempo limitado (por defecto, unos 90 días).
+
+Los pedidos (con su domicilio y teléfono de contacto) se conservan mientras sean
+necesarios para la entrega, los reclamos y las obligaciones contables y fiscales
+del comercio; el plazo exacto está **pendiente de definir por el comercio**. Si
+usted solicita la supresión de su cuenta, los pedidos que el comercio deba
+conservar por ley se mantienen sin datos que no sean necesarios.
 
 ---
 
@@ -143,22 +245,31 @@ derechos se invoca y acreditando identidad. Si la solicitud no fuera atendida,
 puede presentarse un reclamo ante la **Agencia de Acceso a la Información
 Pública**.
 
-> Dado que en la versión actual no se conservan datos identificatorios en
-> servidores propios, el ejercicio práctico de estos derechos se agota, por
-> ahora, con la eliminación del almacenamiento local desde el propio navegador.
+> Los datos de la cuenta pueden consultarse en la página «Mi cuenta». La
+> rectificación y la cancelación se solicitan por correo: al cancelar la cuenta se
+> eliminarán sus datos de la base, salvo los que deban conservarse por obligación
+> legal o por tener compras asociadas. Lo guardado en el navegador puede además
+> eliminarse desde su configuración.
 
 ---
 
 ## 9. Verificación de edad
 
 La venta de bebidas alcohólicas a menores de 18 años está prohibida. El sitio
-solicita una declaración de mayoría de edad al ingresar y una conformidad
-específica al confirmar cada pedido, y conserva constancia de ambas con fecha y
-hora.
+solicita una declaración de mayoría de edad al ingresar, una fecha de nacimiento al
+crear la cuenta y una conformidad al confirmar cada pedido. El servidor rechaza el
+alta de quien no tiene 18 años cumplidos y vuelve a comprobar la edad al crear
+cada pedido. La constancia del ingreso se conserva en el navegador con fecha y hora.
 
-> Se deja constancia de que este control opera del lado del cliente y puede
-> eludirse borrando el almacenamiento del navegador. Al habilitarse la venta
-> efectiva, la verificación será validada también del lado del servidor.
+> El DNI y la fecha de nacimiento se registran tal como los informa la persona: el
+> sistema no los contrasta con ningún registro oficial ni con una imagen del
+> documento, por lo que no acreditan por sí solos la mayoría de edad. La
+> verificación efectiva se realiza al entregar el pedido.
+
+> Se deja constancia de que la declaración del ingreso opera del lado del cliente
+> y puede eludirse borrando el almacenamiento del navegador; por eso la edad se
+> decide en el servidor con la fecha de nacimiento de la cuenta, y al entregar se
+> pide el DNI: si quien recibe no es mayor de 18 años, el pedido no se entrega.
 
 ---
 

@@ -762,6 +762,40 @@
   }
 }
 
+/* En celulares angostos la cabecera no entra: se achican los espacios y se oculta el
+   icono de "Seguir mi pedido" (queda en el menu del celular). Sin esto la pagina se
+   hace mas ancha que la ventana y, con overflow-x oculto, todo se ve corrido. */
+@media (max-width: 480px) {
+  .header-main-inner,
+  .header-account {
+    gap: 12px;
+  }
+
+  .action-track {
+    display: none;
+  }
+}
+
+@media (max-width: 380px) {
+  .header-main-inner,
+  .header-account {
+    gap: 8px;
+  }
+
+  .header-main-inner {
+    padding-inline: 12px;
+  }
+
+  .logo-text {
+    font-size: 18px;
+  }
+
+  .logo-mark {
+    width: 30px;
+    height: 30px;
+  }
+}
+
 .drawer-pendiente {
   display: block;
   padding: 12px 0;
@@ -789,4 +823,23 @@
   border: 1px solid var(--line);
   color: var(--muted);
   cursor: default;
+}
+
+/* Boton de arrepentimiento: tiene que verse, no esconderse entre los enlaces. */
+.btn-arrepentimiento {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 10px 16px;
+  border: 2px solid var(--brand);
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--brand);
+  background: var(--surface);
+
+  &:hover {
+    background: var(--brand);
+    color: #fff;
+  }
 }

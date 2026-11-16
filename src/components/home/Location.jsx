@@ -2,9 +2,8 @@ import { useState } from 'react'
 import Icon from '../ui/Icon.jsx'
 import { ubicacion } from '../../data/home.js'
 
-// Solo se afirma lo que el sitio ya cumple: el retiro sin cargo y el envio
-// gratis desde $80 son reglas del checkout (data/cart.js). No hay horarios
-// porque todavia no estan confirmados.
+// Solo se afirma lo que el sitio ya cumple. No hay horarios ni importes de envio
+// porque todavia no estan confirmados: los importes los informa la API.
 const PUNTOS = [
   {
     icono: 'pin',
@@ -19,7 +18,7 @@ const PUNTOS = [
   {
     icono: 'shield',
     titulo: 'Llegamos a tu zona',
-    texto: 'Entregamos en Castelli y localidades cercanas. Envio gratis desde $80.',
+    texto: 'Entregamos en Castelli y localidades cercanas. El costo y el minimo para envio gratis los ves al armar el pedido.',
   },
 ]
 

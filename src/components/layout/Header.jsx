@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import Icon from '../ui/Icon.jsx'
+import { useAuth } from '../../hooks/useAuth.js'
 import { useCarrito } from '../../hooks/useCarrito.js'
 import { useCategorias } from '../../hooks/useCatalogo.js'
 
@@ -48,6 +49,9 @@ export default function Header() {
   const navigate = useNavigate()
   const categorias = useCategorias()
   const { unidades } = useCarrito()
+  const { autenticado, usuario, esPersonal } = useAuth()
+  // Solo el primer nombre y acotado: el espacio del boton es chico.
+  const primerNombre = usuario?.name?.split(' ')[0]?.slice(0, 12)
 
   // Cada item de la barra es una categoria real. Antes habia grupos inventados
   // ("Destilados", "Sin alcohol") que no existen como categoria: al hacerles
@@ -140,38 +144,39 @@ export default function Header() {
           </div>
 
           <div className="header-account">
-            {/* Texto y no enlace, como "Mi cuenta": todavia no hay seguimiento
-                de pedidos. Antes era un enlace a "#" en la franja de arriba. */}
-            <span className="action action-track is-pendiente" title="Proximamente">
+            {/* Sin sesion, /mis-pedidos manda a ingresar y vuelve aca. */}
+            <Link className="action action-track" to={esPersonal ? '/panel' : '/mis-pedidos'}>
               <Icon name="truck" size={22} />
               <span className="action-text">
-                <small>Seguir</small>
-                <b>Mi pedido</b>
+                <small>{esPersonal ? 'Ir al' : 'Seguir'}</small>
+                <b>{esPersonal ? 'Panel' : 'Mi pedido'}</b>
               </span>
-            </span>
+            </Link>
 
-            {/* Texto y no enlace: no hay sistema de cuentas todavia. */}
-            <span className="action is-pendiente" title="Proximamente">
+            <Link className="action" to={autenticado ? '/mi-cuenta' : '/ingresar'}>
               <Icon name="user" size={22} />
               <span className="action-text">
-                <small>Hola</small>
-                <b>Mi cuenta</b>
+                <small>{autenticado ? `Hola, ${primerNombre}` : 'Hola'}</small>
+                <b>{autenticado ? 'Mi cuenta' : 'Ingresar'}</b>
               </span>
-            </span>
+            </Link>
 
             {/* Favoritos se saca entero: no existe la funcionalidad y el enlace
                 no llevaba a ningun lado. El contador decia 3. */}
 
-            <Link className="action" to="/carrito">
-              <span className="action-icon">
-                <Icon name="cart" size={22} />
-                {unidades > 0 && <i className="dot">{unidades}</i>}
-              </span>
-              <span className="action-text">
-                <small>Ver</small>
-                <b>Carrito</b>
-              </span>
-            </Link>
+            {/* Las cuentas del comercio no compran: sin carrito. */}
+            {!esPersonal && (
+              <Link className="action" to="/carrito">
+                <span className="action-icon" data-carrito-destino>
+                  <Icon name="cart" size={22} />
+                  {unidades > 0 && <i className="dot" key={unidades}>{unidades}</i>}
+                </span>
+                <span className="action-text">
+                  <small>Ver</small>
+                  <b>Carrito</b>
+                </span>
+              </Link>
+            )}
           </div>
         </form>
       </div>
@@ -197,9 +202,19 @@ export default function Header() {
               </li>
             ))}
             <li>
-              <span className="drawer-pendiente">
-                Seguir mi pedido <small>Proximamente</small>
-              </span>
+              <Link to={autenticado ? '/mi-cuenta' : '/ingresar'} onClick={() => setOpen(false)}>
+                {autenticado ? 'Mi cuenta' : 'Ingresar o crear cuenta'}
+              </Link>
+            </li>
+            <li>
+              <Link to={esPersonal ? '/panel' : '/mis-pedidos'} onClick={() => setOpen(false)}>
+                {esPersonal ? 'Panel del local' : 'Seguir mi pedido'}
+              </Link>
+            </li>
+            <li>
+              <Link to="/arrepentimiento" onClick={() => setOpen(false)}>
+                BOTÓN DE ARREPENTIMIENTO
+              </Link>
             </li>
           </ul>
         </div>
