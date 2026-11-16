@@ -1,6 +1,14 @@
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Route, Routes, useLocation } from "react-router";
 import InvitacionCuenta from "./components/auth/InvitacionCuenta.jsx";
 import RutaPrivada from "./components/auth/RutaPrivada.jsx";
+import RutaDeCliente from "./components/auth/RutaDeCliente.jsx";
+import RutaDelComercio from "./components/auth/RutaDelComercio.jsx";
+import PanelLayout from "./components/panel/PanelLayout.jsx";
+import PanelPedidosPage from "./pages/panel/PanelPedidosPage.jsx";
+import PanelPedidoPage from "./pages/panel/PanelPedidoPage.jsx";
+import PanelPrepararPage from "./pages/panel/PanelPrepararPage.jsx";
+import PanelProductosPage from "./pages/panel/PanelProductosPage.jsx";
+import PanelArrepentimientosPage from "./pages/panel/PanelArrepentimientosPage.jsx";
 import AgeGate from "./components/layout/AgeGate.jsx";
 import Footer from "./components/layout/Footer.jsx";
 import Header from "./components/layout/Header.jsx";
@@ -29,14 +37,46 @@ import "./pages/catalog.css";
 import "./pages/checkout.css";
 import "./pages/product.css";
 import "./pages/legal.css";
+import "./pages/panel/panel.css";
 
-export default function App() {
+// El panel del comercio no lleva nada de la tienda (cabecera, pie, puerta de edad, invitacion):
+// es otro lugar de trabajo, para otra persona.
+function Contenido() {
+  const { pathname } = useLocation();
+  if (pathname.startsWith("/panel")) {
+    return (
+      <Routes>
+        <Route
+          path="/panel"
+          element={
+            <RutaDelComercio>
+              <PanelLayout />
+            </RutaDelComercio>
+          }
+        >
+          <Route index element={<PanelPedidosPage />} />
+          <Route path="pedidos/:id" element={<PanelPedidoPage />} />
+          <Route path="preparar" element={<PanelPrepararPage />} />
+          <Route path="productos" element={<PanelProductosPage />} />
+          <Route path="arrepentimientos" element={<PanelArrepentimientosPage />} />
+        </Route>
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    );
+  }
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <CarritoProvider>
-          <AgeGate />
-          <Header />
+    <>
+      <AgeGate />
+      <Header />
+      <Tienda />
+      <Footer />
+      <InvitacionCuenta />
+    </>
+  );
+}
+
+function Tienda() {
+  return (
           <Routes>
             <Route path="/" element={<HomePage />} />
             {/* La categoria viaja en la ruta para que el filtro sea compartible. */}
@@ -53,9 +93,9 @@ export default function App() {
             <Route
               path="/checkout"
               element={
-                <RutaPrivada aviso="Para finalizar la compra necesitas una cuenta. Tu carrito se conserva.">
+                <RutaDeCliente aviso="Para finalizar la compra necesitas una cuenta. Tu carrito se conserva.">
                   <CheckoutPage />
-                </RutaPrivada>
+                </RutaDeCliente>
               }
             />
             {/* "key" evita que ingresar y registro compartan el estado del formulario
@@ -76,23 +116,33 @@ export default function App() {
             <Route
               path="/mis-pedidos"
               element={
-                <RutaPrivada aviso="Ingresa para ver tus pedidos.">
+                <RutaDeCliente aviso="Ingresa para ver tus pedidos.">
                   <MisPedidosPage />
-                </RutaPrivada>
+                </RutaDeCliente>
               }
             />
             <Route
               path="/mis-pedidos/:id"
               element={
-                <RutaPrivada aviso="Ingresa para ver tus pedidos.">
+                <RutaDeCliente
+                  aviso="Ingresa para ver tus pedidos."
+                  destinoPersonal={(u) => `/panel/pedidos/${u.pathname.split("/").pop()}`}
+                >
                   <PedidoPage />
-                </RutaPrivada>
+                </RutaDeCliente>
               }
             />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
-          <Footer />
-          <InvitacionCuenta />
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AuthProvider>
+        <CarritoProvider>
+          <Contenido />
         </CarritoProvider>
       </AuthProvider>
     </BrowserRouter>
