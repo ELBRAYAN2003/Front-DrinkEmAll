@@ -1,0 +1,180 @@
+/* Cuenta: ingresar, crear cuenta y "Mi cuenta". Reusa los campos, el boton y la
+   casilla del resto del sitio; aca solo va el marco de las pantallas. */
+
+.auth {
+  padding-block: 40px 80px;
+
+  .breadcrumb {
+    padding-inline: 0;
+    margin-bottom: 8px;
+  }
+}
+
+.auth-card {
+  max-width: 480px;
+  margin-inline: auto;
+  padding: 32px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+
+  @media (max-width: 520px) {
+    padding: 24px 20px;
+  }
+
+  h1 {
+    margin-bottom: 6px;
+    font-size: 30px;
+  }
+
+  h2 {
+    margin-bottom: 18px;
+    font-size: 21px;
+  }
+
+  /* Los campos ocupan una sola columna en estas pantallas angostas. */
+  .fields {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.auth-sub {
+  margin-bottom: 22px;
+  font-size: 14.5px;
+}
+
+.auth-checks {
+  display: grid;
+  gap: 2px;
+  margin-top: 16px;
+
+  .check {
+    align-items: flex-start;
+    line-height: 1.45;
+
+    input {
+      margin-top: 3px;
+    }
+  }
+
+  a {
+    color: var(--brand);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
+
+.auth-error,
+.auth-aviso {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 11px 14px;
+  border: 1px solid;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  line-height: 1.45;
+
+  .icon {
+    flex: none;
+    margin-top: 2px;
+  }
+}
+
+.auth-error {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.auth-aviso {
+  margin: 0 0 16px;
+  border-color: #b9d3ee;
+  background: var(--brand-soft);
+  color: var(--brand-dark);
+}
+
+.auth-submit {
+  width: 100%;
+  margin-top: 18px;
+}
+
+.auth-switch,
+.auth-nota {
+  margin-top: 16px;
+  font-size: 13.5px;
+  text-align: center;
+  color: var(--muted);
+
+  a {
+    color: var(--brand);
+    font-weight: 600;
+  }
+}
+
+/* --- Mi cuenta ------------------------------------------------------------ */
+.account-title {
+  margin-bottom: 24px;
+  font-size: 32px;
+}
+
+.account-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--gap);
+  align-items: start;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-card {
+    max-width: none;
+    width: 100%;
+  }
+}
+
+.account-datos {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 22px;
+
+  div {
+    display: grid;
+    gap: 2px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  dt {
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  dd {
+    margin: 0;
+    font-size: 15.5px;
+    color: var(--ink);
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Nota del carrito: por que se pide cuenta al finalizar. */
+.summary-cuenta {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: var(--brand-soft);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--brand-dark);
+
+  a {
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
