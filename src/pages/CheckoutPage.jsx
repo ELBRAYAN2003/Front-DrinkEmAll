@@ -12,7 +12,7 @@ import { miPerfil } from '../api/auth.js'
 import { completarPerfil, crearPedido, mediosDePago } from '../api/tienda.js'
 import { pagarConMercadoPago } from '../api/pedidos.js'
 import { iniciarEspera } from '../lib/esperaDePago.js'
-import { duracion } from '../lib/estadosPedido.js'
+import { duracion, nombreDePedido } from '../lib/estadosPedido.js'
 import { domicilios, facturacion } from '../api/libreta.js'
 import { formatoDocumento, soloDigitos } from '../lib/documento.js'
 import { calcularTotales } from '../data/cart.js'
@@ -809,7 +809,13 @@ function PedidoCreado({ pedido, medio, ajustes }) {
         <span className="checkout-ok-icono" aria-hidden="true">
           <Icon name="check" size={30} />
         </span>
-        <h1>Pedido #{pedido.id} recibido</h1>
+        <h1>Pedido {nombreDePedido(pedido)} recibido</h1>
+        {pedido.code && (
+          <p className="pedido-codigo-aviso">
+            Tu código de pedido es <b className="pedido-codigo">{pedido.code}</b>. Guardalo: con él el local ubica tu
+            pedido.
+          </p>
+        )}
         <p>
           Estado: <b>{ESTADOS[pedido.status] ?? pedido.status}</b>. El local lo va a preparar y te va a
           contactar al telefono {pedido.contactPhone}.

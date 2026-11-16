@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 import { Link } from 'react-router'
 import Icon from '../components/ui/Icon.jsx'
 import { misPedidos } from '../api/pedidos.js'
-import { estadoVisible } from '../lib/estadosPedido.js'
+import { estadoVisible, nombreDePedido } from '../lib/estadosPedido.js'
 import { formatoFechaHora, money } from '../lib/format.js'
 import { mensajeDeError } from '../lib/mensajeDeError.js'
 import { useRecarga } from '../hooks/useRecarga.js'
@@ -61,7 +61,7 @@ export default function MisPedidosPage() {
             {pedidos.map((p) => (
               <li key={p.id}>
                 <Link to={`/mis-pedidos/${p.id}`} className="pedido-fila">
-                  <span className="pedido-numero">Pedido #{p.id}</span>
+                  <span className="pedido-numero">Pedido {nombreDePedido(p)}</span>
                   <span className="pedido-fecha">{formatoFechaHora(p.saleDate)}</span>
                   <span className="pedido-total">{money.format(p.total)}</span>
                   <span className={`pedido-estado is-${estadoVisible(p).clave}`}>

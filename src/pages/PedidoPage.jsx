@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import Icon from '../components/ui/Icon.jsx'
 import { conciliarPago, pagarConMercadoPago, unPedido } from '../api/pedidos.js'
-import { esDeMercadoPago, esperaElPago, estadoVisible, etiquetaDe, lineaDeTiempo, reservadoHasta } from '../lib/estadosPedido.js'
+import { esDeMercadoPago, esperaElPago, estadoVisible, etiquetaDe, lineaDeTiempo, nombreDePedido, reservadoHasta } from '../lib/estadosPedido.js'
 import { useAjustesTienda } from '../hooks/useAjustesTienda.js'
 import { formatoFechaHora, money } from '../lib/format.js'
 import { formatoDocumento } from '../lib/documento.js'
@@ -209,11 +209,11 @@ export default function PedidoPage() {
           <Icon name="right" size={13} />
           <Link to="/mis-pedidos">Mis pedidos</Link>
           <Icon name="right" size={13} />
-          <span aria-current="page">Pedido #{id}</span>
+          <span aria-current="page">Pedido {pedido ? nombreDePedido(pedido) : `#${id}`}</span>
         </nav>
 
         <div className="pedidos-cabecera">
-          <h1 className="account-title">Pedido #{id}</h1>
+          <h1 className="account-title">Pedido {pedido ? nombreDePedido(pedido) : `#${id}`}</h1>
           <button type="button" className="btn btn-ghost" onClick={actualizar} disabled={actualizando}>
             <Icon name="refresh" size={16} />
             {actualizando ? 'Actualizando...' : 'Actualizar'}
