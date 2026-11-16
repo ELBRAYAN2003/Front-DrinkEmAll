@@ -51,3 +51,23 @@ export function borrarSesion() {
   }
   avisar()
 }
+
+/**
+ * Rol de la cuenta ('admin' | 'vendedor' | 'cliente'). Sale del usuario guardado y, si
+ * no esta, del token (el servidor lo firma dentro). Es solo para decidir que mostrar:
+ * quien decide si algo se puede hacer es siempre la API.
+ */
+export function rolDeSesion(sesion) {
+  const guardado = sesion?.usuario?.role?.name
+  if (guardado) return guardado
+  try {
+    const carga = sesion?.accessToken?.split('.')[1]
+    if (!carga) return null
+    const json = atob(carga.replace(/-/g, '+').replace(/_/g, '/'))
+    return JSON.parse(json).role ?? null
+  } catch {
+    return null
+  }
+}
+
+export const esRolDelComercio = (rol) => rol === 'admin' || rol === 'vendedor'

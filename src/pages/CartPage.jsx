@@ -7,7 +7,7 @@ import { useCarrito } from "../hooks/useCarrito.js";
 
 export default function CartPage() {
   const { lineas, unidades, quitar, cambiarCantidad } = useCarrito();
-  const { autenticado } = useAuth();
+  const { autenticado, esPersonal } = useAuth();
 
   return (
     <main className="cart">
@@ -98,10 +98,17 @@ export default function CartPage() {
           </section>
 
           <OrderSummary lineas={lineas}>
-            <Link className="btn btn-primary summary-cta" to="/checkout">
-              Finalizar compra
-              <Icon name="right" size={16} />
-            </Link>
+            {esPersonal ? (
+              <p className="summary-cuenta">
+                Estás con una cuenta del comercio: <b>no puede comprar</b>. Para hacer un pedido
+                ingresá con una cuenta de cliente.
+              </p>
+            ) : (
+              <Link className="btn btn-primary summary-cta" to="/checkout">
+                Finalizar compra
+                <Icon name="right" size={16} />
+              </Link>
+            )}
             {!autenticado && (
               <p className="summary-cuenta">
                 Para finalizar la compra necesitas una cuenta.{" "}
