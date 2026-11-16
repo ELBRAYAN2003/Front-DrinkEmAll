@@ -33,9 +33,19 @@
     font-size: 21px;
   }
 
-  /* Los campos ocupan una sola columna en estas pantallas angostas. */
+  /* Las columnas de los campos las define .fields (checkout.css): dos columnas y,
+     en pantallas de hasta 620 px, una sola. Sin "min-width: 0" las grillas no dejan
+     achicar los campos mas alla de su ancho propio (Chromium da a los de fecha y de
+     texto un minimo grande) y la pagina se hace mas ancha que la ventana. */
   .fields {
-    grid-template-columns: 1fr 1fr;
+    label,
+    input {
+      min-width: 0;
+    }
+
+    input {
+      width: 100%;
+    }
   }
 }
 
@@ -265,5 +275,181 @@
     font-weight: 600;
     text-decoration: underline;
     text-underline-offset: 2px;
+  }
+}
+
+/* --- Mis pedidos ------------------------------------------------------------ */
+.pedidos-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+
+  .account-title {
+    margin-bottom: 0;
+  }
+}
+
+.pedidos-lista {
+  display: grid;
+  gap: 10px;
+  max-width: 760px;
+}
+
+.pedido-fila {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.4fr) auto auto auto;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  transition: border-color 0.2s var(--ease);
+
+  &:hover {
+    border-color: var(--brand);
+  }
+
+  @media (max-width: 560px) {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 6px 12px;
+
+    .pedido-fecha {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .pedido-estado {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .pedido-total {
+      grid-column: 2;
+      grid-row: 2;
+    }
+    .icon {
+      display: none;
+    }
+  }
+}
+
+.pedido-numero {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.pedido-fecha {
+  font-size: 13.5px;
+  color: var(--muted);
+}
+
+.pedido-total {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.pedido-estado {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--brand);
+  white-space: nowrap;
+
+  &.is-entregado {
+    background: color-mix(in srgb, var(--ok) 16%, transparent);
+    color: var(--ok);
+  }
+  &.is-cancelado {
+    background: color-mix(in srgb, var(--danger) 14%, transparent);
+    color: var(--danger);
+  }
+}
+
+.pedido-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+  align-items: start;
+
+  .auth-card {
+    max-width: none;
+    margin-inline: 0;
+  }
+
+  @media (max-width: 860px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.linea-tiempo {
+  display: grid;
+  gap: 0;
+  margin: 18px 0 8px;
+  list-style: none;
+  padding: 0;
+
+  li {
+    position: relative;
+    display: flex;
+    gap: 14px;
+    padding-bottom: 22px;
+
+    /* Hilo que une cada punto con el siguiente. */
+    &:not(:last-child)::before {
+      content: '';
+      position: absolute;
+      left: 10px;
+      top: 22px;
+      bottom: 0;
+      width: 2px;
+      background: var(--line);
+    }
+    &.is-hecho:not(:last-child)::before {
+      background: var(--brand);
+    }
+
+    b {
+      display: block;
+      color: var(--ink);
+    }
+    small {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    &.is-pendiente {
+      b {
+        color: var(--muted);
+        font-weight: 500;
+      }
+    }
+  }
+}
+
+.linea-punto {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: #fff;
+
+  .is-hecho &,
+  .is-actual & {
+    border-color: var(--brand);
+    background: var(--brand);
+  }
+  .is-cancelado & {
+    border-color: var(--danger);
+    background: var(--danger);
   }
 }

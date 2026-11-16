@@ -56,6 +56,15 @@ services:
       CORS_ORIGIN: https://drinkemall.sbcorp.site
       IVA_PERCENTAGE: 21
       LOW_STOCK_THRESHOLD: 10
+      # Tienda online. Los de envio son PROVISORIOS hasta que el comercio los confirme;
+      # el vendedor y los datos de transferencia/retiro se definen en .env (sin valor,
+      # el pedido online responde 503 o muestra el dato como pendiente).
+      ONLINE_SELLER_EMAIL: ${ONLINE_SELLER_EMAIL:-}
+      SHIPPING_COST: ${SHIPPING_COST:-3000}
+      FREE_SHIPPING_FROM: ${FREE_SHIPPING_FROM:-40000}
+      PICKUP_ADDRESS: ${PICKUP_ADDRESS:-}
+      DELIVERY_ZONE: ${DELIVERY_ZONE:-Juan José Castelli y localidades cercanas}
+      TRANSFER_INSTRUCTIONS: ${TRANSFER_INSTRUCTIONS:-}
       # Solo en el primer arranque; despues se deja en false.
       SEED_ON_START: ${SEED_ON_START:-false}
     volumes:

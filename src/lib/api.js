@@ -19,12 +19,14 @@ export const API_FILES = import.meta.env.VITE_API_FILES ?? ''
 export const hayApi = Boolean(API_URL)
 
 export class ApiError extends Error {
-  constructor(message, status, details = null) {
+  constructor(message, status, details = null, code = null) {
     super(message)
     this.name = 'ApiError'
     this.status = status
     // La API devuelve, en los errores de validacion, [{ path, message }].
     this.details = details
+    // Codigo estable de algunos errores de negocio (PERFIL_INCOMPLETO, MENOR_DE_EDAD).
+    this.code = code
   }
 }
 
@@ -111,7 +113,7 @@ async function pedir(metodo, ruta, { params, body, signal, auth = false } = {}) 
 
   if (!res.ok) {
     const cuerpo = await res.json().catch(() => null)
-    throw new ApiError(cuerpo?.message ?? `Error ${res.status} al pedir ${ruta}`, res.status, cuerpo?.details ?? null)
+    throw new ApiError(cuerpo?.message ?? `Error ${res.status} al pedir ${ruta}`, res.status, cuerpo?.details ?? null, cuerpo?.code ?? null)
   }
   // 204: la API contesta sin cuerpo (por ejemplo al cerrar sesion).
   return res.status === 204 ? null : res.json()

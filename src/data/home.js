@@ -122,30 +122,32 @@ export const slideArt = Object.fromEntries(
   slides.map((sl) => [sl.id, productImage({ hue: sl.hue, shape: sl.shape, bg: sl.bg })]),
 )
 
+// Solo promesas que la tienda cumple: nada de plazos ni cobertura que el comercio
+// no haya confirmado. El costo de envio y el minimo gratis los informa la API.
 export const services = [
   {
     id: 'envio',
     icon: 'truck',
-    title: 'Envio en 24 horas',
-    text: 'Gratis desde $80 en todo el pais',
+    title: 'Envio a domicilio',
+    text: 'En Castelli y localidades cercanas',
   },
   {
-    id: 'devolucion',
-    icon: 'refresh',
-    title: 'Cambios sin vueltas',
-    text: '30 dias para arrepentirte',
+    id: 'retiro',
+    icon: 'pin',
+    title: 'Retiro en el local',
+    text: 'Sin cargo, cuando tu pedido este listo',
   },
   {
     id: 'pago',
     icon: 'shield',
-    title: 'Pago protegido',
-    text: 'Devolucion garantizada',
+    title: 'Efectivo o transferencia',
+    text: 'Pagas al recibir o por transferencia',
   },
   {
-    id: 'soporte',
-    icon: 'headset',
-    title: 'Sommelier online',
-    text: 'Te asesoramos de 9 a 21 h',
+    id: 'edad',
+    icon: 'check',
+    title: 'Venta a mayores de 18',
+    text: 'Pedimos el DNI al entregar',
   },
 ]
 

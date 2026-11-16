@@ -1,16 +1,21 @@
-// Reglas de precio del carrito. Las lineas las maneja CarritoProvider; aca
-// solo vive el calculo, compartido por el carrito y el checkout.
+// Calculo de totales del carrito. Es una ESTIMACION para mostrar antes de
+// confirmar: el costo de envio y el umbral de envio gratis salen de
+// /shop/settings (no estan escritos aca) y el total que vale es el que devuelve
+// la API al crear el pedido.
 
 // El backend calcula el IVA con este porcentaje (IVA_PERCENTAGE en su .env).
 export const IVA = 0.21
 
-export const ENVIO_GRATIS_DESDE = 80
-export const COSTO_ENVIO = 8
-
-export function calcularTotales(lineas, { retiroEnLocal = false } = {}) {
+/**
+ * @param ajustes  respuesta de /shop/settings, o null si todavia no llego. Sin ella
+ *                 el envio queda en `null` (se calcula al confirmar).
+ */
+export function calcularTotales(lineas, { retiroEnLocal = false, ajustes = null } = {}) {
   const subtotal = lineas.reduce((acc, l) => acc + l.price * l.cantidad, 0)
-  const envio = retiroEnLocal || subtotal === 0 || subtotal >= ENVIO_GRATIS_DESDE ? 0 : COSTO_ENVIO
+  let envio = null
+  if (retiroEnLocal || subtotal === 0) envio = 0
+  else if (ajustes) envio = subtotal >= ajustes.freeShippingFrom ? 0 : ajustes.shippingCost
   // El precio de lista ya incluye IVA: se discrimina para mostrarlo, no se suma.
-  const iva = (subtotal * IVA) / (1 + IVA)
-  return { subtotal, envio, iva, total: subtotal + envio }
+  const iva = ((subtotal + (envio ?? 0)) * IVA) / (1 + IVA)
+  return { subtotal, envio, iva, total: subtotal + (envio ?? 0) }
 }
