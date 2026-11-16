@@ -66,8 +66,29 @@ services:
       SHIPPING_COST: ${SHIPPING_COST:-3000}
       FREE_SHIPPING_FROM: ${FREE_SHIPPING_FROM:-40000}
       PICKUP_ADDRESS: ${PICKUP_ADDRESS:-}
+      PICKUP_HOURS: ${PICKUP_HOURS:-}
       DELIVERY_ZONE: ${DELIVERY_ZONE:-Juan José Castelli y localidades cercanas}
+      TRANSFER_ALIAS: ${TRANSFER_ALIAS:-}
+      TRANSFER_CBU: ${TRANSFER_CBU:-}
+      TRANSFER_HOLDER: ${TRANSFER_HOLDER:-}
+      TRANSFER_CUIT: ${TRANSFER_CUIT:-}
       TRANSFER_INSTRUCTIONS: ${TRANSFER_INSTRUCTIONS:-}
+      # Minutos que se reserva el stock mientras se espera un pago por adelantado.
+      PAYMENT_WINDOW_MINUTES: ${PAYMENT_WINDOW_MINUTES:-180}
+      # Cuentas del comercio. Los seeders las crean una vez; sin contraseña no se crean.
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@drinkemall.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      VENDEDOR_EMAIL: ${VENDEDOR_EMAIL:-}
+      VENDEDOR_PASSWORD: ${VENDEDOR_PASSWORD:-}
+      # Adonde vuelve la persona despues de pagar y donde Mercado Pago avisa los pagos.
+      FRONT_URL: https://drinkemall.sbcorp.site
+      PUBLIC_API_URL: https://drinkemall.sbcorp.site
+      # Mercado Pago (Checkout Pro). Sin MERCADOPAGO_ACCESS_TOKEN la opcion no se ofrece.
+      # El secreto del webhook es obligatorio en produccion cuando hay token.
+      MERCADOPAGO_ACCESS_TOKEN: ${MERCADOPAGO_ACCESS_TOKEN:-}
+      MERCADOPAGO_WEBHOOK_SECRET: ${MERCADOPAGO_WEBHOOK_SECRET:-}
+      MERCADOPAGO_SANDBOX: ${MERCADOPAGO_SANDBOX:-false}
+      MERCADOPAGO_PREFILL_PAYER_EMAIL: ${MERCADOPAGO_PREFILL_PAYER_EMAIL:-false}
       # Solo en el primer arranque; despues se deja en false.
       SEED_ON_START: ${SEED_ON_START:-false}
     volumes:
