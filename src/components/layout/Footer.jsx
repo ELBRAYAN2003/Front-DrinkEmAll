@@ -1,6 +1,5 @@
 import { Link } from 'react-router'
 import Icon from '../ui/Icon.jsx'
-import { contact, footerColumns } from '../../data/home.js'
 import { useCategorias } from '../../hooks/useCatalogo.js'
 
 // Cuantas categorias se listan en el pie antes del "Ver todo".
@@ -13,7 +12,8 @@ const SOCIAL = [
   { name: 'youtube', label: 'YouTube' },
 ]
 
-const PAYMENTS = ['Visa', 'Mastercard', 'Amex', 'Mercado Pago', 'Transferencia']
+// Solo lo que la tienda opera de verdad (ver los medios de pago del checkout).
+const PAYMENTS = ['Efectivo', 'Transferencia']
 
 export default function Footer() {
   const categorias = useCategorias()
@@ -28,19 +28,13 @@ export default function Footer() {
               DrinkEm<em>All</em>
             </span>
           </Link>
-          <p>
-            Vinos, cervezas y destilados elegidos con criterio. Guardados como
-            corresponde y despachados el mismo dia.
-          </p>
+          <p>Vinos, cervezas y destilados elegidos con criterio, en Juan José Castelli, Chaco.</p>
 
-          <ul className="footer-contact">
-            {contact.map((c) => (
-              <li key={c.id}>
-                <Icon name={c.icon} size={18} />
-                <span>{c.value}</span>
-              </li>
-            ))}
-          </ul>
+          {/* Disposicion 954/2025: link con este rotulo exacto, a simple vista y sin
+              pedir cuenta. Tambien esta en el checkout y en Mis pedidos. */}
+          <Link className="btn-arrepentimiento" to="/arrepentimiento">
+            BOTÓN DE ARREPENTIMIENTO
+          </Link>
         </div>
 
         <nav className="footer-col" aria-label="Tienda">
@@ -57,26 +51,40 @@ export default function Footer() {
           </ul>
         </nav>
 
-        {footerColumns.map((col) => (
-          <nav className="footer-col" key={col.title} aria-label={col.title}>
-            <h4>{col.title}</h4>
-            <ul>
-              {col.links.map((l) => (
-                <li key={l}>
-                  {/* Texto y no enlace: la seccion todavia no existe. */}
-                  <span className="footer-pendiente">{l}</span>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        ))}
+        <nav className="footer-col" aria-label="Tu cuenta">
+          <h4>Tu cuenta</h4>
+          <ul>
+            <li>
+              <Link to="/mis-pedidos">Mis pedidos</Link>
+            </li>
+            <li>
+              <Link to="/mi-cuenta">Mi cuenta</Link>
+            </li>
+          </ul>
+        </nav>
+
+        <nav className="footer-col" aria-label="Información legal">
+          <h4>Información</h4>
+          <ul>
+            <li>
+              <Link to="/terminos">Términos y condiciones</Link>
+            </li>
+            <li>
+              <Link to="/privacidad">Política de privacidad</Link>
+            </li>
+            <li>
+              <Link to="/arrepentimiento">Arrepentimiento de compra</Link>
+            </li>
+          </ul>
+        </nav>
       </div>
 
       <div className="wrap footer-bottom">
         <p className="copy">
-          © {new Date().getFullYear()} DrinkEmAll. Bebe con moderacion. Venta
-          prohibida a menores de 18 anos.{' '}
-          <Link to="/privacidad">Politica de privacidad</Link>
+          © {new Date().getFullYear()} DrinkEmAll. Beber con moderación. Prohibida su
+          venta a menores de 18 años.{' '}
+          <Link to="/terminos">Términos y condiciones</Link> ·{' '}
+          <Link to="/privacidad">Política de privacidad</Link>
         </p>
 
         <ul className="payments">

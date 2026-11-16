@@ -454,22 +454,3 @@ export const ubicacion = {
 
 export const brands = ['Finca del Sauce', 'Alto Calchaqui', 'Barrio Nueve', 'Vina Trelew', 'Casa Miramar', 'Destileria Sur']
 
-export const contact = [
-  { id: 'tel', icon: 'phone', title: 'Llamanos gratis', value: '0800 555 0199' },
-  { id: 'dir', icon: 'pin', title: 'Nuestro local', value: 'Av. Sarmiento 1420, Resistencia' },
-  { id: 'mail', icon: 'mail', title: 'Escribinos', value: 'hola@drinkemall.com' },
-]
-
-// La columna "Tienda" no esta aca: se arma con las categorias reales del
-// catalogo. Estas dos todavia no tienen destino, asi que el pie las muestra
-// como texto y no como enlaces: un enlace que no lleva a ningun lado miente.
-export const footerColumns = [
-  {
-    title: 'Tu cuenta',
-    links: ['Mis pedidos', 'Direcciones', 'Lista de deseos', 'Cupones', 'Club DrinkEmAll'],
-  },
-  {
-    title: 'Ayuda',
-    links: ['Envios y plazos', 'Cambios y devoluciones', 'Medios de pago', 'Preguntas frecuentes', 'Contacto'],
-  },
-]

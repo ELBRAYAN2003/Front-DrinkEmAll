@@ -824,3 +824,22 @@
   color: var(--muted);
   cursor: default;
 }
+
+/* Boton de arrepentimiento: tiene que verse, no esconderse entre los enlaces. */
+.btn-arrepentimiento {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 10px 16px;
+  border: 2px solid var(--brand);
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--brand);
+  background: var(--surface);
+
+  &:hover {
+    background: var(--brand);
+    color: #fff;
+  }
+}

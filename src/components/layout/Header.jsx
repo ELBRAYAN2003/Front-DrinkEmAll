@@ -208,6 +208,11 @@ export default function Header() {
                 Seguir mi pedido
               </Link>
             </li>
+            <li>
+              <Link to="/arrepentimiento" onClick={() => setOpen(false)}>
+                BOTÓN DE ARREPENTIMIENTO
+              </Link>
+            </li>
           </ul>
         </div>
         <button type="button" className="drawer-scrim" onClick={() => setOpen(false)} aria-label="Cerrar menu" />

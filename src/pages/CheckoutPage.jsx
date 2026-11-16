@@ -482,7 +482,11 @@ export default function CheckoutPage() {
                   <label className="check">
                     <input type="checkbox" checked={conforme} onChange={(e) => setConforme(e.target.checked)} />
                     <span>
-                      Declaro ser mayor de 18 anos. La venta de alcohol a menores esta prohibida por ley.
+                      Declaro ser mayor de 18 anos y acepto los{' '}
+                      <Link to="/terminos" target="_blank" rel="noopener">
+                        terminos y condiciones
+                      </Link>
+                      . La venta de alcohol a menores esta prohibida por ley.
                     </span>
                   </label>
                 </section>
@@ -606,6 +610,9 @@ function PedidoCreado({ pedido, medio, ajustes }) {
         </Link>
         <Link className="checkout-ok-otro" to="/catalogo">
           Seguir comprando
+        </Link>
+        <Link className="checkout-ok-otro" to="/arrepentimiento">
+          BOTÓN DE ARREPENTIMIENTO
         </Link>
       </div>
     </main>
