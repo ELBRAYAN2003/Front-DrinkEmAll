@@ -49,7 +49,7 @@ export default function Header() {
   const navigate = useNavigate()
   const categorias = useCategorias()
   const { unidades } = useCarrito()
-  const { autenticado, usuario } = useAuth()
+  const { autenticado, usuario, esPersonal } = useAuth()
   // Solo el primer nombre y acotado: el espacio del boton es chico.
   const primerNombre = usuario?.name?.split(' ')[0]?.slice(0, 12)
 
@@ -145,11 +145,11 @@ export default function Header() {
 
           <div className="header-account">
             {/* Sin sesion, /mis-pedidos manda a ingresar y vuelve aca. */}
-            <Link className="action action-track" to="/mis-pedidos">
+            <Link className="action action-track" to={esPersonal ? '/panel' : '/mis-pedidos'}>
               <Icon name="truck" size={22} />
               <span className="action-text">
-                <small>Seguir</small>
-                <b>Mi pedido</b>
+                <small>{esPersonal ? 'Ir al' : 'Seguir'}</small>
+                <b>{esPersonal ? 'Panel' : 'Mi pedido'}</b>
               </span>
             </Link>
 
@@ -164,16 +164,19 @@ export default function Header() {
             {/* Favoritos se saca entero: no existe la funcionalidad y el enlace
                 no llevaba a ningun lado. El contador decia 3. */}
 
-            <Link className="action" to="/carrito">
-              <span className="action-icon">
-                <Icon name="cart" size={22} />
-                {unidades > 0 && <i className="dot">{unidades}</i>}
-              </span>
-              <span className="action-text">
-                <small>Ver</small>
-                <b>Carrito</b>
-              </span>
-            </Link>
+            {/* Las cuentas del comercio no compran: sin carrito. */}
+            {!esPersonal && (
+              <Link className="action" to="/carrito">
+                <span className="action-icon">
+                  <Icon name="cart" size={22} />
+                  {unidades > 0 && <i className="dot">{unidades}</i>}
+                </span>
+                <span className="action-text">
+                  <small>Ver</small>
+                  <b>Carrito</b>
+                </span>
+              </Link>
+            )}
           </div>
         </form>
       </div>
@@ -204,8 +207,8 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link to="/mis-pedidos" onClick={() => setOpen(false)}>
-                Seguir mi pedido
+              <Link to={esPersonal ? '/panel' : '/mis-pedidos'} onClick={() => setOpen(false)}>
+                {esPersonal ? 'Panel del local' : 'Seguir mi pedido'}
               </Link>
             </li>
             <li>

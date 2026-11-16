@@ -54,7 +54,7 @@ const DATOS_VACIOS = {
 const ESTADOS = { pending: 'Pendiente' }
 
 export default function CheckoutPage() {
-  const { usuario } = useAuth()
+  const { usuario, esPersonal } = useAuth()
   const { lineas, vaciar } = useCarrito()
   const ajustes = useAjustesTienda()
   const navigate = useNavigate()
@@ -85,6 +85,8 @@ export default function CheckoutPage() {
   const [errorPedido, setErrorPedido] = useState(null)
 
   useEffect(() => {
+    // Una cuenta del comercio no compra: no hay ficha de cliente que cargar.
+    if (esPersonal) return undefined
     let vigente = true
     Promise.all([miPerfil(), mediosDePago(), domicilios.listar(), facturacion.listar()])
       .then(([ficha, lista, doms, facts]) => {
@@ -285,6 +287,27 @@ export default function CheckoutPage() {
     } finally {
       setEnviando(false)
     }
+  }
+
+  // Una cuenta del comercio no compra (la API tampoco la deja): se avisa en vez de mostrar el formulario.
+  if (esPersonal) {
+    return (
+      <main className="checkout">
+        <div className="wrap checkout-ok">
+          <h1>Esta cuenta no puede comprar</h1>
+          <p>
+            Ingresaste con una cuenta del comercio ({usuario?.email}). Para hacer un pedido necesitás una cuenta de
+            cliente.
+          </p>
+          <Link className="btn btn-primary" to="/salir" state={{ destino: '/ingresar' }}>
+            Salir e ingresar con otra cuenta
+          </Link>
+          <Link className="checkout-ok-otro" to="/mis-pedidos">
+            Ver los pedidos del local
+          </Link>
+        </div>
+      </main>
+    )
   }
 
   if (pedido) {

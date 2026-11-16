@@ -13,7 +13,7 @@ import { mensajeDeError } from '../lib/mensajeDeError.js'
 const VACIO = { actual: '', nueva: '', confirmar: '' }
 
 export default function AccountPage() {
-  const { usuario } = useAuth()
+  const { usuario, esPersonal } = useAuth()
   const navigate = useNavigate()
 
   // El DNI no viene en la respuesta del login: esta en la ficha de cliente.
@@ -115,8 +115,8 @@ export default function AccountPage() {
             </button>
           </section>
 
-          <LibretaDomicilios />
-          <LibretaFacturacion />
+          {!esPersonal && <LibretaDomicilios />}
+          {!esPersonal && <LibretaFacturacion />}
 
           <section className="auth-card" aria-labelledby="cuenta-clave">
             <h2 id="cuenta-clave">Cambiar la contrasena</h2>

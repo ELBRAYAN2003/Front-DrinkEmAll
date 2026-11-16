@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AuthContext } from './authContext.js'
-import { EVENTO_SESION, leerSesion } from '../lib/sesion.js'
+import { EVENTO_SESION, esRolDelComercio, leerSesion, rolDeSesion } from '../lib/sesion.js'
 import { cerrarSesion, ingresar, registrar } from '../api/auth.js'
 
 // Estado de la cuenta para toda la app.
@@ -27,6 +27,9 @@ export default function AuthProvider({ children }) {
   const valor = {
     usuario: sesion?.usuario ?? null,
     autenticado: Boolean(sesion),
+    rol: rolDeSesion(sesion),
+    // Cuenta del comercio (vendedor o admin): no compra, atiende los pedidos.
+    esPersonal: esRolDelComercio(rolDeSesion(sesion)),
     ingresar,
     registrar,
     salir: cerrarSesion,

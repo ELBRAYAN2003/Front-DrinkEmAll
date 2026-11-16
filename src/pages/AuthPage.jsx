@@ -24,7 +24,7 @@ const VACIO_REGISTRO = {
 // manejo de errores, y cambian los campos. El modo lo fija la ruta.
 export default function AuthPage({ modo }) {
   const registro = modo === 'registro'
-  const { autenticado, ingresar, registrar } = useAuth()
+  const { autenticado, esPersonal, ingresar, registrar } = useAuth()
   const ubicacion = useLocation()
   // Adonde volver despues de entrar (lo pone RutaPrivada) y un aviso opcional
   // (por ejemplo, "cambiaste tu contrasena").
@@ -44,7 +44,7 @@ export default function AuthPage({ modo }) {
   const errorDe = (campo) => (tocados[campo] ? errores[campo] : null)
 
   // Al ingresar o registrarse con exito la sesion cambia y esto redirige solo.
-  if (autenticado) return <Navigate to={desde ?? '/mi-cuenta'} replace />
+  if (autenticado) return <Navigate to={desde ?? (esPersonal ? '/panel' : '/mi-cuenta')} replace />
 
   const cambiar = (campo, valor) => setDatos((previos) => ({ ...previos, [campo]: valor }))
   const salir = (campo) => setTocados((previos) => ({ ...previos, [campo]: true }))
