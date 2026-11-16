@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import Campo from '../components/ui/Campo.jsx'
 import Icon from '../components/ui/Icon.jsx'
+import LibretaDomicilios from '../components/cuenta/LibretaDomicilios.jsx'
+import LibretaFacturacion from '../components/cuenta/LibretaFacturacion.jsx'
 import { useAuth } from '../hooks/useAuth.js'
 import { cambiarPassword, miPerfil } from '../api/auth.js'
 import { formatoDni, formatoFecha } from '../lib/format.js'
@@ -112,6 +114,9 @@ export default function AccountPage() {
               Cerrar sesion
             </button>
           </section>
+
+          <LibretaDomicilios />
+          <LibretaFacturacion />
 
           <section className="auth-card" aria-labelledby="cuenta-clave">
             <h2 id="cuenta-clave">Cambiar la contrasena</h2>

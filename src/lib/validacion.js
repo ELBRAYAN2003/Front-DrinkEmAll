@@ -1,3 +1,5 @@
+import { esCuitValido, esDniValido } from './documento.js'
+
 // Reglas de validacion del formulario de checkout.
 //
 // Viven aparte del componente para poder probarlas sin renderizar nada y para
@@ -117,35 +119,53 @@ const REGLAS = {
   password: (v) =>
     v.length === 0 ? 'Ingresa una contrasena' : v.length < 8 ? 'Usa al menos 8 caracteres' : null,
 
+  // Facturacion. El numero depende del tipo elegido, por eso recibe los datos.
+  facNombre: (v) =>
+    requerido(v, 'Ingresa el nombre o la razon social') ??
+    (v.trim().length < 2 ? 'El nombre es demasiado corto' : null),
+
+  facDoc: (v, datos) => {
+    const vacio = requerido(v, 'Ingresa el numero de documento')
+    if (vacio) return vacio
+    if (datos?.facTipo === 'CUIT') {
+      return esCuitValido(v) ? null : 'El CUIT no es valido (11 digitos y digito verificador correcto)'
+    }
+    return esDniValido(v) ? null : 'El DNI tiene 7 u 8 numeros'
+  },
+
+  facCorreo: (v) =>
+    requerido(v, 'Ingresa un correo para enviar la factura') ??
+    (CORREO.test(v.trim()) ? null : 'El correo no tiene un formato valido'),
+
   codigoPostal: (v) =>
     requerido(v, 'Ingresa el codigo postal') ??
     (CODIGO_POSTAL.test(v.trim()) ? null : 'Usa 4 digitos (3500) o el formato CPA (H3500ABC)'),
 }
 
 /**
- * Campos que se validan al salir de cada paso. El nombre y el correo ya vienen de
- * la cuenta; en "Tus datos" solo se pide el telefono y, si la cuenta es anterior a
- * que se pidieran, la fecha de nacimiento y el DNI (`faltantes`).
+ * Campos que se validan al salir de cada paso.
+ * - Paso 1: telefono; la fecha de nacimiento y el DNI si la cuenta no los tiene
+ *   (`faltantes`); y los datos de facturacion solo si se eligio "otros datos".
+ * - Paso 2: el domicilio solo si hay envio y se eligio "otro domicilio".
  */
-export function camposDelPaso(paso, { retiroEnLocal = false, faltantes = [] } = {}) {
-  if (paso === 1) return ['telefono', ...faltantes]
-  if (paso === 2) return retiroEnLocal ? [] : ['direccion', 'ciudad', 'codigoPostal']
+export function camposDelPaso(paso, { retiroEnLocal = false, faltantes = [], facturaNueva = false, domicilioNuevo = false } = {}) {
+  if (paso === 1) return ['telefono', ...faltantes, ...(facturaNueva ? ['facNombre', 'facDoc', 'facCorreo'] : [])]
+  if (paso === 2) return retiroEnLocal || !domicilioNuevo ? [] : ['direccion', 'ciudad', 'codigoPostal']
   return []
 }
 
-export function validarCampo(campo, valor) {
+export function validarCampo(campo, valor, datos) {
   const regla = REGLAS[campo]
-  return regla ? regla(String(valor ?? '')) : null
+  return regla ? regla(String(valor ?? ''), datos) : null
 }
 
 /**
- * Errores de un paso, como objeto { campo: mensaje }. Vacio si el paso es
- * valido. Con retiro en el local, el paso de entrega no pide domicilio.
+ * Errores de un paso, como objeto { campo: mensaje }. Vacio si el paso es valido.
  */
 export function validarPaso(paso, datos, opciones = {}) {
   const errores = {}
   for (const campo of camposDelPaso(paso, opciones)) {
-    const error = validarCampo(campo, datos[campo])
+    const error = validarCampo(campo, datos[campo], datos)
     if (error) errores[campo] = error
   }
   return errores

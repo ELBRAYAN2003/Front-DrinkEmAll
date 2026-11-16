@@ -4,6 +4,7 @@ import Icon from '../components/ui/Icon.jsx'
 import { unPedido } from '../api/pedidos.js'
 import { etiquetaDe, lineaDeTiempo } from '../lib/estadosPedido.js'
 import { formatoFechaHora, money } from '../lib/format.js'
+import { formatoDocumento } from '../lib/documento.js'
 import { mensajeDeError } from '../lib/mensajeDeError.js'
 import { useRecarga } from '../hooks/useRecarga.js'
 
@@ -150,6 +151,15 @@ export default function PedidoPage() {
                         }`}
                   </b>
                 </li>
+                {pedido.billing && (
+                  <li>
+                    <span>Facturacion</span>
+                    <b>
+                      {pedido.billing.fullName} - {formatoDocumento(pedido.billing.taxIdType, pedido.billing.taxId)} -{' '}
+                      {pedido.billing.email}
+                    </b>
+                  </li>
+                )}
                 <li>
                   <span>Contacto</span>
                   <b>{pedido.contactPhone}</b>

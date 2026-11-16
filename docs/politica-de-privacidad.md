@@ -98,6 +98,18 @@ comercio que preparan y entregan el pedido, incluido quien lo reparte, que recib
 el domicilio, el teléfono y el nombre necesarios para la entrega. No se ceden a
 otros terceros.
 
+### 3.3 ter Libreta de la cuenta y datos de facturación
+
+En cada pedido se guarda una copia de los **datos de facturación** que usted elige:
+nombre o razón social, tipo y número de documento (DNI o CUIT) y correo. Es
+necesaria para emitir la factura y se conserva con el pedido, aunque después usted
+edite o borre sus datos guardados.
+
+Si lo pide, puede guardar en su cuenta hasta 10 domicilios y 10 datos de
+facturación para no escribirlos de nuevo. Puede editarlos o borrarlos desde Mi
+cuenta en cualquier momento. Los ve solamente usted y el personal del comercio que
+prepara y factura sus pedidos.
+
 ### 3.3 bis Solicitudes de arrepentimiento
 
 Si usa el **botón de arrepentimiento** (no requiere cuenta) se guardan en el
