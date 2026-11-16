@@ -162,6 +162,95 @@
   }
 }
 
+/* --- Invitacion a crear una cuenta (primera visita) ---------------------- */
+/* Flotante y descartable. Queda por debajo de la puerta de edad (z-index 200)
+   para no competir con ella. */
+.invitacion {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  z-index: 150;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px;
+  width: min(380px, calc(100vw - 24px));
+  padding: 20px 20px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  animation: invitacion-entra 0.45s var(--ease) both;
+
+  @media (max-width: 520px) {
+    right: 12px;
+    bottom: 12px;
+  }
+
+  b {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 16px;
+    color: var(--ink);
+  }
+
+  p {
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+}
+
+.invitacion-icono {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand);
+}
+
+.invitacion-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+
+  .btn {
+    padding: 8px 18px;
+    font-size: 13.5px;
+  }
+}
+
+.invitacion-cerrar {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  color: var(--muted);
+
+  &:hover {
+    background: var(--brand-soft);
+    color: var(--brand);
+  }
+}
+
+@keyframes invitacion-entra {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .invitacion {
+    animation: none;
+  }
+}
+
 /* Nota del carrito: por que se pide cuenta al finalizar. */
 .summary-cuenta {
   margin-top: 12px;

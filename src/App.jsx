@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router";
+import InvitacionCuenta from "./components/auth/InvitacionCuenta.jsx";
 import RutaPrivada from "./components/auth/RutaPrivada.jsx";
 import AgeGate from "./components/layout/AgeGate.jsx";
 import Footer from "./components/layout/Footer.jsx";
@@ -68,6 +69,7 @@ export default function App() {
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
           <Footer />
+          <InvitacionCuenta />
         </CarritoProvider>
       </AuthProvider>
     </BrowserRouter>
