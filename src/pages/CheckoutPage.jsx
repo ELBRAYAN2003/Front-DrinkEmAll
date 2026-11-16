@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, Navigate } from 'react-router'
+import { Link, Navigate, useNavigate } from 'react-router'
 import Icon from '../components/ui/Icon.jsx'
 import Campo from '../components/ui/Campo.jsx'
 import OrderSummary from '../components/cart/OrderSummary.jsx'
@@ -10,6 +10,7 @@ import { useAjustesTienda } from '../hooks/useAjustesTienda.js'
 import OpcionesDeLibreta from '../components/checkout/OpcionesDeLibreta.jsx'
 import { miPerfil } from '../api/auth.js'
 import { completarPerfil, crearPedido, mediosDePago } from '../api/tienda.js'
+import { pagarConMercadoPago } from '../api/pedidos.js'
 import { domicilios, facturacion } from '../api/libreta.js'
 import { formatoDocumento, soloDigitos } from '../lib/documento.js'
 import { calcularTotales } from '../data/cart.js'
@@ -28,6 +29,7 @@ const PASOS = [
 const DETALLE_DE_PAGO = {
   efectivo: 'Pagas en efectivo al recibir el pedido o al retirarlo.',
   transferencia: 'Te pasamos los datos de la cuenta y el local confirma el pago a mano.',
+  'mercado pago / qr': 'Pagas ahora con tarjeta, dinero en cuenta u otros medios. Te llevamos a Mercado Pago.',
 }
 const clavePago = (nombre) =>
   String(nombre).normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase()
@@ -53,6 +55,7 @@ export default function CheckoutPage() {
   const { usuario } = useAuth()
   const { lineas, vaciar } = useCarrito()
   const ajustes = useAjustesTienda()
+  const navigate = useNavigate()
 
   const [paso, setPaso] = useState(1)
   const [entrega, setEntrega] = useState('envio')
@@ -253,9 +256,23 @@ export default function CheckoutPage() {
         paymentMethodId: medioElegido.id,
       })
       // El carrito se vacia recien con la respuesta: si falla, no se pierde nada.
-      setPedido(creado)
       vaciar()
       guardarEnLaCuenta(factura, domicilio)
+
+      if (clavePago(medioElegido.name) === 'mercado pago / qr') {
+        // El pedido ya existe (con el stock reservado). Se manda a pagar a Mercado Pago;
+        // si no se puede iniciar el pago, la persona llega al detalle del pedido, donde
+        // puede reintentarlo, y no se pierde nada.
+        try {
+          const { url } = await pagarConMercadoPago(creado.id)
+          window.location.assign(url)
+          return
+        } catch {
+          navigate(`/mis-pedidos/${creado.id}?mp=error`, { replace: true })
+          return
+        }
+      }
+      setPedido(creado)
     } catch (error) {
       setErrorPedido(mensajeDelPedido(error))
     } finally {

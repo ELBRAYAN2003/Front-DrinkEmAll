@@ -1,7 +1,7 @@
-import { useCallback, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { useCallback, useEffect, useState } from 'react'
+import { Link, useParams, useSearchParams } from 'react-router'
 import Icon from '../components/ui/Icon.jsx'
-import { unPedido } from '../api/pedidos.js'
+import { conciliarPago, pagarConMercadoPago, unPedido } from '../api/pedidos.js'
 import { etiquetaDe, lineaDeTiempo } from '../lib/estadosPedido.js'
 import { formatoFechaHora, money } from '../lib/format.js'
 import { formatoDocumento } from '../lib/documento.js'
@@ -10,8 +10,23 @@ import { useRecarga } from '../hooks/useRecarga.js'
 
 const ESTADO_DE_PAGO = { pendiente: 'Pendiente', pagado: 'Pagado', cancelado: 'Cancelado' }
 
+// Mensaje al volver de Mercado Pago, segun como quedo el pago despues de conciliarlo.
+function avisoDeVuelta(mp, pago) {
+  if (pago?.status === 'pagado') return { tipo: 'ok', texto: 'Recibimos tu pago. ¡Gracias! El local ya puede preparar tu pedido.' }
+  if (mp === 'error') return { tipo: 'error', texto: 'No pudimos iniciar el pago. Tu pedido está guardado: probá de nuevo con el botón de abajo.' }
+  if (mp === 'failure' || ['rejected', 'cancelled'].includes(pago?.externalStatus)) {
+    return { tipo: 'error', texto: 'El pago no se completó. Podés intentarlo de nuevo con el botón de abajo.' }
+  }
+  return { tipo: 'info', texto: 'Tu pago está pendiente de acreditación. Cuando Mercado Pago lo confirme, lo vas a ver acá.' }
+}
+
 export default function PedidoPage() {
   const { id } = useParams()
+  const [params] = useSearchParams()
+  const vuelta = params.get('mp')
+  const [aviso, setAviso] = useState(null)
+  const [pagando, setPagando] = useState(false)
+  const [errorPago, setErrorPago] = useState(null)
   const [pedido, setPedido] = useState(null)
   const [noExiste, setNoExiste] = useState(false)
   const [error, setError] = useState(null)
@@ -29,6 +44,34 @@ export default function PedidoPage() {
   }, [id])
   const { actualizando, actualizar } = useRecarga(cargar)
 
+  // Al volver de Mercado Pago se le pregunta por el pago: no se confia en lo que diga
+  // la URL (cualquiera podria escribir ?mp=success), solo en lo que contesta el servidor.
+  useEffect(() => {
+    if (!vuelta) return undefined
+    let vigente = true
+    const conciliar = vuelta === 'error' ? Promise.resolve(null) : conciliarPago(id).catch(() => null)
+    conciliar.then((r) => {
+      if (!vigente) return
+      if (r?.order) setPedido(r.order)
+      setAviso({ mp: vuelta, pago: r?.order?.payments?.[0] ?? null })
+    })
+    return () => {
+      vigente = false
+    }
+  }, [id, vuelta])
+
+  const pagar = async () => {
+    setPagando(true)
+    setErrorPago(null)
+    try {
+      const { url } = await pagarConMercadoPago(id)
+      window.location.assign(url)
+    } catch (e) {
+      setErrorPago(mensajeDeError(e))
+      setPagando(false)
+    }
+  }
+
   if (noExiste) {
     return (
       <main className="auth pedidos">
@@ -45,6 +88,9 @@ export default function PedidoPage() {
   }
 
   const pago = pedido?.payments?.[0]
+  const esMercadoPago = /mercado pago/i.test(pago?.paymentMethod?.name ?? '')
+  const puedePagar = esMercadoPago && pago?.status === 'pendiente' && pedido?.fulfillmentStatus === 'recibido'
+  const mensaje = aviso ? avisoDeVuelta(aviso.mp, pedido?.payments?.[0] ?? aviso.pago) : null
   const pasos = pedido ? lineaDeTiempo(pedido) : []
   const direccion = pedido?.shippingAddress
 
@@ -66,6 +112,12 @@ export default function PedidoPage() {
             {actualizando ? 'Actualizando...' : 'Actualizar'}
           </button>
         </div>
+
+        {mensaje && (
+          <p className={`pedido-aviso is-${mensaje.tipo}`} role="status">
+            {mensaje.texto}
+          </p>
+        )}
 
         {error && (
           <p className="checkout-aviso" role="alert">
@@ -172,6 +224,15 @@ export default function PedidoPage() {
                   </b>
                 </li>
               </ul>
+              {puedePagar && (
+                <div className="pedido-pagar">
+                  <button type="button" className="btn btn-primary" onClick={pagar} disabled={pagando}>
+                    {pagando ? 'Abriendo Mercado Pago...' : 'Pagar con Mercado Pago'}
+                  </button>
+                  <small>Tenés un tiempo limitado para pagar: si vence, el pedido se cancela y se libera el stock.</small>
+                  {errorPago && <p className="checkout-aviso" role="alert">{errorPago}</p>}
+                </div>
+              )}
               <p className="pedido-arrepentimiento">
                 <Link to="/arrepentimiento">BOTÓN DE ARREPENTIMIENTO</Link>
               </p>

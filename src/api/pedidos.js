@@ -1,4 +1,4 @@
-import { apiGet } from '../lib/api.js'
+import { apiGet, apiPost } from '../lib/api.js'
 
 // Pedidos online de la persona con sesion iniciada. La API solo devuelve los
 // propios: un pedido ajeno contesta 404, igual que uno que no existe.
@@ -9,3 +9,9 @@ export const misPedidos = async (opciones) => {
 }
 
 export const unPedido = (id, opciones) => apiGet(`/orders/${id}`, { ...opciones, auth: true })
+
+/** Crea el cobro del pedido en Mercado Pago y devuelve { url } del formulario de pago. */
+export const pagarConMercadoPago = (id) => apiPost(`/orders/${id}/mercadopago`, { auth: true })
+
+/** Le pregunta a Mercado Pago por el pago del pedido (al volver de pagar). Devuelve { result, order }. */
+export const conciliarPago = (id) => apiPost(`/orders/${id}/mercadopago/sync`, { auth: true })
