@@ -31,9 +31,12 @@ function reducer(lineas, accion) {
   switch (accion.type) {
     case "agregar": {
       const nueva = normalizar(accion.producto);
-      if (!lineas.some((l) => l.id === nueva.id)) return [...lineas, nueva];
+      const cantidad = accion.cantidad ?? 1;
+      if (!lineas.some((l) => l.id === nueva.id)) {
+        return [...lineas, { ...nueva, cantidad: tope(nueva, cantidad) }];
+      }
       return lineas.map((l) =>
-        l.id === nueva.id ? { ...l, cantidad: tope(l, l.cantidad + 1) } : l,
+        l.id === nueva.id ? { ...l, cantidad: tope(l, l.cantidad + cantidad) } : l,
       );
     }
     case "cambiarCantidad":
@@ -65,7 +68,15 @@ export default function CarritoProvider({ children }) {
   const valor = {
     lineas,
     unidades: lineas.reduce((acc, l) => acc + l.cantidad, 0),
-    agregar: (producto) => dispatch({ type: "agregar", producto }),
+    // Devuelve cuantas unidades entraron de verdad (0 si ya estaba el maximo de stock), para poder avisarlo.
+    agregar: (producto, cantidad = 1) => {
+      const actual = lineas.find((l) => l.id === String(producto.id));
+      const stock = Number(producto.stock ?? 99) || 99;
+      const antes = actual?.cantidad ?? 0;
+      const despues = Math.max(1, Math.min(stock, antes + cantidad));
+      dispatch({ type: "agregar", producto, cantidad });
+      return Math.max(0, despues - antes);
+    },
     quitar: (id) => dispatch({ type: "quitar", id }),
     cambiarCantidad: (id, delta) =>
       dispatch({ type: "cambiarCantidad", id, delta }),

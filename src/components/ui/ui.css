@@ -383,3 +383,110 @@
     filter: grayscale(0.55);
   }
 }
+
+/* --- Aviso al agregar al carrito ------------------------------------------------- */
+.vuelo-carrito {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  width: 56px;
+  height: 56px;
+  border: 2px solid var(--brand);
+  border-radius: 50%;
+  background: #fff center / contain no-repeat;
+  box-shadow: var(--shadow-md, 0 6px 18px rgb(0 0 0 / 0.25));
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+.aviso-carrito-zona {
+  position: fixed;
+  inset: auto 0 20px 0;
+  z-index: 900;
+  display: grid;
+  justify-items: center;
+  padding-inline: 16px;
+  pointer-events: none;
+}
+
+.aviso-carrito {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(420px, 100%);
+  padding: 12px 16px;
+  border-radius: var(--radius-lg, 12px);
+  background: var(--ink, #14171c);
+  color: #fff;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.3);
+  pointer-events: auto;
+  animation: aviso-entra 0.25s var(--ease, ease-out);
+
+  .icon {
+    flex: none;
+    color: #6ee7a8;
+  }
+  span {
+    display: grid;
+    min-width: 0;
+  }
+  b {
+    font-size: 14px;
+  }
+  small {
+    overflow: hidden;
+    font-size: 12.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.8;
+  }
+  a {
+    flex: none;
+    padding-left: 12px;
+    border-left: 1px solid rgb(255 255 255 / 0.25);
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    text-decoration: underline;
+  }
+
+  &.is-tope .icon {
+    color: #ffd166;
+  }
+}
+
+@keyframes aviso-entra {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* El contador del carrito rebota cada vez que cambia (la "key" lo vuelve a crear con la animacion). */
+.dot {
+  animation: contador-rebota 0.5s var(--ease, ease-out);
+}
+
+@keyframes contador-rebota {
+  0% {
+    transform: scale(0.4);
+  }
+  55% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aviso-carrito,
+  .dot {
+    animation: none;
+  }
+}
