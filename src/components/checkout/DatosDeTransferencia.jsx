@@ -4,7 +4,7 @@ import { cbuLegible } from '../../lib/datosDelLocal.js'
 
 // Boton para copiar un dato al portapapeles (alias, CBU). Si el navegador no lo permite, no pasa nada:
 // la persona igual lo puede seleccionar a mano.
-function Copiar({ texto, etiqueta }) {
+export function Copiar({ texto, etiqueta }) {
   const [copiado, setCopiado] = useState(false)
   const copiar = async () => {
     try {

@@ -42,3 +42,6 @@ export const categoriasDelLocal = async () => (await apiGet('/categories', { par
 
 /** Crea un producto. */
 export const crearProducto = (cuerpo) => apiPost('/products', { body: cuerpo, auth: true })
+
+/** Carga la compania y/o el numero de seguimiento de un envio (preparando o en camino). */
+export const cargarEnvio = (id, cuerpo) => apiPatch(`/orders/${id}/shipping`, { body: cuerpo, auth: true })

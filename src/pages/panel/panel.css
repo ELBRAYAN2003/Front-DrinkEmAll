@@ -669,3 +669,29 @@
   border-left-color: var(--ok);
   background: #f0fbf4;
 }
+
+.panel-envio {
+  display: grid;
+  gap: 8px;
+  margin: 4px 0 16px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: #f9fafb;
+
+  h3 {
+    margin: 0;
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 600;
+  }
+  select {
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 14px;
+  }
+}
