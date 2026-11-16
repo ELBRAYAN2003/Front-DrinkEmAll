@@ -11,6 +11,7 @@ import OpcionesDeLibreta from '../components/checkout/OpcionesDeLibreta.jsx'
 import { miPerfil } from '../api/auth.js'
 import { completarPerfil, crearPedido, mediosDePago } from '../api/tienda.js'
 import { pagarConMercadoPago } from '../api/pedidos.js'
+import { iniciarEspera } from '../lib/esperaDePago.js'
 import { domicilios, facturacion } from '../api/libreta.js'
 import { formatoDocumento, soloDigitos } from '../lib/documento.js'
 import { calcularTotales } from '../data/cart.js'
@@ -265,6 +266,11 @@ export default function CheckoutPage() {
         // puede reintentarlo, y no se pierde nada.
         try {
           const { url } = await pagarConMercadoPago(creado.id)
+          // Antes de salir, esta entrada del historial pasa a ser "esperando el pago" del
+          // pedido: si la persona vuelve con "atras" desde Mercado Pago llega a esa pantalla
+          // (con la cuenta regresiva) y no a un carrito vacio.
+          iniciarEspera(creado.id)
+          navigate(`/mis-pedidos/${creado.id}?mp=waiting`, { replace: true })
           window.location.assign(url)
           return
         } catch {

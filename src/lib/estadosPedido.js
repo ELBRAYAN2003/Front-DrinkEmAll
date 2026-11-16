@@ -9,9 +9,34 @@ export const ETIQUETAS = {
   listo_para_retirar: 'Listo para retirar',
   entregado: 'Entregado',
   cancelado: 'Cancelado',
+  pago: 'Pago',
 }
 
 export const etiquetaDe = (estado) => ETIQUETAS[estado] ?? estado
+
+/** El pago del pedido (el primero), o null. */
+const pagoDe = (pedido) => pedido?.payments?.[0] ?? null
+
+/** Se paga con Mercado Pago: el pedido no avanza hasta que el pago este acreditado. */
+export const esDeMercadoPago = (pedido) => /mercado pago/i.test(pagoDe(pedido)?.paymentMethod?.name ?? '')
+
+/** Pedido de Mercado Pago que todavia no se pago (y sigue en pie). */
+export const esperaElPago = (pedido) =>
+  esDeMercadoPago(pedido) && pagoDe(pedido)?.status === 'pendiente' && pedido.fulfillmentStatus === 'recibido'
+
+/**
+ * Como se le muestra el estado a la persona. "Recibido" quiere decir que el local tiene el
+ * pedido; con Mercado Pago eso no alcanza para decir que esta todo en marcha: mientras
+ * no se acredite el pago se muestra "Pago pendiente", y cuando se acredita y el local
+ * todavia no lo empezo a preparar, "Pago recibido".
+ */
+export function estadoVisible(pedido) {
+  if (esperaElPago(pedido)) return { clave: 'esperando_pago', etiqueta: 'Pago pendiente' }
+  if (esDeMercadoPago(pedido) && pedido.fulfillmentStatus === 'recibido' && pagoDe(pedido)?.status === 'pagado') {
+    return { clave: 'pago_recibido', etiqueta: 'Pago recibido' }
+  }
+  return { clave: pedido.fulfillmentStatus, etiqueta: etiquetaDe(pedido.fulfillmentStatus) }
+}
 
 /** Los pasos que recorre un pedido: el retiro no pasa por "En camino". */
 export const pasosDe = (deliveryMethod) => [
@@ -37,11 +62,29 @@ export function lineaDeTiempo(pedido) {
 
   const pasos = pasosDe(pedido.deliveryMethod)
   const indiceActual = pasos.indexOf(actual)
-  return pasos.map((estado, i) => ({
+  const lista = pasos.map((estado, i) => ({
     estado,
     fecha: evento(estado)?.createdAt ?? null,
     nota: evento(estado)?.note ?? null,
     // "actual" es el ultimo logrado; los que siguen se muestran apagados.
     situacion: i < indiceActual ? 'hecho' : i === indiceActual ? 'actual' : 'pendiente',
   }))
+
+  // Con Mercado Pago el pago es un paso propio entre "pedido creado" y "preparando": asi
+  // se ve que el pedido esta guardado pero todavia no se cobro.
+  if (esDeMercadoPago(pedido)) {
+    const pago = pagoDe(pedido)
+    const pagado = pago?.status === 'pagado'
+    lista[0] = { ...lista[0], situacion: 'hecho' }
+    const pasoPago = {
+      estado: 'pago',
+      fecha: pagado ? (pago.paidAt ?? null) : null,
+      nota: null,
+      situacion: pagado ? (actual === 'recibido' ? 'actual' : 'hecho') : 'actual',
+    }
+    // Sin pagar, lo que sigue no puede estar hecho.
+    const resto = lista.slice(1).map((p) => (pagado ? p : { ...p, situacion: 'pendiente' }))
+    return [lista[0], pasoPago, ...resto]
+  }
+  return lista
 }

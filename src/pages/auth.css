@@ -572,3 +572,29 @@
     color: var(--muted);
   }
 }
+
+.pedido-aviso {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+
+  p {
+    margin: 0;
+  }
+}
+
+.pedido-cuenta {
+  font-size: 14px;
+
+  b {
+    font-family: var(--display);
+    font-size: 22px;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.pedido-estado.is-esperando_pago {
+  background: color-mix(in srgb, #b7791f 16%, transparent);
+  color: #8a5a00;
+}
