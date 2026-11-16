@@ -10,14 +10,32 @@ import { useRecarga } from '../hooks/useRecarga.js'
 
 const ESTADO_DE_PAGO = { pendiente: 'Pendiente', pagado: 'Pagado', cancelado: 'Cancelado' }
 
+// Al volver de Mercado Pago el pago puede tardar un rato en registrarse (el aviso o la
+// acreditacion no son instantaneos): se espera hasta 5 minutos, preguntando cada 10
+// segundos, y despues se deja de insistir. Solo ocurre al volver de pagar, no siempre.
+const ESPERA_MAXIMA_MS = 5 * 60 * 1000
+const CADA_MS = 10 * 1000
+
+const resuelto = (pago) =>
+  pago?.status === 'pagado' || ['rejected', 'cancelled'].includes(pago?.externalStatus)
+
 // Mensaje al volver de Mercado Pago, segun como quedo el pago despues de conciliarlo.
-function avisoDeVuelta(mp, pago) {
+function avisoDeVuelta(mp, pago, verificando) {
   if (pago?.status === 'pagado') return { tipo: 'ok', texto: 'Recibimos tu pago. ¡Gracias! El local ya puede preparar tu pedido.' }
+  if (verificando) {
+    return {
+      tipo: 'info',
+      texto: 'Estamos confirmando tu pago con Mercado Pago. Puede demorar unos minutos: no hace falta que cierres esta página.',
+    }
+  }
   if (mp === 'error') return { tipo: 'error', texto: 'No pudimos iniciar el pago. Tu pedido está guardado: probá de nuevo con el botón de abajo.' }
   if (mp === 'failure' || ['rejected', 'cancelled'].includes(pago?.externalStatus)) {
     return { tipo: 'error', texto: 'El pago no se completó. Podés intentarlo de nuevo con el botón de abajo.' }
   }
-  return { tipo: 'info', texto: 'Tu pago está pendiente de acreditación. Cuando Mercado Pago lo confirme, lo vas a ver acá.' }
+  return {
+    tipo: 'info',
+    texto: 'Todavía no vemos tu pago acreditado. Si ya pagaste, se va a actualizar solo cuando Mercado Pago lo confirme; podés revisar con el botón Actualizar.',
+  }
 }
 
 export default function PedidoPage() {
@@ -25,6 +43,7 @@ export default function PedidoPage() {
   const [params] = useSearchParams()
   const vuelta = params.get('mp')
   const [aviso, setAviso] = useState(null)
+  const [verificando, setVerificando] = useState(false)
   const [pagando, setPagando] = useState(false)
   const [errorPago, setErrorPago] = useState(null)
   const [pedido, setPedido] = useState(null)
@@ -46,17 +65,28 @@ export default function PedidoPage() {
 
   // Al volver de Mercado Pago se le pregunta por el pago: no se confia en lo que diga
   // la URL (cualquiera podria escribir ?mp=success), solo en lo que contesta el servidor.
+  // Si el pago todavia no figura, se vuelve a preguntar hasta 5 minutos (ver arriba).
   useEffect(() => {
     if (!vuelta) return undefined
     let vigente = true
-    const conciliar = vuelta === 'error' ? Promise.resolve(null) : conciliarPago(id).catch(() => null)
-    conciliar.then((r) => {
+    let temporizador
+    const inicio = Date.now()
+
+    const consultar = async () => {
+      const r = vuelta === 'error' ? null : await conciliarPago(id).catch(() => null)
       if (!vigente) return
       if (r?.order) setPedido(r.order)
-      setAviso({ mp: vuelta, pago: r?.order?.payments?.[0] ?? null })
-    })
+      const pago = r?.order?.payments?.[0] ?? null
+      // Se insiste solo si volvio de pagar o quedo pendiente (no si ya fallo) y no hay resultado.
+      const insistir = vuelta !== 'failure' && vuelta !== 'error' && !resuelto(pago) && Date.now() - inicio < ESPERA_MAXIMA_MS
+      setVerificando(insistir)
+      setAviso({ mp: vuelta, pago })
+      if (insistir) temporizador = setTimeout(consultar, CADA_MS)
+    }
+    consultar()
     return () => {
       vigente = false
+      clearTimeout(temporizador)
     }
   }, [id, vuelta])
 
@@ -90,7 +120,7 @@ export default function PedidoPage() {
   const pago = pedido?.payments?.[0]
   const esMercadoPago = /mercado pago/i.test(pago?.paymentMethod?.name ?? '')
   const puedePagar = esMercadoPago && pago?.status === 'pendiente' && pedido?.fulfillmentStatus === 'recibido'
-  const mensaje = aviso ? avisoDeVuelta(aviso.mp, pedido?.payments?.[0] ?? aviso.pago) : null
+  const mensaje = aviso ? avisoDeVuelta(aviso.mp, pedido?.payments?.[0] ?? aviso.pago, verificando) : null
   const pasos = pedido ? lineaDeTiempo(pedido) : []
   const direccion = pedido?.shippingAddress
 
