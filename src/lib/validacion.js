@@ -18,6 +18,47 @@ const CODIGO_POSTAL = /^(\d{4}|[A-Za-z]\d{4}[A-Za-z]{3})$/
 
 const requerido = (v, mensaje) => (v.trim() ? null : mensaje)
 
+/**
+ * Solo los digitos del DNI. Se acepta "12.345.678", "12 345 678" o "12345678" y se
+ * guarda siempre igual: el backend exige un DNI por cuenta, y con distintas
+ * escrituras dos personas (o la misma) podrian repetirlo sin que se note.
+ */
+export const normalizarDni = (v) => String(v ?? '').replace(/[.\s-]/g, '')
+
+// La venta de alcohol a menores de 18 esta prohibida (Ley 24.788). El servidor
+// repite esta misma comprobacion y es el que decide; aca solo se evita el viaje.
+export const EDAD_MINIMA = 18
+
+const FECHA_ISO = /^(\d{4})-(\d{2})-(\d{2})$/
+
+/** Anios cumplidos a la fecha `hoy` (por defecto, hoy), con ambas como "AAAA-MM-DD". */
+export function edadEn(nacimiento, hoy = fechaDeHoy()) {
+  const [, na, nm, nd] = nacimiento.match(FECHA_ISO).map(Number)
+  const [, ha, hm, hd] = hoy.match(FECHA_ISO).map(Number)
+  const yaCumplio = hm > nm || (hm === nm && hd >= nd)
+  return ha - na - (yaCumplio ? 0 : 1)
+}
+
+/** Hoy como "AAAA-MM-DD" en la hora local de la persona (toISOString usaria UTC y puede dar "manana"). */
+export function fechaDeHoy(ahora = new Date()) {
+  const dos = (n) => String(n).padStart(2, '0')
+  return `${ahora.getFullYear()}-${dos(ahora.getMonth() + 1)}-${dos(ahora.getDate())}`
+}
+
+/** La fecha mas reciente que todavia permite tener 18 anos hoy: sirve de tope del selector de fechas. */
+export function fechaMaximaNacimiento(hoy = fechaDeHoy()) {
+  const [a, m, d] = hoy.split('-')
+  return `${Number(a) - EDAD_MINIMA}-${m}-${d}`
+}
+
+function fechaExiste(iso) {
+  const partes = iso.match(FECHA_ISO)
+  if (!partes) return false
+  const [, a, m, d] = partes.map(Number)
+  const f = new Date(Date.UTC(a, m - 1, d))
+  return f.getUTCFullYear() === a && f.getUTCMonth() === m - 1 && f.getUTCDate() === d
+}
+
 const REGLAS = {
   nombre: (v) =>
     requerido(v, 'Ingresa tu nombre') ??
@@ -53,6 +94,29 @@ const REGLAS = {
     requerido(v, 'Ingresa la ciudad') ??
     (v.trim().length < 2 ? 'El nombre de la ciudad es demasiado corto' : null),
 
+  fechaNacimiento: (v) => {
+    if (!v) return 'Ingresa tu fecha de nacimiento'
+    if (!fechaExiste(v)) return 'La fecha de nacimiento no es valida'
+    if (v > fechaDeHoy()) return 'La fecha de nacimiento no puede ser futura'
+    if (edadEn(v) < EDAD_MINIMA) return `Tenes que ser mayor de ${EDAD_MINIMA} anos para crear una cuenta`
+    return null
+  },
+
+  // 7 u 8 digitos: cubre los DNI actuales, tambien los de numeracion baja. Solo
+  // se revisa la forma; no se contrasta con ningun registro oficial.
+  dni: (v) => {
+    const vacio = requerido(v, 'Ingresa tu DNI')
+    if (vacio) return vacio
+    const digitos = normalizarDni(v)
+    if (!/^\d+$/.test(digitos)) return 'El DNI tiene solo numeros'
+    return digitos.length >= 7 && digitos.length <= 8 ? null : 'El DNI tiene 7 u 8 numeros'
+  },
+
+  // No se recorta: los espacios al principio o al final cuentan como parte de la
+  // contrasena. El minimo es el que exige la API al crear la cuenta.
+  password: (v) =>
+    v.length === 0 ? 'Ingresa una contrasena' : v.length < 8 ? 'Usa al menos 8 caracteres' : null,
+
   codigoPostal: (v) =>
     requerido(v, 'Ingresa el codigo postal') ??
     (CODIGO_POSTAL.test(v.trim()) ? null : 'Usa 4 digitos (3500) o el formato CPA (H3500ABC)'),
@@ -80,5 +144,43 @@ export function validarPaso(paso, datos, { retiroEnLocal = false } = {}) {
     const error = validarCampo(campo, datos[campo])
     if (error) errores[campo] = error
   }
+  return errores
+}
+
+/** Errores del formulario de ingreso. Solo se pide lo que la API pide. */
+export function validarIngreso({ email, password }) {
+  const errores = {}
+  const correo = validarCampo('email', email)
+  if (correo) errores.email = correo
+  if (!password) errores.password = 'Ingresa tu contrasena'
+  return errores
+}
+
+/** Errores del formulario de registro. El telefono es opcional: solo se revisa si se escribio. */
+export function validarRegistro(datos) {
+  const errores = {}
+  for (const campo of ['nombre', 'apellido', 'fechaNacimiento', 'dni', 'email', 'password']) {
+    const error = validarCampo(campo, datos[campo])
+    if (error) errores[campo] = error
+  }
+  if (datos.telefono.trim()) {
+    const error = validarCampo('telefono', datos.telefono)
+    if (error) errores.telefono = error
+  }
+  if (!errores.password && datos.password !== datos.confirmar) {
+    errores.confirmar = 'Las contrasenas no coinciden'
+  }
+  if (!datos.privacidad) errores.privacidad = 'Acepta la politica de privacidad para crear la cuenta'
+  return errores
+}
+
+/** Errores al cambiar la contrasena desde "Mi cuenta". */
+export function validarCambioPassword({ actual, nueva, confirmar }) {
+  const errores = {}
+  if (!actual) errores.actual = 'Ingresa tu contrasena actual'
+  const error = validarCampo('password', nueva)
+  if (error) errores.nueva = error
+  else if (nueva === actual) errores.nueva = 'La nueva tiene que ser distinta de la actual'
+  else if (nueva !== confirmar) errores.confirmar = 'Las contrasenas no coinciden'
   return errores
 }

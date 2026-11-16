@@ -2,10 +2,12 @@ import { Link } from "react-router";
 import Icon from "../components/ui/Icon.jsx";
 import OrderSummary from "../components/cart/OrderSummary.jsx";
 import { money } from "../lib/format.js";
+import { useAuth } from "../hooks/useAuth.js";
 import { useCarrito } from "../hooks/useCarrito.js";
 
 export default function CartPage() {
   const { lineas, unidades, quitar, cambiarCantidad } = useCarrito();
+  const { autenticado } = useAuth();
 
   return (
     <main className="cart">
@@ -100,6 +102,15 @@ export default function CartPage() {
               Finalizar compra
               <Icon name="right" size={16} />
             </Link>
+            {!autenticado && (
+              <p className="summary-cuenta">
+                Para finalizar la compra necesitas una cuenta.{" "}
+                <Link to="/ingresar" state={{ desde: "/checkout" }}>Ingresar</Link>
+                {" "}o{" "}
+                <Link to="/registro" state={{ desde: "/checkout" }}>crear una</Link>.
+                Tu carrito se conserva.
+              </p>
+            )}
             <p className="summary-note">
               Los impuestos se calculan en el checkout.
             </p>

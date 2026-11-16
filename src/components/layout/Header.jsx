@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import Icon from '../ui/Icon.jsx'
+import { useAuth } from '../../hooks/useAuth.js'
 import { useCarrito } from '../../hooks/useCarrito.js'
 import { useCategorias } from '../../hooks/useCatalogo.js'
 
@@ -48,6 +49,9 @@ export default function Header() {
   const navigate = useNavigate()
   const categorias = useCategorias()
   const { unidades } = useCarrito()
+  const { autenticado, usuario } = useAuth()
+  // Solo el primer nombre y acotado: el espacio del boton es chico.
+  const primerNombre = usuario?.name?.split(' ')[0]?.slice(0, 12)
 
   // Cada item de la barra es una categoria real. Antes habia grupos inventados
   // ("Destilados", "Sin alcohol") que no existen como categoria: al hacerles
@@ -150,14 +154,13 @@ export default function Header() {
               </span>
             </span>
 
-            {/* Texto y no enlace: no hay sistema de cuentas todavia. */}
-            <span className="action is-pendiente" title="Proximamente">
+            <Link className="action" to={autenticado ? '/mi-cuenta' : '/ingresar'}>
               <Icon name="user" size={22} />
               <span className="action-text">
-                <small>Hola</small>
-                <b>Mi cuenta</b>
+                <small>{autenticado ? `Hola, ${primerNombre}` : 'Hola'}</small>
+                <b>{autenticado ? 'Mi cuenta' : 'Ingresar'}</b>
               </span>
-            </span>
+            </Link>
 
             {/* Favoritos se saca entero: no existe la funcionalidad y el enlace
                 no llevaba a ningun lado. El contador decia 3. */}
@@ -196,6 +199,11 @@ export default function Header() {
                 </Link>
               </li>
             ))}
+            <li>
+              <Link to={autenticado ? '/mi-cuenta' : '/ingresar'} onClick={() => setOpen(false)}>
+                {autenticado ? 'Mi cuenta' : 'Ingresar o crear cuenta'}
+              </Link>
+            </li>
             <li>
               <span className="drawer-pendiente">
                 Seguir mi pedido <small>Proximamente</small>
