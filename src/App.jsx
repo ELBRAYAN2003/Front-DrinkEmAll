@@ -11,6 +11,7 @@ import PanelProductosPage from "./pages/panel/PanelProductosPage.jsx";
 import PanelArrepentimientosPage from "./pages/panel/PanelArrepentimientosPage.jsx";
 import PanelLocalPage from "./pages/panel/PanelLocalPage.jsx";
 import AgeGate from "./components/layout/AgeGate.jsx";
+import AvisoCarrito from "./components/ui/AvisoCarrito.jsx";
 import Footer from "./components/layout/Footer.jsx";
 import Header from "./components/layout/Header.jsx";
 import AuthProvider from "./context/AuthProvider.jsx";
@@ -73,6 +74,7 @@ function Contenido() {
       <Tienda />
       <Footer />
       <InvitacionCuenta />
+      <AvisoCarrito />
     </>
   );
 }

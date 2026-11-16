@@ -1,4 +1,5 @@
 import { Link } from 'react-router'
+import { anunciarAgregado } from '../../lib/anunciarAgregado.js'
 import Countdown from './Countdown.jsx'
 import Icon from './Icon.jsx'
 import Stars from './Stars.jsx'
@@ -66,7 +67,10 @@ export default function ProductCard({ product }) {
             type="button"
             className="btn btn-primary"
             disabled={soldOut}
-            onClick={() => agregar(product)}
+            onClick={(e) => {
+              const entraron = agregar(product)
+              anunciarAgregado({ origen: e.currentTarget, imagen: product.image, nombre: product.name, cantidad: entraron })
+            }}
           >
             <Icon name="cart" size={18} />
             {soldOut ? 'Sin stock' : 'Agregar'}

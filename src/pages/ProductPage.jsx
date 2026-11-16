@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { anunciarAgregado } from '../lib/anunciarAgregado.js'
 import { Link, useParams } from 'react-router'
 import Carousel from '../components/ui/Carousel.jsx'
 import Icon from '../components/ui/Icon.jsx'
@@ -145,10 +146,9 @@ export default function ProductPage() {
               type="button"
               className="btn btn-primary product-buy-cta"
               disabled={agotado}
-              // El contexto agrega de a uno: se repite por la cantidad elegida
-              // en vez de duplicar la logica de tope en esta pagina.
-              onClick={() => {
-                for (let i = 0; i < cantidad; i++) agregar(producto)
+              onClick={(e) => {
+                const entraron = agregar(producto, cantidad)
+                anunciarAgregado({ origen: e.currentTarget, imagen: producto.image, nombre: producto.name, cantidad: entraron })
               }}
             >
               <Icon name="cart" size={18} />

@@ -167,9 +167,9 @@ export default function Header() {
             {/* Las cuentas del comercio no compran: sin carrito. */}
             {!esPersonal && (
               <Link className="action" to="/carrito">
-                <span className="action-icon">
+                <span className="action-icon" data-carrito-destino>
                   <Icon name="cart" size={22} />
-                  {unidades > 0 && <i className="dot">{unidades}</i>}
+                  {unidades > 0 && <i className="dot" key={unidades}>{unidades}</i>}
                 </span>
                 <span className="action-text">
                   <small>Ver</small>
