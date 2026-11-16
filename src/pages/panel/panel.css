@@ -621,3 +621,51 @@
   background: #fff5f5;
   line-height: 1.5;
 }
+
+/* --- Productos: guardado automatico y alta ---------------------------------------- */
+.panel-estado {
+  min-width: 150px;
+  white-space: normal;
+}
+
+.panel-estado-acciones {
+  display: flex;
+  gap: 10px;
+
+  button {
+    font-size: 12px;
+    color: var(--brand);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+}
+
+.panel-campo.is-invalido {
+  border-color: var(--danger);
+  background: #fff5f5;
+}
+
+.panel-nuevo {
+  margin-bottom: 16px;
+
+  h2 {
+    margin-bottom: 12px;
+  }
+  .panel-form-grilla {
+    margin-bottom: 12px;
+  }
+  select {
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 14px;
+  }
+}
+
+.panel-creado {
+  border-left-color: var(--ok);
+  background: #f0fbf4;
+}
