@@ -74,10 +74,13 @@ export const SECCIONES = [
     titulo: '5. Medios de pago',
     bloques: [
       {
-        p: 'Solo se aceptan efectivo (al recibir el pedido o al retirarlo) y transferencia bancaria. No se aceptan tarjetas ni otros medios y el sitio no guarda datos de tarjetas.',
+        p: 'Se aceptan efectivo (al recibir el pedido o al retirarlo), transferencia bancaria y, cuando está habilitado, Mercado Pago. El sitio no guarda datos de tarjetas.',
       },
       {
         p: 'En las transferencias, el comercio confirma el pago a mano. Los datos de la cuenta se informan al confirmar el pedido: [DATO PENDIENTE: alias o CBU y titular]. Plazo para acreditar la transferencia antes de que el pedido se cancele: [DATO PENDIENTE].',
+      },
+      {
+        p: 'Con Mercado Pago el pago se hace en el sitio de Mercado Pago, que procesa los datos de la tarjeta o de la cuenta bajo sus propios términos y recibe los datos de la compra necesarios para cobrarla. El pedido queda reservado durante [DATO PENDIENTE: confirmar el plazo; hoy 60 minutos] para que se complete el pago: pasado ese plazo sin pagarse, se cancela solo y se libera el stock. Si el pago se aprueba, el pedido pasa a Pagado; si queda pendiente de acreditación, se actualiza cuando Mercado Pago lo confirma.',
       },
     ],
   },
