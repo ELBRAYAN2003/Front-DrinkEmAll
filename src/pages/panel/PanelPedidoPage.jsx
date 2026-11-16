@@ -94,6 +94,7 @@ export default function PanelPedidoPage() {
           <table className="panel-tabla">
             <thead>
               <tr>
+                <th>Código</th>
                 <th>Producto</th>
                 <th className="num">Cant.</th>
                 <th className="num">Stock</th>
@@ -103,6 +104,7 @@ export default function PanelPedidoPage() {
             <tbody>
               {pedido.items.map((it) => (
                 <tr key={it.id}>
+                  <td className="panel-sku">{it.product?.sku ?? '-'}</td>
                   <td>{it.product?.name ?? `Producto ${it.productId}`}</td>
                   <td className="num"><b>{it.quantity}</b></td>
                   <td className="num">{it.product?.stock ?? '-'}</td>
@@ -112,11 +114,11 @@ export default function PanelPedidoPage() {
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan="3">Envío</td>
+                <td colSpan="4">Envío</td>
                 <td className="num">{pedido.shippingCost === 0 ? 'Sin cargo' : money.format(pedido.shippingCost)}</td>
               </tr>
               <tr>
-                <td colSpan="3"><b>Total</b></td>
+                <td colSpan="4"><b>Total</b></td>
                 <td className="num"><b>{money.format(pedido.total)}</b></td>
               </tr>
             </tfoot>

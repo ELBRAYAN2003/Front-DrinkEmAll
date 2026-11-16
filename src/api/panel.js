@@ -25,7 +25,8 @@ export const arrepentimientos = async (estado) => {
 export const atenderArrepentimiento = (id, nota) =>
   apiPatch(`/revocations/${id}`, { body: { status: 'atendida', ...(nota && { note: nota }) }, auth: true })
 
-/** Productos para el panel: busca por texto; incluye los inactivos. */
-export const productosDelComercio = (params) => apiGet('/products', { params: { pageSize: 25, ...params }, auth: true })
+/** Productos para el panel: busca por nombre, marca o codigo (sku); incluye los inactivos. */
+export const productosDelComercio = (params) =>
+  apiGet('/products', { params: { pageSize: 25, includeSku: true, ...params }, auth: true })
 export const actualizarProducto = (id, cuerpo) => apiPatch(`/products/${id}`, { body: cuerpo, auth: true })
 export const desactivarProducto = (id) => apiDelete(`/products/${id}`, { auth: true })

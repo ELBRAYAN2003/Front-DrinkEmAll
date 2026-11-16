@@ -38,6 +38,7 @@ function Fila({ producto, alGuardar }) {
       <td>
         <b>{producto.name}</b>
         <small>
+          {producto.sku ? `Código ${producto.sku} · ` : ''}
           {producto.brand}
           {!producto.active && ' · Inactivo'}
         </small>

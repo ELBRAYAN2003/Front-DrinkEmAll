@@ -50,6 +50,7 @@ export default function PanelPrepararPage() {
             <table className="panel-tabla">
               <thead>
                 <tr>
+                  <th>Código</th>
                   <th>Producto</th>
                   <th className="num">Unidades</th>
                   <th className="num">Stock</th>
@@ -59,6 +60,7 @@ export default function PanelPrepararPage() {
               <tbody>
                 {lista.map((p) => (
                   <tr key={p.productId}>
+                    <td className="panel-sku">{p.sku ?? '-'}</td>
                     <td>{p.nombre}</td>
                     <td className="num"><b>{p.cantidad}</b></td>
                     <td className="num">{p.stock ?? '-'}</td>

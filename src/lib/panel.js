@@ -48,6 +48,7 @@ export function quePreparar(pedidos) {
       const previo = porProducto.get(it.productId) ?? {
         productId: it.productId,
         nombre: it.product?.name ?? `Producto ${it.productId}`,
+        sku: it.product?.sku ?? null,
         stock: it.product?.stock ?? null,
         cantidad: 0,
         pedidos: [],
