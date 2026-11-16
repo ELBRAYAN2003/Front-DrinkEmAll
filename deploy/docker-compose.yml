@@ -56,6 +56,9 @@ services:
       CORS_ORIGIN: https://drinkemall.sbcorp.site
       IVA_PERCENTAGE: 21
       LOW_STOCK_THRESHOLD: 10
+      # Caddy es un unico salto delante de la API: sin esto el limite de intentos de
+      # ingreso cuenta a todos los visitantes como una sola IP (la del proxy).
+      TRUST_PROXY: 1
       # Tienda online. Los de envio son PROVISORIOS hasta que el comercio los confirme;
       # el vendedor y los datos de transferencia/retiro se definen en .env (sin valor,
       # el pedido online responde 503 o muestra el dato como pendiente).
