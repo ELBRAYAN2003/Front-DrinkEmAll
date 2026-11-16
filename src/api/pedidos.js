@@ -15,3 +15,6 @@ export const pagarConMercadoPago = (id) => apiPost(`/orders/${id}/mercadopago`, 
 
 /** Le pregunta a Mercado Pago por el pago del pedido (al volver de pagar). Devuelve { result, order }. */
 export const conciliarPago = (id) => apiPost(`/orders/${id}/mercadopago/sync`, { auth: true })
+
+/** El cliente cancela su pedido (solo si no se pago y el local no empezo a prepararlo). */
+export const cancelarMiPedido = (id) => apiPost(`/orders/${id}/cancel`, { auth: true })
