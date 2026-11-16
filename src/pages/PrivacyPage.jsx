@@ -172,6 +172,18 @@ export default function PrivacyPage() {
             el nombre necesarios para la entrega. No se ceden a otros terceros.
           </p>
 
+          <h3>3.3 bis Solicitudes de arrepentimiento</h3>
+          <p>
+            Si usa el <b>botón de arrepentimiento</b> (no requiere cuenta) se guardan
+            en el servidor su nombre, el correo o teléfono de contacto, el número de
+            pedido y el mensaje si los escribe, la fecha y un código de
+            identificacion. Se usan exclusivamente para responder la solicitud
+            dentro de las 24 horas y coordinar la devolucion, y las ve solamente
+            el personal del comercio. Se conservan mientras sea necesario para
+            acreditar el cumplimiento de la normativa de defensa del consumidor
+            (plazo exacto pendiente de definir por el comercio).
+          </p>
+
           <h3>3.4 Datos que no recolectamos</h3>
           <ul className="legal-lista">
             <li>
