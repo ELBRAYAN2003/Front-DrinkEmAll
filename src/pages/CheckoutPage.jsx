@@ -7,14 +7,17 @@ import { money } from '../lib/format.js'
 import { useCarrito } from '../hooks/useCarrito.js'
 import { useAuth } from '../hooks/useAuth.js'
 import { useAjustesTienda } from '../hooks/useAjustesTienda.js'
+import OpcionesDeLibreta from '../components/checkout/OpcionesDeLibreta.jsx'
 import { miPerfil } from '../api/auth.js'
 import { completarPerfil, crearPedido, mediosDePago } from '../api/tienda.js'
+import { domicilios, facturacion } from '../api/libreta.js'
+import { formatoDocumento, soloDigitos } from '../lib/documento.js'
 import { calcularTotales } from '../data/cart.js'
 import { mensajeDeError } from '../lib/mensajeDeError.js'
 import { camposDelPaso, fechaMaximaNacimiento, normalizarDni, validarCampo, validarPaso } from '../lib/validacion.js'
 
 const PASOS = [
-  { id: 1, titulo: 'Tus datos' },
+  { id: 1, titulo: 'Facturacion' },
   { id: 2, titulo: 'Entrega' },
   { id: 3, titulo: 'Pago' },
   { id: 4, titulo: 'Confirmar' },
@@ -37,6 +40,11 @@ const DATOS_VACIOS = {
   ciudad: 'Juan Jose Castelli',
   codigoPostal: '',
   referencia: '',
+  domEtiqueta: '',
+  facNombre: '',
+  facTipo: 'DNI',
+  facDoc: '',
+  facCorreo: '',
 }
 
 const ESTADOS = { pending: 'Pendiente' }
@@ -57,6 +65,14 @@ export default function CheckoutPage() {
   const [medios, setMedios] = useState(null)
   const [falloCarga, setFalloCarga] = useState(false)
 
+  // Libreta de la cuenta y lo que se eligio de ella. 'cuenta' = los datos de la
+  // cuenta; 'nueva'/'nuevo' = cargar otros; un id = uno guardado.
+  const [libreta, setLibreta] = useState({ domicilios: [], facturacion: [] })
+  const [facturaElegida, setFacturaElegida] = useState('cuenta')
+  const [domicilioElegido, setDomicilioElegido] = useState('nuevo')
+  const [guardarFactura, setGuardarFactura] = useState(false)
+  const [guardarDomicilio, setGuardarDomicilio] = useState(false)
+
   const [datos, setDatos] = useState(DATOS_VACIOS)
   const [errores, setErrores] = useState({})
   const [tocados, setTocados] = useState({})
@@ -65,11 +81,18 @@ export default function CheckoutPage() {
 
   useEffect(() => {
     let vigente = true
-    Promise.all([miPerfil(), mediosDePago()])
-      .then(([ficha, lista]) => {
+    Promise.all([miPerfil(), mediosDePago(), domicilios.listar(), facturacion.listar()])
+      .then(([ficha, lista, doms, facts]) => {
         if (!vigente) return
         setPerfil(ficha)
         setMedios(lista)
+        setLibreta({ domicilios: doms, facturacion: facts })
+        // Lo predeterminado viene marcado; sin libreta, los datos de la cuenta (el DNI que
+        // falte se pide en este mismo paso, para el control de edad).
+        const porDefecto = facts.find((f) => f.isDefault)
+        setFacturaElegida(porDefecto ? `f${porDefecto.id}` : 'cuenta')
+        const domPorDefecto = doms.find((d) => d.isDefault)
+        setDomicilioElegido(domPorDefecto ? `d${domPorDefecto.id}` : 'nuevo')
         // El telefono de la cuenta se ofrece de entrada; se puede cambiar para este pedido.
         // El alta lo guarda en el usuario y no siempre en la ficha, por eso se mira tambien ahi.
         const telefono = ficha.phone || usuario?.phone
@@ -89,7 +112,9 @@ export default function CheckoutPage() {
   const faltantes = perfil
     ? [!perfil.birthDate && 'fechaNacimiento', !perfil.documentNumber && 'dni'].filter(Boolean)
     : []
-  const opciones = { retiroEnLocal, faltantes }
+  const facturaNueva = facturaElegida === 'nueva'
+  const domicilioNuevo = domicilioElegido === 'nuevo'
+  const opciones = { retiroEnLocal, faltantes, facturaNueva, domicilioNuevo }
 
   // Medios que se ofrecen: los que la API declara para pedidos online y existen cargados.
   const permitidos = new Set((ajustes?.onlinePaymentMethods ?? ['Efectivo', 'Transferencia']).map(clavePago))
@@ -98,12 +123,12 @@ export default function CheckoutPage() {
 
   const cambiar = (campo, valor) => {
     setDatos((previos) => ({ ...previos, [campo]: valor }))
-    if (tocados[campo]) setErrores((previos) => ({ ...previos, [campo]: validarCampo(campo, valor) }))
+    if (tocados[campo]) setErrores((previos) => ({ ...previos, [campo]: validarCampo(campo, valor, { ...datos, [campo]: valor }) }))
   }
 
   const salir = (campo) => {
     setTocados((previos) => ({ ...previos, [campo]: true }))
-    setErrores((previos) => ({ ...previos, [campo]: validarCampo(campo, datos[campo]) }))
+    setErrores((previos) => ({ ...previos, [campo]: validarCampo(campo, datos[campo], datos) }))
   }
 
   // Revisa un paso entero y marca sus campos para que los mensajes salgan juntos.
@@ -142,6 +167,52 @@ export default function CheckoutPage() {
     setPaso(destino)
   }
 
+  // Datos de facturacion y domicilio que van en el pedido, segun lo elegido.
+  const datosDeFactura = () => {
+    if (facturaElegida === 'cuenta') {
+      return {
+        fullName: `${perfil.firstName ?? ''} ${perfil.lastName ?? ''}`.trim() || usuario?.name || '',
+        taxIdType: 'DNI',
+        taxId: perfil.documentNumber || normalizarDni(datos.dni),
+        email: usuario?.email ?? '',
+      }
+    }
+    if (facturaElegida === 'nueva') {
+      return {
+        fullName: datos.facNombre.trim(),
+        taxIdType: datos.facTipo,
+        taxId: soloDigitos(datos.facDoc),
+        email: datos.facCorreo.trim(),
+      }
+    }
+    const f = libreta.facturacion.find((x) => `f${x.id}` === facturaElegida)
+    return { fullName: f.fullName, taxIdType: f.taxIdType, taxId: f.taxId, email: f.email }
+  }
+
+  const datosDeDomicilio = () => {
+    if (domicilioElegido === 'nuevo') {
+      return {
+        street: datos.direccion.trim(),
+        city: datos.ciudad.trim(),
+        postalCode: datos.codigoPostal.trim().toUpperCase(),
+        ...(datos.referencia.trim() && { reference: datos.referencia.trim() }),
+      }
+    }
+    const d = libreta.domicilios.find((x) => `d${x.id}` === domicilioElegido)
+    return { street: d.street, city: d.city, postalCode: d.postalCode, ...(d.reference && { reference: d.reference }) }
+  }
+
+  // Lo nuevo se guarda en la cuenta solo si la persona lo pidio, y sin bloquear nada:
+  // el pedido ya esta hecho, y que no entre en la libreta (o que ya haya 10) no es un error de compra.
+  const guardarEnLaCuenta = async (factura, domicilio) => {
+    const tareas = []
+    if (facturaNueva && guardarFactura) tareas.push(facturacion.crear(factura))
+    if (!retiroEnLocal && domicilioNuevo && guardarDomicilio) {
+      tareas.push(domicilios.crear({ ...domicilio, ...(datos.domEtiqueta.trim() && { label: datos.domEtiqueta.trim() }) }))
+    }
+    await Promise.allSettled(tareas)
+  }
+
   const confirmar = async (e) => {
     e.preventDefault()
     // El submit puede dispararse con Enter desde cualquier campo, y mientras hay
@@ -171,23 +242,20 @@ export default function CheckoutPage() {
         setPerfil(await completarPerfil(completar))
       }
 
+      const factura = datosDeFactura()
+      const domicilio = retiroEnLocal ? null : datosDeDomicilio()
       const creado = await crearPedido({
         items: lineas.map((l) => ({ productId: Number(l.id), quantity: l.cantidad })),
         deliveryMethod: entrega,
-        ...(!retiroEnLocal && {
-          shippingAddress: {
-            street: datos.direccion.trim(),
-            city: datos.ciudad.trim(),
-            postalCode: datos.codigoPostal.trim().toUpperCase(),
-            ...(datos.referencia.trim() && { reference: datos.referencia.trim() }),
-          },
-        }),
+        ...(domicilio && { shippingAddress: domicilio }),
         contactPhone: datos.telefono.trim(),
+        billing: factura,
         paymentMethodId: medioElegido.id,
       })
       // El carrito se vacia recien con la respuesta: si falla, no se pierde nada.
       setPedido(creado)
       vaciar()
+      guardarEnLaCuenta(factura, domicilio)
     } catch (error) {
       setErrorPedido(mensajeDelPedido(error))
     } finally {
@@ -206,6 +274,32 @@ export default function CheckoutPage() {
   }
 
   if (lineas.length === 0) return <Navigate to="/carrito" replace />
+
+  const nombreDeCuenta = `${perfil?.firstName ?? ''} ${perfil?.lastName ?? ''}`.trim() || usuario?.name
+  const dniDeCuenta = perfil?.documentNumber || normalizarDni(datos.dni)
+  const opcionesDeFactura = [
+    {
+      id: 'cuenta',
+      titulo: 'Usar los datos de mi cuenta',
+      detalle: `${nombreDeCuenta} - ${dniDeCuenta ? formatoDocumento('DNI', dniDeCuenta) : 'DNI sin cargar'} - ${usuario?.email}`,
+    },
+    ...libreta.facturacion.map((f) => ({
+      id: `f${f.id}`,
+      titulo: f.label || f.fullName,
+      detalle: `${f.fullName} - ${formatoDocumento(f.taxIdType, f.taxId)} - ${f.email}`,
+      predeterminado: f.isDefault,
+    })),
+    { id: 'nueva', titulo: 'Usar otros datos', detalle: 'Los cargas para este pedido' },
+  ]
+  const opcionesDeDomicilio = [
+    ...libreta.domicilios.map((d) => ({
+      id: `d${d.id}`,
+      titulo: d.label || d.street,
+      detalle: `${d.street}, ${d.city} (${d.postalCode})${d.reference ? ` - ${d.reference}` : ''}`,
+      predeterminado: d.isDefault,
+    })),
+    { id: 'nuevo', titulo: 'Usar otro domicilio', detalle: 'Lo cargas para este pedido' },
+  ]
 
   const errorDe = (campo) => (tocados[campo] ? errores[campo] : null)
   const faltaAlgo = camposDelPaso(paso, opciones).some((campo) => errorDe(campo))
@@ -256,7 +350,7 @@ export default function CheckoutPage() {
             <form className="checkout-panel" onSubmit={confirmar} noValidate>
               {paso === 1 && (
                 <section>
-                  <h2>Tus datos</h2>
+                  <h2>Facturacion y contacto</h2>
                   <p className="checkout-cuenta">
                     Compras como <b>{usuario?.name}</b> ({usuario?.email}).
                   </p>
@@ -307,6 +401,82 @@ export default function CheckoutPage() {
                       cambiar despues.
                     </p>
                   )}
+
+                  <h3 className="checkout-subtitulo">Datos para la factura</h3>
+                  <OpcionesDeLibreta
+                    nombre="factura"
+                    elegida={facturaElegida}
+                    onElegir={setFacturaElegida}
+                    opciones={opcionesDeFactura}
+                  />
+
+                  {facturaNueva && (
+                    <>
+                      <div className="fields">
+                        <Campo
+                          campo="facNombre"
+                          etiqueta="Nombre o razon social"
+                          type="text"
+                          autoComplete="name"
+                          ancho
+                          valor={datos.facNombre}
+                          error={errorDe('facNombre')}
+                          onCambio={cambiar}
+                          onSalida={salir}
+                        />
+                        <label>
+                          <span>Tipo de documento</span>
+                          <select
+                            name="facTipo"
+                            value={datos.facTipo}
+                            onChange={(e) => {
+                              cambiar('facTipo', e.target.value)
+                              // El numero se vuelve a revisar con el tipo nuevo.
+                              if (tocados.facDoc) {
+                                setErrores((previos) => ({
+                                  ...previos,
+                                  facDoc: validarCampo('facDoc', datos.facDoc, { ...datos, facTipo: e.target.value }),
+                                }))
+                              }
+                            }}
+                          >
+                            <option value="DNI">DNI</option>
+                            <option value="CUIT">CUIT</option>
+                          </select>
+                        </label>
+                        <Campo
+                          campo="facDoc"
+                          etiqueta="Numero"
+                          type="text"
+                          inputMode="numeric"
+                          placeholder={datos.facTipo === 'CUIT' ? '20-12345678-6' : '12345678'}
+                          valor={datos.facDoc}
+                          error={errorDe('facDoc')}
+                          onCambio={cambiar}
+                          onSalida={salir}
+                        />
+                        <Campo
+                          campo="facCorreo"
+                          etiqueta="Correo para enviar la factura"
+                          type="email"
+                          autoComplete="email"
+                          ancho
+                          valor={datos.facCorreo}
+                          error={errorDe('facCorreo')}
+                          onCambio={cambiar}
+                          onSalida={salir}
+                        />
+                      </div>
+                      <label className="check check-guardar">
+                        <input
+                          type="checkbox"
+                          checked={guardarFactura}
+                          onChange={(e) => setGuardarFactura(e.target.checked)}
+                        />
+                        <span>Guardar estos datos en mi cuenta</span>
+                      </label>
+                    </>
+                  )}
                 </section>
               )}
 
@@ -345,6 +515,18 @@ export default function CheckoutPage() {
                   </div>
 
                   {!retiroEnLocal && (
+                    <>
+                      <h3 className="checkout-subtitulo">Domicilio de entrega</h3>
+                      <OpcionesDeLibreta
+                        nombre="domicilio"
+                        elegida={domicilioElegido}
+                        onElegir={setDomicilioElegido}
+                        opciones={opcionesDeDomicilio}
+                      />
+                    </>
+                  )}
+
+                  {!retiroEnLocal && domicilioNuevo && (
                     <div className="fields">
                       <Campo
                         campo="direccion"
@@ -392,6 +574,35 @@ export default function CheckoutPage() {
                       />
                     </div>
                   )}
+
+                  {!retiroEnLocal && domicilioNuevo && (
+                    <>
+                      <label className="check check-guardar">
+                        <input
+                          type="checkbox"
+                          checked={guardarDomicilio}
+                          onChange={(e) => setGuardarDomicilio(e.target.checked)}
+                        />
+                        <span>Guardar este domicilio en mi cuenta</span>
+                      </label>
+                      {guardarDomicilio && (
+                        <div className="fields">
+                          <Campo
+                            campo="domEtiqueta"
+                            etiqueta="Nombre para reconocerlo (opcional)"
+                            type="text"
+                            maxLength={40}
+                            placeholder="Casa, Trabajo..."
+                            ancho
+                            valor={datos.domEtiqueta}
+                            error={null}
+                            onCambio={cambiar}
+                            onSalida={salir}
+                          />
+                        </div>
+                      )}
+                    </>
+                  )}
                 </section>
               )}
 
@@ -438,12 +649,12 @@ export default function CheckoutPage() {
                       </b>
                     </li>
                     <li>
+                      <span>Facturacion</span>
+                      <b>{textoDeFactura(datosDeFactura())}</b>
+                    </li>
+                    <li>
                       <span>Entrega</span>
-                      <b>
-                        {retiroEnLocal
-                          ? 'Retiro en el local'
-                          : `${datos.direccion}, ${datos.ciudad} (${datos.codigoPostal.toUpperCase()})`}
-                      </b>
+                      <b>{retiroEnLocal ? 'Retiro en el local' : textoDeDomicilio(datosDeDomicilio())}</b>
                     </li>
                     <li>
                       <span>Pago</span>
@@ -539,6 +750,12 @@ export default function CheckoutPage() {
     </main>
   )
 }
+
+const textoDeFactura = (f) =>
+  `${f.fullName} - ${formatoDocumento(f.taxIdType, f.taxId)} - ${f.email}`
+
+const textoDeDomicilio = (d) =>
+  `${d.street}, ${d.city} (${d.postalCode})${d.reference ? ` - ${d.reference}` : ''}`
 
 function textoDeEnvio(ajustes) {
   if (!ajustes) return 'Te mostramos el costo al confirmar.'
