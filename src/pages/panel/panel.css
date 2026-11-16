@@ -14,11 +14,12 @@
 .panel-barra-inner {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   flex-wrap: wrap;
-  gap: 12px 28px;
+  gap: 10px 24px;
   max-width: 1200px;
   margin-inline: auto;
-  padding: 12px 20px;
+  padding: 12px 20px 0;
 }
 
 .panel-marca {
@@ -40,17 +41,22 @@
   }
 }
 
+/* Las secciones van en su propia fila: cinco o seis botones no entran al lado de la marca y el usuario
+   sin que alguno baje y quede descentrado. */
 .panel-nav {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  flex: 1;
+  order: 3;
+  flex: 1 0 100%;
+  padding-bottom: 10px;
 
   a {
     padding: 8px 14px;
     border-radius: 999px;
     font-size: 14px;
     color: #cfd4dc;
+    white-space: nowrap;
 
     &:hover {
       color: #fff;
