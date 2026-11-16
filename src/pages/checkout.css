@@ -597,3 +597,19 @@
   font: inherit;
   font-size: 14px;
 }
+
+.pedido-codigo {
+  display: inline-block;
+  padding: 2px 10px;
+  border: 2px dashed var(--brand);
+  border-radius: var(--radius);
+  font-family: var(--display);
+  font-size: 1.15em;
+  letter-spacing: 0.06em;
+  color: var(--brand);
+  user-select: all;
+}
+
+.pedido-codigo-aviso {
+  line-height: 2;
+}

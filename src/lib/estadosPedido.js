@@ -110,3 +110,6 @@ export function reservadoHasta(pedido, minutos) {
   if (!/mercado pago|transferencia/i.test(metodo)) return null
   return new Date(new Date(pedido.saleDate).getTime() + minutos * 60 * 1000)
 }
+
+/** Como se nombra un pedido ante la persona: su codigo (DRK-7K4Q9X) o, si no lo tiene, el numero. */
+export const nombreDePedido = (pedido) => pedido?.code ?? (pedido?.id ? `#${pedido.id}` : '')
