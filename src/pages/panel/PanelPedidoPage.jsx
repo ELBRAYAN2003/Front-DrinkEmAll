@@ -7,7 +7,8 @@ import { formatoFechaHora, money } from '../../lib/format.js'
 import { formatoDocumento } from '../../lib/documento.js'
 import BotonComprobante from '../../components/ui/BotonComprobante.jsx'
 import { mensajeDeError } from '../../lib/mensajeDeError.js'
-import { ACCION_DE_ESTADO, esperaAcreditacion, pagoDelPedido, siguientesEstados } from '../../lib/panel.js'
+import { ACCION_DE_ESTADO, esperaAcreditacion, faltaParaDespachar, pagoDelPedido, siguientesEstados } from '../../lib/panel.js'
+import EnvioDelPedido from '../../components/panel/EnvioDelPedido.jsx'
 
 const PAGO = { pendiente: 'Pendiente', pagado: 'Pagado', cancelado: 'Cancelado' }
 
@@ -142,6 +143,9 @@ export default function PanelPedidoPage() {
               Si nunca se paga, el pedido se cancela solo al vencer la reserva.
             </p>
           )}
+          {pedido.deliveryMethod === 'envio' && ['preparando', 'en_camino'].includes(pedido.fulfillmentStatus) && (
+            <EnvioDelPedido pedido={pedido} alGuardar={cargar} />
+          )}
           <div className="panel-acciones">
             {avanzar.map((e) => (
               <div key={e} className="panel-accion">
@@ -154,7 +158,8 @@ export default function PanelPedidoPage() {
                 <button
                   type="button"
                   className="panel-boton panel-boton-primario"
-                  disabled={trabajando || (e === 'preparando' && bloqueadoPorPago) || (e === 'entregado' && !dniVerificado)}
+                  disabled={trabajando || (e === 'preparando' && bloqueadoPorPago) || (e === 'entregado' && !dniVerificado) || (e === 'en_camino' && Boolean(faltaParaDespachar(pedido)))}
+                  title={e === 'en_camino' ? (faltaParaDespachar(pedido) ?? undefined) : undefined}
                   onClick={() => cambiarEstado(e, e === 'entregado' ? { idChecked: true } : {})}
                 >
                   {ACCION_DE_ESTADO[e]}
@@ -217,6 +222,15 @@ export default function PanelPedidoPage() {
                   : `${d?.street}, ${d?.city} (${d?.postalCode})${d?.reference ? ` · ${d.reference}` : ''}`}
               </dd>
             </div>
+            {pedido.carrier && (
+              <div>
+                <dt>Envío</dt>
+                <dd>
+                  {pedido.carrier}
+                  {pedido.trackingNumber ? ` · seguimiento ${pedido.trackingNumber}` : ''}
+                </dd>
+              </div>
+            )}
             <div>
               <dt>Pago</dt>
               <dd>

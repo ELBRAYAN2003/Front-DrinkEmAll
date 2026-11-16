@@ -4,7 +4,7 @@ import Icon from '../components/ui/Icon.jsx'
 import { cancelarMiPedido, conciliarPago, pagarConMercadoPago, unPedido } from '../api/pedidos.js'
 import { esDeMercadoPago, esperaElPago, estadoVisible, etiquetaDe, lineaDeTiempo, nombreDePedido, reservadoHasta } from '../lib/estadosPedido.js'
 import { useAjustesTienda } from '../hooks/useAjustesTienda.js'
-import DatosDeTransferencia, { DatosDeRetiro } from '../components/checkout/DatosDeTransferencia.jsx'
+import DatosDeTransferencia, { Copiar, DatosDeRetiro } from '../components/checkout/DatosDeTransferencia.jsx'
 import BotonComprobante from '../components/ui/BotonComprobante.jsx'
 import { formatoFechaHora, money } from '../lib/format.js'
 import { formatoDocumento } from '../lib/documento.js'
@@ -296,6 +296,20 @@ export default function PedidoPage() {
                   {estadoVisible(pedido).etiqueta}
                 </span>
               </h2>
+              {pedido.carrier && pedido.deliveryMethod === 'envio' && (
+                <div className="pedido-envio">
+                  <b>Tu envío</b>
+                  <span>
+                    Lo lleva <b>{pedido.carrier}</b>
+                  </span>
+                  {pedido.trackingNumber && (
+                    <span>
+                      Número de seguimiento: <b className="pedido-seguimiento">{pedido.trackingNumber}</b>{' '}
+                      <Copiar texto={pedido.trackingNumber} etiqueta="el número de seguimiento" />
+                    </span>
+                  )}
+                </div>
+              )}
               <ol className="linea-tiempo">
                 {pasos.map((p) => (
                   <li key={p.estado} className={`is-${p.situacion} is-${p.estado}`}>

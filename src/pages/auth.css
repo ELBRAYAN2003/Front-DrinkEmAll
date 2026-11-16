@@ -687,3 +687,24 @@
 .comprobante-error {
   color: var(--danger) !important;
 }
+
+.pedido-envio {
+  display: grid;
+  gap: 4px;
+  margin: 14px 0 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--brand);
+  border-radius: var(--radius);
+  background: var(--brand-soft);
+  font-size: 14px;
+
+  .copiar {
+    margin-left: 6px;
+  }
+}
+
+.pedido-seguimiento {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.03em;
+  overflow-wrap: anywhere;
+}

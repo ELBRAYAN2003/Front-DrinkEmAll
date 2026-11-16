@@ -70,3 +70,16 @@ export function haceCuanto(iso, ahora = Date.now()) {
   if (h < 48) return `hace ${h} h`
   return `hace ${Math.floor(h / 24)} días`
 }
+
+export const REPARTO_PROPIO = 'Reparto propio del local'
+/** Companias que se ofrecen al cargar el envio; "Otra" permite escribir cualquiera. */
+export const COMPANIAS = ['Correo Argentino', 'Andreani', 'OCA', 'Vía Cargo', REPARTO_PROPIO]
+
+const esRepartoPropio = (c) => String(c ?? '').trim().toLowerCase() === REPARTO_PROPIO.toLowerCase()
+
+/** Lo que falta para despachar un envio (espejo de la regla del servidor), o null si esta completo. */
+export function faltaParaDespachar({ carrier, trackingNumber }) {
+  if (!carrier || !String(carrier).trim()) return 'Falta la compañía que lleva el envío.'
+  if (!esRepartoPropio(carrier) && !(trackingNumber && String(trackingNumber).trim())) return 'Falta el número de seguimiento.'
+  return null
+}
