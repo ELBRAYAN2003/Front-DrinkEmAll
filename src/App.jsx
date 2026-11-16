@@ -9,6 +9,7 @@ import PanelPedidoPage from "./pages/panel/PanelPedidoPage.jsx";
 import PanelPrepararPage from "./pages/panel/PanelPrepararPage.jsx";
 import PanelProductosPage from "./pages/panel/PanelProductosPage.jsx";
 import PanelArrepentimientosPage from "./pages/panel/PanelArrepentimientosPage.jsx";
+import PanelLocalPage from "./pages/panel/PanelLocalPage.jsx";
 import AgeGate from "./components/layout/AgeGate.jsx";
 import Footer from "./components/layout/Footer.jsx";
 import Header from "./components/layout/Header.jsx";
@@ -59,6 +60,7 @@ function Contenido() {
           <Route path="preparar" element={<PanelPrepararPage />} />
           <Route path="productos" element={<PanelProductosPage />} />
           <Route path="arrepentimientos" element={<PanelArrepentimientosPage />} />
+          <Route path="local" element={<PanelLocalPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

@@ -8,6 +8,7 @@ const SECCIONES = [
   { a: '/panel/preparar', texto: 'Qué preparar' },
   { a: '/panel/productos', texto: 'Productos' },
   { a: '/panel/arrepentimientos', texto: 'Arrepentimientos' },
+  { a: '/panel/local', texto: 'Datos del local' },
 ]
 
 // Marco del panel del comercio: barra propia, sin la cabecera ni el pie de la tienda.

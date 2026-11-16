@@ -4,6 +4,7 @@ import Icon from '../components/ui/Icon.jsx'
 import { cancelarMiPedido, conciliarPago, pagarConMercadoPago, unPedido } from '../api/pedidos.js'
 import { esDeMercadoPago, esperaElPago, estadoVisible, etiquetaDe, lineaDeTiempo, nombreDePedido, reservadoHasta } from '../lib/estadosPedido.js'
 import { useAjustesTienda } from '../hooks/useAjustesTienda.js'
+import DatosDeTransferencia, { DatosDeRetiro } from '../components/checkout/DatosDeTransferencia.jsx'
 import { formatoFechaHora, money } from '../lib/format.js'
 import { formatoDocumento } from '../lib/documento.js'
 import { mensajeDeError } from '../lib/mensajeDeError.js'
@@ -354,11 +355,15 @@ export default function PedidoPage() {
                 <li>
                   <span>Entrega</span>
                   <b>
-                    {pedido.deliveryMethod === 'retiro'
-                      ? 'Retiro en el local'
-                      : `${direccion?.street}, ${direccion?.city} (${direccion?.postalCode})${
-                          direccion?.reference ? ` - ${direccion.reference}` : ''
-                        }`}
+                    {pedido.deliveryMethod === 'retiro' ? (
+                      <>
+                        Retiro en el local: <DatosDeRetiro direccion={ajustes?.pickupAddress} horarios={ajustes?.pickupHours} />
+                      </>
+                    ) : (
+                      `${direccion?.street}, ${direccion?.city} (${direccion?.postalCode})${
+                        direccion?.reference ? ` - ${direccion.reference}` : ''
+                      }`
+                    )}
                   </b>
                 </li>
                 {pedido.billing && (
@@ -382,6 +387,9 @@ export default function PedidoPage() {
                   </b>
                 </li>
               </ul>
+              {pago?.status === 'pendiente' && /transferencia/i.test(pago?.paymentMethod?.name ?? '') && pedido.fulfillmentStatus === 'recibido' && (
+                <DatosDeTransferencia transfer={ajustes?.transfer} codigo={pedido.code} />
+              )}
               {hasta && (
                 <div className="pedido-reserva">
                   <Icon name="check" size={14} />

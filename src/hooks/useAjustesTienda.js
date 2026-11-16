@@ -6,6 +6,11 @@ import { hayApi } from '../lib/api.js'
 // y el checkout. Si falla no se guarda el error, para reintentar la proxima vez.
 let enCurso = null
 
+/** Olvida lo cargado: la proxima vez se piden de nuevo (por ejemplo, despues de guardarlos en el panel). */
+export function invalidarAjustes() {
+  enCurso = null
+}
+
 function cargar() {
   enCurso ??= ajustesDeLaTienda().catch((error) => {
     enCurso = null

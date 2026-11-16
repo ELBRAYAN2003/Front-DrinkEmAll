@@ -1,4 +1,4 @@
-import { apiDelete, apiGet, apiPatch } from '../lib/api.js'
+import { apiDelete, apiGet, apiPatch, apiPut } from '../lib/api.js'
 
 // Operaciones del comercio (vendedor, admin). Cada una exige el rol en la API: aca no se
 // decide nada, solo se llama.
@@ -30,3 +30,9 @@ export const productosDelComercio = (params) =>
   apiGet('/products', { params: { pageSize: 25, includeSku: true, ...params }, auth: true })
 export const actualizarProducto = (id, cuerpo) => apiPatch(`/products/${id}`, { body: cuerpo, auth: true })
 export const desactivarProducto = (id) => apiDelete(`/products/${id}`, { auth: true })
+
+/** Datos del local que ve el cliente (transferencia, retiro, envio). */
+export const datosDelLocal = () => apiGet('/shop/settings')
+
+/** Guarda los datos del local; un texto vacio borra el dato. Devuelve los ajustes vigentes. */
+export const guardarDatosDelLocal = (cuerpo) => apiPut('/shop/settings', { body: cuerpo, auth: true })
