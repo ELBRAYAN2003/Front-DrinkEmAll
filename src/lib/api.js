@@ -80,7 +80,7 @@ function renovarSesion() {
   return renovando
 }
 
-async function pedir(metodo, ruta, { params, body, signal, auth = false } = {}) {
+async function pedir(metodo, ruta, { params, body, signal, auth = false, formato = 'json' } = {}) {
   if (!hayApi) throw new ApiError('No hay VITE_API_URL configurada', 0)
 
   const url = construirUrl(ruta, params)
@@ -89,7 +89,7 @@ async function pedir(metodo, ruta, { params, body, signal, auth = false } = {}) 
       method: metodo,
       signal,
       headers: {
-        Accept: 'application/json',
+        Accept: formato === 'blob' ? 'application/pdf' : 'application/json',
         ...(body !== undefined && { 'Content-Type': 'application/json' }),
         ...(token && { Authorization: `Bearer ${token}` }),
       },
@@ -116,6 +116,7 @@ async function pedir(metodo, ruta, { params, body, signal, auth = false } = {}) 
     throw new ApiError(cuerpo?.message ?? `Error ${res.status} al pedir ${ruta}`, res.status, cuerpo?.details ?? null, cuerpo?.code ?? null)
   }
   // 204: la API contesta sin cuerpo (por ejemplo al cerrar sesion).
+  if (formato === 'blob') return res.blob()
   return res.status === 204 ? null : res.json()
 }
 
@@ -126,6 +127,8 @@ async function pedir(metodo, ruta, { params, body, signal, auth = false } = {}) 
 export const apiGet = (ruta, opciones) => pedir('GET', ruta, opciones)
 export const apiPost = (ruta, opciones) => pedir('POST', ruta, opciones)
 export const apiPatch = (ruta, opciones) => pedir('PATCH', ruta, opciones)
+/** Baja un archivo (PDF) con la sesion: devuelve un Blob. */
+export const apiBlob = (ruta, opciones) => pedir('GET', ruta, { ...opciones, formato: 'blob' })
 export const apiPut = (ruta, opciones) => pedir('PUT', ruta, opciones)
 export const apiDelete = (ruta, opciones) => pedir('DELETE', ruta, opciones)
 
