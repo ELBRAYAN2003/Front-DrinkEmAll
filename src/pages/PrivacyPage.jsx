@@ -6,9 +6,9 @@ import Icon from '../components/ui/Icon.jsx'
 // El contenido describe lo que la aplicacion hace de verdad. Hoy hay dos
 // tratamientos distintos: lo que queda en el navegador (carrito, constancias de
 // edad, sesion, aviso de primera visita) y los datos de la cuenta, que SI se
-// guardan en el servidor. El formulario de compra sigue siendo una simulacion y
-// no envia nada. Si el checkout empieza a enviar pedidos a la API, este texto
-// queda desactualizado y hay que revisarlo.
+// guardan en el servidor, y los pedidos, que tambien se guardan (domicilio,
+// telefono de contacto, productos y forma de pago). Si cambia lo que el checkout
+// envia o el backend guarda de un pedido, este texto hay que revisarlo.
 
 const ARCO = [
   {
@@ -55,13 +55,11 @@ export default function PrivacyPage() {
         <div className="legal-aviso">
           <p>
             <b>Estado del proyecto.</b> DrinkEmAll es por ahora una plataforma en
-            desarrollo con catalogo de demostracion. Para comprar hace falta crear
-            una cuenta, y <b>los datos de la cuenta se guardan en nuestros
-            servidores</b> (punto 3.2). El circuito de compra, en cambio, es una
-            simulacion: <b>los datos que se ingresan en el formulario de compra no
-            se envian a ningun servidor ni se almacenan</b>. Esta politica describe
-            el tratamiento real y vigente, y sera revisada cuando la plataforma
-            comience a operar comercialmente.
+            desarrollo. Para comprar hace falta crear una cuenta, y{' '}
+            <b>los datos de la cuenta y de cada pedido se guardan en nuestros
+            servidores</b> (puntos 3.2 y 3.3). Esta politica describe el
+            tratamiento real y vigente, y sera revisada cuando cambie la forma
+            de operar de la plataforma.
           </p>
         </div>
 
@@ -105,10 +103,6 @@ export default function PrivacyPage() {
             <li>
               <code>drinkemall.edad</code> — constancia de que declaro ser mayor
               de 18 anos, con fecha y hora.
-            </li>
-            <li>
-              <code>drinkemall.edad.pedidos</code> — constancia de la declaracion
-              de mayoria de edad prestada al confirmar cada pedido.
             </li>
             <li>
               <code>drinkemall.sesion</code> — la sesion iniciada: su nombre, su
@@ -161,13 +155,21 @@ export default function PrivacyPage() {
             de seguridad y de funcionamiento.
           </p>
 
-          <h3>3.3 Datos que el formulario de compra solicita y no se guardan</h3>
+          <h3>3.3 Datos de los pedidos</h3>
           <p>
-            El circuito de compra pide nombre, apellido, correo electronico,
-            telefono, domicilio, ciudad y codigo postal. En la version actual{' '}
-            <b>esos datos permanecen en la memoria del navegador mientras la
-            pagina esta abierta y se descartan al cerrarla o recargarla</b>. No se
-            transmiten, no se almacenan y no se comparten con terceros.
+            Al confirmar un pedido se guardan en el servidor: los productos y
+            cantidades, el importe (con el costo de envio), la forma de entrega, el
+            medio de pago elegido (efectivo o transferencia), el telefono de
+            contacto, la nota que usted escriba, la fecha y el estado del pedido y,
+            si pidio envio a domicilio, el domicilio (calle y altura, ciudad, codigo
+            postal y referencia). El pedido queda asociado a su cuenta.
+          </p>
+          <p>
+            <b>No se guardan datos de tarjetas</b>: solo se aceptan efectivo y
+            transferencia, y el pago se confirma a mano. Estos datos se comunican
+            unicamente a las personas del comercio que preparan y entregan el
+            pedido, incluido quien lo reparte, que recibe el domicilio, el telefono y
+            el nombre necesarios para la entrega. No se ceden a otros terceros.
           </p>
 
           <h3>3.4 Datos que no recolectamos</h3>
@@ -225,9 +227,9 @@ export default function PrivacyPage() {
           </ul>
           <p>
             Los datos no se ceden a terceros ni se usan con fines publicitarios.
-            Cuando la plataforma opere comercialmente, los datos de contacto y
-            domicilio se trataran con la finalidad exclusiva de gestionar,
-            facturar y entregar el pedido.
+            Los datos de contacto y el domicilio de un pedido se tratan con la
+            finalidad exclusiva de gestionar, facturar y entregar ese pedido y de
+            acreditar el cumplimiento de la normativa sobre venta de alcohol.
           </p>
         </section>
 
@@ -254,8 +256,8 @@ export default function PrivacyPage() {
           <ul className="legal-lista">
             <li>
               <b>Minimizacion.</b> Para la cuenta se piden solo los datos
-              necesarios; el telefono es opcional. Del formulario de compra no se
-              guarda nada.
+              necesarios; el telefono es opcional en la cuenta. De cada pedido se
+              guarda solo lo necesario para prepararlo y entregarlo.
             </li>
             <li>
               <b>Contrasenas protegidas.</b> Se almacenan unicamente cifradas con
@@ -319,9 +321,12 @@ export default function PrivacyPage() {
             unos 90 dias).
           </p>
           <p>
-            La constancia de mayoria de edad asociada a un pedido se conservara,
-            cuando exista operacion comercial, por el plazo necesario para acreditar
-            el cumplimiento de la normativa sobre venta de alcohol.
+            Los pedidos (con su domicilio y telefono de contacto) se conservan
+            mientras sean necesarios para la entrega, los reclamos y las
+            obligaciones contables y fiscales del comercio; el plazo exacto esta{' '}
+            <b>pendiente de definir por el comercio</b>. Si usted solicita la
+            supresion de su cuenta, los pedidos que el comercio deba conservar por
+            ley se mantienen sin datos que no sean necesarios.
           </p>
         </section>
 
@@ -365,10 +370,10 @@ export default function PrivacyPage() {
           <p>
             La venta de bebidas alcoholicas a menores de 18 anos esta prohibida. El
             sitio solicita una declaracion de mayoria de edad al ingresar, una fecha
-            de nacimiento al crear la cuenta y una conformidad especifica al
-            confirmar cada pedido. El servidor rechaza el alta de quien no tiene 18
-            anos cumplidos. Las constancias del ingreso y del pedido se conservan
-            en el navegador con fecha y hora.
+            de nacimiento al crear la cuenta y una conformidad al confirmar cada
+            pedido. El servidor rechaza el alta de quien no tiene 18 anos cumplidos
+            y vuelve a comprobar la edad al crear cada pedido. La constancia del
+            ingreso se conserva en el navegador con fecha y hora.
           </p>
           <p className="legal-nota">
             El DNI y la fecha de nacimiento se registran tal como los informa la
@@ -378,10 +383,11 @@ export default function PrivacyPage() {
             pedido.
           </p>
           <p className="legal-nota">
-            Se deja constancia de que este control opera del lado del cliente y
-            puede eludirse borrando el almacenamiento del navegador. Al habilitarse
-            la venta efectiva, la verificacion sera validada tambien del lado del
-            servidor.
+            Se deja constancia de que la declaracion del ingreso opera del lado
+            del cliente y puede eludirse borrando el almacenamiento del navegador;
+            por eso la edad se decide en el servidor con la fecha de nacimiento de
+            la cuenta, y al entregar se pide el DNI: si quien recibe no es mayor
+            de 18 anos, el pedido no se entrega.
           </p>
         </section>
 

@@ -14,13 +14,11 @@ Espacio curricular: Legislación Informática
 
 ## Estado del proyecto
 
-DrinkEmAll es por ahora una plataforma en desarrollo con catálogo de
-demostración. Para comprar hace falta crear una cuenta, y **los datos de la
-cuenta se guardan en servidores propios** (punto 3.2). El circuito de compra, en
-cambio, es una simulación: **los datos que se ingresan en el formulario de compra
-no se envían a ningún servidor ni se almacenan**. Esta política describe el
-tratamiento real y vigente, y será revisada cuando la plataforma comience a
-operar comercialmente.
+DrinkEmAll es por ahora una plataforma en
+desarrollo. Para comprar hace falta crear una cuenta, y **los datos de la cuenta y
+de cada pedido se guardan en servidores propios** (puntos 3.2 y 3.3). Esta
+política describe el tratamiento real y vigente, y será revisada cuando cambie la
+forma de operar de la plataforma.
 
 ---
 
@@ -55,7 +53,6 @@ pedido:
 | --- | --- | --- |
 | `drinkemall.carrito` | Productos agregados y cantidades | Que el carrito sobreviva a una recarga |
 | `drinkemall.edad` | Constancia de declaración de mayoría de edad, con fecha y hora | Acreditar el control de edad |
-| `drinkemall.edad.pedidos` | Constancia prestada al confirmar cada pedido | Acreditar el control por operación |
 | `drinkemall.sesion` | Nombre, correo y teléfono (si se cargó) de la sesión iniciada, y dos códigos de acceso | Mantener la sesión; se borra al cerrarla |
 | `drinkemall.visita` | Fecha de la primera visita | No repetir la invitación a crear una cuenta |
 
@@ -87,13 +84,19 @@ Además, el servidor web registra en un archivo de acceso la dirección IP, la
 fecha y la dirección visitada de cada pedido que recibe, por razones de seguridad
 y de funcionamiento.
 
-### 3.3 Datos que el formulario de compra solicita y no se guardan
+### 3.3 Datos de los pedidos
 
-El circuito de compra pide nombre, apellido, correo electrónico, teléfono,
-domicilio, ciudad y código postal. En la versión actual **esos datos permanecen
-en la memoria del navegador mientras la página está abierta y se descartan al
-cerrarla o recargarla**. No se transmiten, no se almacenan y no se comparten con
-terceros.
+Al confirmar un pedido se guardan en el servidor: los productos y cantidades, el
+importe (con el costo de envío), la forma de entrega, el medio de pago elegido
+(efectivo o transferencia), el teléfono de contacto, la nota que usted escriba, la
+fecha y el estado del pedido y, si pidió envío a domicilio, el domicilio (calle y
+altura, ciudad, código postal y referencia). El pedido queda asociado a su cuenta.
+
+**No se guardan datos de tarjetas**: solo se aceptan efectivo y transferencia, y el
+pago se confirma a mano. Estos datos se comunican únicamente a las personas del
+comercio que preparan y entregan el pedido, incluido quien lo reparte, que recibe
+el domicilio, el teléfono y el nombre necesarios para la entrega. No se ceden a
+otros terceros.
 
 ### 3.4 Datos que no se recolectan
 
@@ -126,9 +129,10 @@ Los datos indicados en 3.1 y 3.2 se tratan con estas finalidades y ninguna otra:
 - **Proteger el sitio**: el registro de acceso y el límite de intentos de ingreso
   se usan para detectar abusos y fallas.
 
-Los datos no se ceden a terceros ni se usan con fines publicitarios. Cuando la
-plataforma opere comercialmente, los datos de contacto y domicilio se tratarán
-con la finalidad exclusiva de gestionar, facturar y entregar el pedido.
+Los datos no se ceden a terceros ni se usan con fines publicitarios. Los datos de
+contacto y el domicilio de un pedido se tratan con la finalidad exclusiva de
+gestionar, facturar y entregar ese pedido y de acreditar el cumplimiento de la
+normativa sobre venta de alcohol.
 
 ---
 
@@ -151,7 +155,8 @@ al confirmar el pedido. Ninguna viene marcada por defecto.
 Medidas efectivamente implementadas:
 
 - **Minimización.** Para la cuenta se piden solo los datos necesarios; el
-  teléfono es opcional. Del formulario de compra no se guarda nada.
+  teléfono es opcional en la cuenta. De cada pedido se guarda solo lo necesario para
+  prepararlo y entregarlo.
 - **Contraseñas protegidas.** Se almacenan únicamente cifradas con bcrypt, nunca
   en texto plano.
 - **Conexión cifrada.** Todo el tráfico viaja por HTTPS, con certificado emitido
@@ -189,9 +194,11 @@ El servidor guarda copias de respaldo de la base de datos, que incluyen los dato
 de la cuenta, y un registro de acceso que se rota automáticamente y se conserva
 por un tiempo limitado (por defecto, unos 90 días).
 
-La constancia de mayoría de edad asociada a un pedido se conservará, cuando exista
-operación comercial, por el plazo necesario para acreditar el cumplimiento de la
-normativa sobre venta de alcohol.
+Los pedidos (con su domicilio y teléfono de contacto) se conservan mientras sean
+necesarios para la entrega, los reclamos y las obligaciones contables y fiscales
+del comercio; el plazo exacto está **pendiente de definir por el comercio**. Si
+usted solicita la supresión de su cuenta, los pedidos que el comercio deba
+conservar por ley se mantienen sin datos que no sean necesarios.
 
 ---
 
@@ -224,18 +231,19 @@ Pública**.
 
 La venta de bebidas alcohólicas a menores de 18 años está prohibida. El sitio
 solicita una declaración de mayoría de edad al ingresar, una fecha de nacimiento al
-crear la cuenta y una conformidad específica al confirmar cada pedido. El servidor
-rechaza el alta de quien no tiene 18 años cumplidos. Las constancias del ingreso y
-del pedido se conservan en el navegador con fecha y hora.
+crear la cuenta y una conformidad al confirmar cada pedido. El servidor rechaza el
+alta de quien no tiene 18 años cumplidos y vuelve a comprobar la edad al crear
+cada pedido. La constancia del ingreso se conserva en el navegador con fecha y hora.
 
 > El DNI y la fecha de nacimiento se registran tal como los informa la persona: el
 > sistema no los contrasta con ningún registro oficial ni con una imagen del
 > documento, por lo que no acreditan por sí solos la mayoría de edad. La
 > verificación efectiva se realiza al entregar el pedido.
 
-> Se deja constancia de que este control opera del lado del cliente y puede
-> eludirse borrando el almacenamiento del navegador. Al habilitarse la venta
-> efectiva, la verificación será validada también del lado del servidor.
+> Se deja constancia de que la declaración del ingreso opera del lado del cliente
+> y puede eludirse borrando el almacenamiento del navegador; por eso la edad se
+> decide en el servidor con la fecha de nacimiento de la cuenta, y al entregar se
+> pide el DNI: si quien recibe no es mayor de 18 años, el pedido no se entrega.
 
 ---
 
