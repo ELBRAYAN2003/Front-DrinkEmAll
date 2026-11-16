@@ -146,3 +146,12 @@
   font-family: var(--display);
   font-size: 20px;
 }
+
+/* Lo que el comercio todavia tiene que completar. */
+.legal-pendiente {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
+  color: var(--danger);
+  font-weight: 600;
+}

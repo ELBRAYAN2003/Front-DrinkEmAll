@@ -98,6 +98,16 @@ comercio que preparan y entregan el pedido, incluido quien lo reparte, que recib
 el domicilio, el teléfono y el nombre necesarios para la entrega. No se ceden a
 otros terceros.
 
+### 3.3 bis Solicitudes de arrepentimiento
+
+Si usa el **botón de arrepentimiento** (no requiere cuenta) se guardan en el
+servidor su nombre, el correo o teléfono de contacto, el número de pedido y el
+mensaje si los escribe, la fecha y un código de identificación. Se usan
+exclusivamente para responder la solicitud dentro de las 24 horas y coordinar la
+devolución, y las ve solamente el personal del comercio. Se conservan mientras
+sea necesario para acreditar el cumplimiento de la normativa de defensa del
+consumidor (plazo exacto pendiente de definir por el comercio).
+
 ### 3.4 Datos que no se recolectan
 
 - No se utilizan cookies de seguimiento ni analítica de terceros. La única
