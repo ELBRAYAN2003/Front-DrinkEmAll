@@ -162,6 +162,9 @@ export default function PedidoPage() {
                   </b>
                 </li>
               </ul>
+              <p className="pedido-arrepentimiento">
+                <Link to="/arrepentimiento">BOTÓN DE ARREPENTIMIENTO</Link>
+              </p>
             </section>
           </div>
         )}

@@ -316,7 +316,8 @@
     color: var(--muted);
   }
 
-  input {
+  input,
+  textarea {
     padding: 11px 14px;
     border: 1px solid var(--line);
     border-radius: var(--radius);
@@ -552,6 +553,10 @@
 .checkout-ok-resumen {
   width: 100%;
   text-align: left;
+}
+
+.fields textarea {
+  resize: vertical;
 }
 
 .checkout-ok-otro {

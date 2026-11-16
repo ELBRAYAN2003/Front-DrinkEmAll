@@ -188,3 +188,19 @@ export function validarCambioPassword({ actual, nueva, confirmar }) {
   else if (nueva !== confirmar) errores.confirmar = 'Las contrasenas no coinciden'
   return errores
 }
+
+/**
+ * Botón de arrepentimiento: sin cuenta y sin más trámite, solo lo necesario para
+ * poder contestar. El contacto es un correo o un teléfono.
+ */
+export function validarArrepentimiento({ nombre, contacto }) {
+  const errores = {}
+  if (nombre.trim().length < 2) errores.nombre = 'Ingresa tu nombre'
+  const c = contacto.trim()
+  const digitos = c.replace(/\D/g, '').length
+  const esCorreo = CORREO.test(c)
+  const esTelefono = /^[\d\s()+-]+$/.test(c) && digitos >= 8 && digitos <= 13
+  if (!c) errores.contacto = 'Ingresa un correo o un telefono para contactarte'
+  else if (!esCorreo && !esTelefono) errores.contacto = 'Ingresa un correo o un telefono valido'
+  return errores
+}

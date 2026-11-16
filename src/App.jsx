@@ -6,6 +6,8 @@ import Footer from "./components/layout/Footer.jsx";
 import Header from "./components/layout/Header.jsx";
 import AuthProvider from "./context/AuthProvider.jsx";
 import CarritoProvider from "./context/CarritoProvider.jsx";
+import ArrepentimientoPage from "./pages/ArrepentimientoPage.jsx";
+import TermsPage from "./pages/TermsPage.jsx";
 import MisPedidosPage from "./pages/MisPedidosPage.jsx";
 import PedidoPage from "./pages/PedidoPage.jsx";
 import AccountPage from "./pages/AccountPage.jsx";
@@ -42,6 +44,9 @@ export default function App() {
             <Route path="/catalogo/:categoria" element={<CatalogPage />} />
             <Route path="/producto/:id" element={<ProductPage />} />
             <Route path="/privacidad" element={<PrivacyPage />} />
+            <Route path="/terminos" element={<TermsPage />} />
+            {/* Publica y sin cuenta: la Disposicion 954/2025 no permite pedir registro previo. */}
+            <Route path="/arrepentimiento" element={<ArrepentimientoPage />} />
             <Route path="/carrito" element={<CartPage />} />
             {/* Se puede mirar y armar el carrito sin cuenta; la cuenta se pide recien
                 al finalizar la compra. El carrito se conserva al ingresar. */}

@@ -453,3 +453,35 @@
     background: var(--danger);
   }
 }
+
+/* --- Boton de arrepentimiento ------------------------------------------------ */
+.arrepentimiento-ok {
+  display: grid;
+  gap: 12px;
+  text-align: center;
+  justify-items: center;
+}
+
+.arrepentimiento-codigo {
+  padding: 10px 20px;
+  border: 2px dashed var(--brand);
+  border-radius: var(--radius);
+  font-family: var(--display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--brand);
+  user-select: all;
+}
+
+.pedido-arrepentimiento {
+  margin-top: 18px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+
+  a {
+    color: var(--brand);
+    text-decoration: underline;
+  }
+}
