@@ -485,3 +485,61 @@
     text-decoration: underline;
   }
 }
+
+/* --- Libreta de la cuenta ---------------------------------------------------- */
+.libreta-lista {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 14px;
+
+  li {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+
+    b {
+      display: block;
+      color: var(--ink);
+    }
+    small {
+      display: block;
+      margin-top: 2px;
+      font-size: 13px;
+      color: var(--muted);
+      overflow-wrap: anywhere;
+    }
+  }
+}
+
+.libreta-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+
+  button {
+    font-size: 13px;
+    color: var(--brand);
+    text-decoration: underline;
+  }
+}
+
+.libreta-vacio {
+  margin-bottom: 14px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.libreta-form {
+  margin-top: 6px;
+}
+
+.libreta-botones {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
