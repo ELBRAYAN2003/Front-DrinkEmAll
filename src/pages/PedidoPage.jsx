@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import Icon from '../components/ui/Icon.jsx'
 import { conciliarPago, pagarConMercadoPago, unPedido } from '../api/pedidos.js'
-import { esDeMercadoPago, estadoVisible, etiquetaDe, lineaDeTiempo, reservadoHasta } from '../lib/estadosPedido.js'
+import { esDeMercadoPago, esperaElPago, estadoVisible, etiquetaDe, lineaDeTiempo, reservadoHasta } from '../lib/estadosPedido.js'
 import { useAjustesTienda } from '../hooks/useAjustesTienda.js'
 import { formatoFechaHora, money } from '../lib/format.js'
 import { formatoDocumento } from '../lib/documento.js'
@@ -91,7 +91,15 @@ export default function PedidoPage() {
 
   const cargar = useCallback(async () => {
     try {
-      setPedido(await unPedido(id))
+      let actual = await unPedido(id)
+      // Un pedido de Mercado Pago que figura sin pagar puede estar pagado y no haberse enterado
+      // todavia (por ejemplo si la persona volvio sin pasar por el enlace de retorno, o el aviso
+      // no llego). Se le pregunta a Mercado Pago. Si se vuelve con ?mp=..., eso ya lo hace el efecto de abajo.
+      if (!vuelta && esperaElPago(actual)) {
+        const r = await conciliarPago(id).catch(() => null)
+        if (r?.order) actual = r.order
+      }
+      setPedido(actual)
       setNoExiste(false)
       setError(null)
     } catch (e) {
@@ -99,7 +107,7 @@ export default function PedidoPage() {
       if (e.status === 404 || e.status === 403) setNoExiste(true)
       else setError(mensajeDeError(e))
     }
-  }, [id])
+  }, [id, vuelta])
   const { actualizando, actualizar } = useRecarga(cargar)
 
   // Al volver de Mercado Pago se le pregunta por el pago: no se confia en lo que diga
