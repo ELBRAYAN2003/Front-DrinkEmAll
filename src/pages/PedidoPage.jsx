@@ -2,7 +2,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import Icon from '../components/ui/Icon.jsx'
 import { conciliarPago, pagarConMercadoPago, unPedido } from '../api/pedidos.js'
-import { esDeMercadoPago, estadoVisible, etiquetaDe, lineaDeTiempo } from '../lib/estadosPedido.js'
+import { esDeMercadoPago, estadoVisible, etiquetaDe, lineaDeTiempo, reservadoHasta } from '../lib/estadosPedido.js'
+import { useAjustesTienda } from '../hooks/useAjustesTienda.js'
 import { formatoFechaHora, money } from '../lib/format.js'
 import { formatoDocumento } from '../lib/documento.js'
 import { mensajeDeError } from '../lib/mensajeDeError.js'
@@ -70,6 +71,7 @@ function tituloDelPaso(paso, pedido) {
 export default function PedidoPage() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const ajustes = useAjustesTienda()
   const [params] = useSearchParams()
   const vuelta = params.get('mp')
   const [fase, setFase] = useState(null) // null | 'esperando' | 'vencida'
@@ -176,6 +178,7 @@ export default function PedidoPage() {
   const pago = pedido?.payments?.[0]
   const esMercadoPago = /mercado pago/i.test(pago?.paymentMethod?.name ?? '')
   const puedePagar = esMercadoPago && pago?.status === 'pendiente' && pedido?.fulfillmentStatus === 'recibido'
+  const hasta = pedido ? reservadoHasta(pedido, ajustes?.paymentWindowMinutes) : null
   const mensaje = vuelta ? estadoDelPago({ vuelta, pago, fase }) : null
   const restante = ESPERA_MAXIMA_MS - (ahora - inicioDeEspera(id))
   const pasos = pedido ? lineaDeTiempo(pedido) : []
@@ -323,12 +326,19 @@ export default function PedidoPage() {
                   </b>
                 </li>
               </ul>
+              {hasta && (
+                <p className="pedido-reserva">
+                  <Icon name="check" size={14} />
+                  Tus productos están reservados hasta las <b>{hasta.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}</b>
+                  {hasta.toDateString() !== new Date().toDateString() && ` del ${hasta.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })}`}.
+                  Si el pago no se acredita antes, el pedido se cancela y el stock vuelve a la venta.
+                </p>
+              )}
               {puedePagar && (
                 <div className="pedido-pagar">
                   <button type="button" className="btn btn-primary" onClick={pagar} disabled={pagando}>
                     {pagando ? 'Abriendo Mercado Pago...' : 'Pagar con Mercado Pago'}
                   </button>
-                  <small>Tenés un tiempo limitado para pagar: si vence, el pedido se cancela y se libera el stock.</small>
                   {errorPago && <p className="checkout-aviso" role="alert">{errorPago}</p>}
                 </div>
               )}

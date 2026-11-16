@@ -598,3 +598,19 @@
   background: color-mix(in srgb, #b7791f 16%, transparent);
   color: #8a5a00;
 }
+
+.pedido-reserva {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: var(--brand-soft);
+  font-size: 13.5px;
+
+  .icon {
+    flex: none;
+    margin-top: 3px;
+  }
+}

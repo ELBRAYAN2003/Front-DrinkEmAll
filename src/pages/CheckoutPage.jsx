@@ -12,6 +12,7 @@ import { miPerfil } from '../api/auth.js'
 import { completarPerfil, crearPedido, mediosDePago } from '../api/tienda.js'
 import { pagarConMercadoPago } from '../api/pedidos.js'
 import { iniciarEspera } from '../lib/esperaDePago.js'
+import { duracion } from '../lib/estadosPedido.js'
 import { domicilios, facturacion } from '../api/libreta.js'
 import { formatoDocumento, soloDigitos } from '../lib/documento.js'
 import { calcularTotales } from '../data/cart.js'
@@ -658,6 +659,12 @@ export default function CheckoutPage() {
                       ))}
                     </div>
                   )}
+                  {medioElegido && /mercado pago|transferencia/i.test(medioElegido.name) && ajustes?.paymentWindowMinutes && (
+                    <p className="checkout-cuenta">
+                      Al confirmar reservamos tus productos por {duracion(ajustes.paymentWindowMinutes)} mientras se
+                      acredita el pago. Si no se paga en ese plazo, el pedido se cancela y el stock vuelve a la venta.
+                    </p>
+                  )}
                 </section>
               )}
 
@@ -835,6 +842,12 @@ function PedidoCreado({ pedido, medio, ajustes }) {
           </li>
         </ul>
 
+        {transferencia && ajustes?.paymentWindowMinutes && (
+          <p className="checkout-ok-nota">
+            Reservamos tus productos por {duracion(ajustes.paymentWindowMinutes)}: si la transferencia no se
+            acredita en ese plazo, el pedido se cancela.
+          </p>
+        )}
         {transferencia && (
           <p className="checkout-ok-nota">
             {ajustes?.transferInstructions

@@ -49,6 +49,7 @@ export const SECCIONES = [
         ul: [
           'Los precios están expresados en pesos argentinos e incluyen IVA. El costo de envío, si corresponde, se muestra antes de confirmar y se suma al total.',
           'La disponibilidad es la del stock que figura en el sitio al confirmar el pedido. Si dos personas piden el último producto, el servidor acepta el primer pedido y rechaza el otro.',
+          'Al confirmar el pedido, los productos quedan reservados para esa persona: el stock se descuenta de inmediato. Con efectivo la reserva dura hasta la entrega; con medios que se pagan por adelantado, hasta el plazo de la sección 5.',
           'Las imágenes son ilustrativas. Ante un error evidente de precio o descripción, el comercio puede cancelar el pedido y devolver lo pagado.',
         ],
       },
@@ -77,10 +78,10 @@ export const SECCIONES = [
         p: 'Se aceptan efectivo (al recibir el pedido o al retirarlo), transferencia bancaria y, cuando está habilitado, Mercado Pago. El sitio no guarda datos de tarjetas.',
       },
       {
-        p: 'En las transferencias, el comercio confirma el pago a mano. Los datos de la cuenta se informan al confirmar el pedido: [DATO PENDIENTE: alias o CBU y titular]. Plazo para acreditar la transferencia antes de que el pedido se cancele: [DATO PENDIENTE].',
+        p: 'En las transferencias, el comercio confirma el pago a mano. Los datos de la cuenta se informan al confirmar el pedido: [DATO PENDIENTE: alias o CBU y titular]. Los productos se reservan mientras se espera la transferencia durante [DATO PENDIENTE: confirmar el plazo; hoy 3 horas]; pasado ese plazo sin que se acredite, el pedido se cancela y el stock vuelve a la venta.',
       },
       {
-        p: 'Con Mercado Pago el pago se hace en el sitio de Mercado Pago, que procesa los datos de la tarjeta o de la cuenta bajo sus propios términos y recibe los datos de la compra necesarios para cobrarla. El pedido queda reservado durante [DATO PENDIENTE: confirmar el plazo; hoy 60 minutos] para que se complete el pago: pasado ese plazo sin pagarse, se cancela solo y se libera el stock. Si el pago se aprueba, el pedido pasa a Pagado; si queda pendiente de acreditación, se actualiza cuando Mercado Pago lo confirma.',
+        p: 'Con Mercado Pago el pago se hace en el sitio de Mercado Pago, que procesa los datos de la tarjeta o de la cuenta bajo sus propios términos y recibe los datos de la compra necesarios para cobrarla. Los productos del pedido quedan reservados durante [DATO PENDIENTE: confirmar el plazo; hoy 3 horas] para que se complete el pago: pasado ese plazo sin pagarse, el pedido se cancela solo y se libera el stock. Una vez acreditado el pago, la reserva se mantiene hasta que el pedido se entrega. Si el pago se aprueba, el pedido pasa a Pagado; si queda pendiente de acreditación, se actualiza cuando Mercado Pago lo confirma.',
       },
     ],
   },

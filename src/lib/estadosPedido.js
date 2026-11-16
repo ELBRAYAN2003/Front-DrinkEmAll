@@ -88,3 +88,25 @@ export function lineaDeTiempo(pedido) {
   }
   return lista
 }
+
+/** 180 -> "3 horas", 90 -> "1 hora y 30 minutos", 45 -> "45 minutos". */
+export function duracion(minutos) {
+  const h = Math.floor(minutos / 60)
+  const m = minutos % 60
+  const horas = h ? `${h} ${h === 1 ? 'hora' : 'horas'}` : ''
+  const mins = m ? `${m} ${m === 1 ? 'minuto' : 'minutos'}` : ''
+  return [horas, mins].filter(Boolean).join(' y ')
+}
+
+/**
+ * Hasta cuando se le reserva el stock a un pedido que espera un pago por adelantado
+ * (Mercado Pago o transferencia). Efectivo no vence: se paga al entregar. Devuelve una Date
+ * o null si el pedido no esta en esa situacion.
+ */
+export function reservadoHasta(pedido, minutos) {
+  const pago = pagoDe(pedido)
+  if (!pago || pago.status !== 'pendiente' || pedido.fulfillmentStatus !== 'recibido' || !minutos) return null
+  const metodo = pago.paymentMethod?.name ?? ''
+  if (!/mercado pago|transferencia/i.test(metodo)) return null
+  return new Date(new Date(pedido.saleDate).getTime() + minutos * 60 * 1000)
+}
