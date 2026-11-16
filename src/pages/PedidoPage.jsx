@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router'
 import Icon from '../components/ui/Icon.jsx'
-import { conciliarPago, pagarConMercadoPago, unPedido } from '../api/pedidos.js'
+import { cancelarMiPedido, conciliarPago, pagarConMercadoPago, unPedido } from '../api/pedidos.js'
 import { esDeMercadoPago, esperaElPago, estadoVisible, etiquetaDe, lineaDeTiempo, nombreDePedido, reservadoHasta } from '../lib/estadosPedido.js'
 import { useAjustesTienda } from '../hooks/useAjustesTienda.js'
 import { formatoFechaHora, money } from '../lib/format.js'
@@ -84,6 +84,10 @@ export default function PedidoPage() {
   const [fase, setFase] = useState(null) // null | 'esperando' | 'vencida'
   const [ahora, setAhora] = useState(() => Date.now())
   const [pagando, setPagando] = useState(false)
+  // Cancelar el pedido: 'confirmando' pide el "si, cancelar" antes de hacerlo.
+  const [cancelacion, setCancelacion] = useState(null) // null | 'confirmando' | 'cancelando'
+  const [errorCancelar, setErrorCancelar] = useState(null)
+  const [cancelado, setCancelado] = useState(false)
   const [errorPago, setErrorPago] = useState(null)
   const [pedido, setPedido] = useState(null)
   const [noExiste, setNoExiste] = useState(false)
@@ -162,6 +166,22 @@ export default function PedidoPage() {
     return () => clearInterval(reloj1s)
   }, [fase, hayReserva])
 
+  const cancelar = async () => {
+    setCancelacion('cancelando')
+    setErrorCancelar(null)
+    try {
+      const actualizado = await cancelarMiPedido(id)
+      setPedido(actualizado)
+      setCancelado(true)
+      setCancelacion(null)
+    } catch (e) {
+      setErrorCancelar({ texto: mensajeDeError(e), code: e.code })
+      setCancelacion(null)
+      // El estado pudo haber cambiado (se pago, el local empezo a prepararlo): se vuelve a leer.
+      cargar()
+    }
+  }
+
   const pagar = async () => {
     setPagando(true)
     setErrorPago(null)
@@ -195,6 +215,11 @@ export default function PedidoPage() {
 
   const pago = pedido?.payments?.[0]
   const esMercadoPago = /mercado pago/i.test(pago?.paymentMethod?.name ?? '')
+  // Cancelar solo: mientras no este pagado y el local no lo haya empezado a preparar.
+  const puedeCancelar = pago?.status === 'pendiente' && pedido?.fulfillmentStatus === 'recibido'
+  // Pagado y todavia sin entregar: se cancela con el boton de arrepentimiento.
+  const cancelaConArrepentimiento =
+    pago?.status === 'pagado' && ['recibido', 'preparando', 'en_camino', 'listo_para_retirar'].includes(pedido?.fulfillmentStatus)
   const puedePagar = esMercadoPago && pago?.status === 'pendiente' && pedido?.fulfillmentStatus === 'recibido'
   const mensaje = vuelta ? estadoDelPago({ vuelta, pago, fase }) : null
   const restante = ESPERA_MAXIMA_MS - (ahora - inicioDeEspera(id))
@@ -235,6 +260,20 @@ export default function PedidoPage() {
               </button>
             )}
             {errorPago && <p className="checkout-aviso" role="alert">{errorPago}</p>}
+          </div>
+        )}
+
+        {cancelado && (
+          <div className="pedido-aviso is-ok" role="status">
+            <b>Pedido cancelado</b>
+            <p>Cancelaste tu pedido. Se libera el stock reservado y no se te cobra nada.</p>
+          </div>
+        )}
+        {errorCancelar && (
+          <div className="pedido-aviso is-error" role="alert">
+            <b>No se pudo cancelar</b>
+            <p>{errorCancelar.texto}</p>
+            {errorCancelar.code === 'YA_PAGADO' && <Link to="/arrepentimiento">BOTÓN DE ARREPENTIMIENTO</Link>}
           </div>
         )}
 
@@ -367,6 +406,32 @@ export default function PedidoPage() {
                   </button>
                   {errorPago && <p className="checkout-aviso" role="alert">{errorPago}</p>}
                 </div>
+              )}
+              {puedeCancelar && cancelacion === null && (
+                <div className="pedido-cancelar">
+                  <button type="button" className="btn btn-ghost" onClick={() => setCancelacion('confirmando')}>
+                    Cancelar pedido
+                  </button>
+                  <small>Podés cancelarlo mientras no esté pagado y el local no haya empezado a prepararlo.</small>
+                </div>
+              )}
+              {puedeCancelar && cancelacion !== null && (
+                <div className="pedido-cancelar pedido-cancelar-confirma" role="alertdialog" aria-label="Confirmar la cancelación">
+                  <p>¿Seguro que querés cancelar el pedido? Se libera el stock reservado y no se puede deshacer.</p>
+                  <div>
+                    <button type="button" className="btn btn-primary" onClick={cancelar} disabled={cancelacion === 'cancelando'}>
+                      {cancelacion === 'cancelando' ? 'Cancelando...' : 'Sí, cancelar el pedido'}
+                    </button>
+                    <button type="button" className="btn btn-ghost" onClick={() => setCancelacion(null)} disabled={cancelacion === 'cancelando'}>
+                      No, dejarlo
+                    </button>
+                  </div>
+                </div>
+              )}
+              {cancelaConArrepentimiento && (
+                <p className="pedido-cancelar-nota">
+                  Este pedido ya está pagado: para cancelarlo usá el <Link to="/arrepentimiento">botón de arrepentimiento</Link>.
+                </p>
               )}
               <p className="pedido-arrepentimiento">
                 <Link to="/arrepentimiento">BOTÓN DE ARREPENTIMIENTO</Link>

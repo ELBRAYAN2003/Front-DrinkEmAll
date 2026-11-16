@@ -69,6 +69,9 @@ export const SECCIONES = [
         ],
       },
       { p: 'Cada cambio queda registrado con su fecha y hora y se ve en "Mis pedidos".' },
+      {
+        p: 'Cancelación por la persona: mientras el pedido no esté pagado y el local no haya empezado a prepararlo, se puede cancelar desde "Mis pedidos" y el stock se libera. Con el pedido ya pagado la cancelación se hace con el botón de arrepentimiento (sección 7); con el pedido en preparación hay que comunicarse con el local.',
+      },
     ],
   },
   {

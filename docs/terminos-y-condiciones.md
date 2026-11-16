@@ -40,6 +40,8 @@ El pedido se registra con estado Recibido cuando se confirma. No es una aceptaci
 
 Cada cambio queda registrado con su fecha y hora y se ve en "Mis pedidos".
 
+Cancelación por la persona: mientras el pedido no esté pagado y el local no haya empezado a prepararlo, se puede cancelar desde "Mis pedidos" y el stock se libera. Con el pedido ya pagado la cancelación se hace con el botón de arrepentimiento (sección 7); con el pedido en preparación hay que comunicarse con el local.
+
 ## 5. Medios de pago
 
 Se aceptan efectivo (al recibir el pedido o al retirarlo), transferencia bancaria y, cuando está habilitado, Mercado Pago. El sitio no guarda datos de tarjetas.
