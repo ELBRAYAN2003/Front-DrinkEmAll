@@ -172,6 +172,20 @@ export default function PrivacyPage() {
             el nombre necesarios para la entrega. No se ceden a otros terceros.
           </p>
 
+          <h3>3.3 ter Libreta de la cuenta y datos de facturacion</h3>
+          <p>
+            En cada pedido se guarda una copia de los <b>datos de facturacion</b> que
+            usted elige: nombre o razon social, tipo y numero de documento (DNI o
+            CUIT) y correo. Es necesaria para emitir la factura y se conserva con el
+            pedido, aunque despues usted edite o borre sus datos guardados.
+          </p>
+          <p>
+            Si lo pide, puede guardar en su cuenta hasta 10 domicilios y 10 datos de
+            facturacion para no escribirlos de nuevo. Puede editarlos o borrarlos
+            desde Mi cuenta en cualquier momento. Los ve solamente usted y el
+            personal del comercio que prepara y factura sus pedidos.
+          </p>
+
           <h3>3.3 bis Solicitudes de arrepentimiento</h3>
           <p>
             Si usa el <b>botón de arrepentimiento</b> (no requiere cuenta) se guardan
