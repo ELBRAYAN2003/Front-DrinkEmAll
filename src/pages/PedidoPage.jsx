@@ -5,6 +5,7 @@ import { cancelarMiPedido, conciliarPago, pagarConMercadoPago, unPedido } from '
 import { esDeMercadoPago, esperaElPago, estadoVisible, etiquetaDe, lineaDeTiempo, nombreDePedido, reservadoHasta } from '../lib/estadosPedido.js'
 import { useAjustesTienda } from '../hooks/useAjustesTienda.js'
 import DatosDeTransferencia, { DatosDeRetiro } from '../components/checkout/DatosDeTransferencia.jsx'
+import BotonComprobante from '../components/ui/BotonComprobante.jsx'
 import { formatoFechaHora, money } from '../lib/format.js'
 import { formatoDocumento } from '../lib/documento.js'
 import { mensajeDeError } from '../lib/mensajeDeError.js'
@@ -415,6 +416,7 @@ export default function PedidoPage() {
                   {errorPago && <p className="checkout-aviso" role="alert">{errorPago}</p>}
                 </div>
               )}
+              {pago?.status === 'pagado' && <BotonComprobante pedido={pedido} />}
               {puedeCancelar && cancelacion === null && (
                 <div className="pedido-cancelar">
                   <button type="button" className="btn btn-ghost" onClick={() => setCancelacion('confirmando')}>

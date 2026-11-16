@@ -5,6 +5,7 @@ import { useRecarga } from '../../hooks/useRecarga.js'
 import { esDeMercadoPago, estadoVisible, etiquetaDe, nombreDePedido } from '../../lib/estadosPedido.js'
 import { formatoFechaHora, money } from '../../lib/format.js'
 import { formatoDocumento } from '../../lib/documento.js'
+import BotonComprobante from '../../components/ui/BotonComprobante.jsx'
 import { mensajeDeError } from '../../lib/mensajeDeError.js'
 import { ACCION_DE_ESTADO, esperaAcreditacion, pagoDelPedido, siguientesEstados } from '../../lib/panel.js'
 
@@ -233,6 +234,8 @@ export default function PanelPedidoPage() {
               </div>
             )}
           </dl>
+
+          {pago?.status === 'pagado' && <BotonComprobante pedido={pedido} className="panel-boton" />}
 
           <h2>Historial</h2>
           <ol className="panel-historial">
