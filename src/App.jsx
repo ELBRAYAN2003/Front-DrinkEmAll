@@ -6,6 +6,8 @@ import Footer from "./components/layout/Footer.jsx";
 import Header from "./components/layout/Header.jsx";
 import AuthProvider from "./context/AuthProvider.jsx";
 import CarritoProvider from "./context/CarritoProvider.jsx";
+import MisPedidosPage from "./pages/MisPedidosPage.jsx";
+import PedidoPage from "./pages/PedidoPage.jsx";
 import AccountPage from "./pages/AccountPage.jsx";
 import AuthPage from "./pages/AuthPage.jsx";
 import CartPage from "./pages/CartPage.jsx";
@@ -66,6 +68,22 @@ export default function App() {
             />
             {/* Cualquier otra URL: antes renderizaba cabecera y pie con el
                 medio vacio, sin aviso ni salida. */}
+            <Route
+              path="/mis-pedidos"
+              element={
+                <RutaPrivada aviso="Ingresa para ver tus pedidos.">
+                  <MisPedidosPage />
+                </RutaPrivada>
+              }
+            />
+            <Route
+              path="/mis-pedidos/:id"
+              element={
+                <RutaPrivada aviso="Ingresa para ver tus pedidos.">
+                  <PedidoPage />
+                </RutaPrivada>
+              }
+            />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
           <Footer />
