@@ -105,6 +105,12 @@
 }
 
 .carousel-track {
+  /* Contenedor posicionado: los textos ocultos de cada tarjeta (.sr-only, con
+     position: absolute) lo toman como referencia y quedan recortados por su
+     desplazamiento. Sin esto se escapaban del recorte, caian donde cae cada tarjeta
+     (a miles de px a la derecha) y ensanchaban toda la pagina: la home medía unos
+     2.700 px y, con overflow-x oculto, todo se veia corrido. */
+  position: relative;
   display: flex;
   gap: var(--gap);
   overflow-x: auto;
