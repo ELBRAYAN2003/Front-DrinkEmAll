@@ -13,6 +13,7 @@ import { completarPerfil, crearPedido, mediosDePago } from '../api/tienda.js'
 import { pagarConMercadoPago } from '../api/pedidos.js'
 import { iniciarEspera } from '../lib/esperaDePago.js'
 import { duracion, nombreDePedido } from '../lib/estadosPedido.js'
+import DatosDeTransferencia, { DatosDeRetiro } from '../components/checkout/DatosDeTransferencia.jsx'
 import { domicilios, facturacion } from '../api/libreta.js'
 import { formatoDocumento, soloDigitos } from '../lib/documento.js'
 import { calcularTotales } from '../data/cart.js'
@@ -553,9 +554,7 @@ export default function CheckoutPage() {
                       <span>
                         <b>Retiro en el local</b>
                         <small>
-                          {ajustes?.pickupAddress
-                            ? `${ajustes.pickupAddress}. Sin cargo.`
-                            : 'Sin cargo. Te confirmamos la direccion cuando el pedido este listo.'}
+                          <DatosDeRetiro direccion={ajustes?.pickupAddress} horarios={ajustes?.pickupHours} /> · Sin cargo.
                         </small>
                       </span>
                     </label>
@@ -682,6 +681,9 @@ export default function CheckoutPage() {
                       ))}
                     </div>
                   )}
+                  {medioElegido && /transferencia/i.test(medioElegido.name) && (
+                    <DatosDeTransferencia transfer={ajustes?.transfer} />
+                  )}
                   {medioElegido && /mercado pago|transferencia/i.test(medioElegido.name) && ajustes?.paymentWindowMinutes && (
                     <p className="checkout-cuenta">
                       Al confirmar reservamos tus productos por {duracion(ajustes.paymentWindowMinutes)} mientras se
@@ -707,7 +709,15 @@ export default function CheckoutPage() {
                     </li>
                     <li>
                       <span>Entrega</span>
-                      <b>{retiroEnLocal ? 'Retiro en el local' : textoDeDomicilio(datosDeDomicilio())}</b>
+                      <b>
+                        {retiroEnLocal ? (
+                          <>
+                            Retiro en el local: <DatosDeRetiro direccion={ajustes?.pickupAddress} horarios={ajustes?.pickupHours} />
+                          </>
+                        ) : (
+                          textoDeDomicilio(datosDeDomicilio())
+                        )}
+                      </b>
                     </li>
                     <li>
                       <span>Pago</span>
@@ -848,9 +858,13 @@ function PedidoCreado({ pedido, medio, ajustes }) {
           <li>
             <span>Entrega</span>
             <b>
-              {pedido.deliveryMethod === 'retiro'
-                ? 'Retiro en el local'
-                : `${pedido.shippingAddress?.street}, ${pedido.shippingAddress?.city}`}
+              {pedido.deliveryMethod === 'retiro' ? (
+                <>
+                  Retiro en el local: <DatosDeRetiro direccion={ajustes?.pickupAddress} horarios={ajustes?.pickupHours} />
+                </>
+              ) : (
+                `${pedido.shippingAddress?.street}, ${pedido.shippingAddress?.city}`
+              )}
             </b>
           </li>
           <li>
@@ -877,13 +891,7 @@ function PedidoCreado({ pedido, medio, ajustes }) {
             acredita en ese plazo, el pedido se cancela.
           </p>
         )}
-        {transferencia && (
-          <p className="checkout-ok-nota">
-            {ajustes?.transferInstructions
-              ? ajustes.transferInstructions
-              : 'Para pagar por transferencia, el local te va a pasar los datos de la cuenta.'}
-          </p>
-        )}
+        {transferencia && <DatosDeTransferencia transfer={ajustes?.transfer} codigo={pedido.code} />}
         <p className="checkout-ok-nota">
           Al entregar te vamos a pedir el DNI: si quien recibe no es mayor de 18 anos, el pedido no se entrega.
         </p>

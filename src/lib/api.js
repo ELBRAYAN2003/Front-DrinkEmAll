@@ -126,6 +126,7 @@ async function pedir(metodo, ruta, { params, body, signal, auth = false } = {}) 
 export const apiGet = (ruta, opciones) => pedir('GET', ruta, opciones)
 export const apiPost = (ruta, opciones) => pedir('POST', ruta, opciones)
 export const apiPatch = (ruta, opciones) => pedir('PATCH', ruta, opciones)
+export const apiPut = (ruta, opciones) => pedir('PUT', ruta, opciones)
 export const apiDelete = (ruta, opciones) => pedir('DELETE', ruta, opciones)
 
 /** Convierte una imageUrl relativa del backend en una URL absoluta. */
