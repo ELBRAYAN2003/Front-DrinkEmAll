@@ -33,9 +33,19 @@
     font-size: 21px;
   }
 
-  /* Los campos ocupan una sola columna en estas pantallas angostas. */
+  /* Las columnas de los campos las define .fields (checkout.css): dos columnas y,
+     en pantallas de hasta 620 px, una sola. Sin "min-width: 0" las grillas no dejan
+     achicar los campos mas alla de su ancho propio (Chromium da a los de fecha y de
+     texto un minimo grande) y la pagina se hace mas ancha que la ventana. */
   .fields {
-    grid-template-columns: 1fr 1fr;
+    label,
+    input {
+      min-width: 0;
+    }
+
+    input {
+      width: 100%;
+    }
   }
 }
 
