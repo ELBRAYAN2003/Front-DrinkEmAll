@@ -144,15 +144,14 @@ export default function Header() {
           </div>
 
           <div className="header-account">
-            {/* Texto y no enlace, como "Mi cuenta": todavia no hay seguimiento
-                de pedidos. Antes era un enlace a "#" en la franja de arriba. */}
-            <span className="action action-track is-pendiente" title="Proximamente">
+            {/* Sin sesion, /mis-pedidos manda a ingresar y vuelve aca. */}
+            <Link className="action action-track" to="/mis-pedidos">
               <Icon name="truck" size={22} />
               <span className="action-text">
                 <small>Seguir</small>
                 <b>Mi pedido</b>
               </span>
-            </span>
+            </Link>
 
             <Link className="action" to={autenticado ? '/mi-cuenta' : '/ingresar'}>
               <Icon name="user" size={22} />
@@ -205,9 +204,9 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <span className="drawer-pendiente">
-                Seguir mi pedido <small>Proximamente</small>
-              </span>
+              <Link to="/mis-pedidos" onClick={() => setOpen(false)}>
+                Seguir mi pedido
+              </Link>
             </li>
           </ul>
         </div>

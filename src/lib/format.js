@@ -18,3 +18,11 @@ export function formatoFecha(iso) {
   const m = String(iso ?? '').match(/^(\d{4})-(\d{2})-(\d{2})$/)
   return m ? `${m[3]}/${m[2]}/${m[1]}` : String(iso ?? '')
 }
+
+/** Fecha y hora de un instante ISO, en la hora local: "16/11/2026, 10:05". */
+export function formatoFechaHora(iso) {
+  const f = new Date(iso)
+  return Number.isNaN(f.getTime())
+    ? ''
+    : f.toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })
+}

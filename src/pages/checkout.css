@@ -553,3 +553,9 @@
   width: 100%;
   text-align: left;
 }
+
+.checkout-ok-otro {
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: underline;
+}
