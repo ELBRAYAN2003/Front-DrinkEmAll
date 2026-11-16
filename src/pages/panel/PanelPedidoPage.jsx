@@ -89,6 +89,16 @@ export default function PanelPedidoPage() {
 
       {error && <p className="panel-error" role="alert">{error}</p>}
 
+      {pago?.duplicateIds?.length > 0 && (
+        <div className="panel-error panel-cobro-doble" role="alert">
+          <b>Mercado Pago cobró de más este pedido.</b> Además del pago {pago.externalId} se aprobaron{' '}
+          {pago.duplicateIds.length === 1 ? 'otro pago' : `${pago.duplicateIds.length} pagos más`}: operación
+          {pago.duplicateIds.length === 1 ? '' : 'es'} <b>{pago.duplicateIds.join(', ')}</b>. Hay que reintegrar{' '}
+          {pago.duplicateIds.length === 1 ? 'ese importe' : 'esos importes'} al cliente desde Mercado Pago (Tu negocio &gt;
+          Actividad).
+        </div>
+      )}
+
       <div className="panel-doble">
         <div className="panel-tarjeta">
           <h2>Qué preparar</h2>

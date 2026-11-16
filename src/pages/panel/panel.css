@@ -615,3 +615,9 @@
   align-items: center;
   gap: 12px;
 }
+
+.panel-cobro-doble {
+  border-width: 2px;
+  background: #fff5f5;
+  line-height: 1.5;
+}
