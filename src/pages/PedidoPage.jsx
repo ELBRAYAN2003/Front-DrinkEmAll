@@ -25,6 +25,13 @@ const reloj = (ms) => {
   return `${String(Math.floor(total / 60)).padStart(2, '0')}:${String(total % 60).padStart(2, '0')}`
 }
 
+// Con horas, para la reserva del stock (que dura horas): 02:59:41.
+const relojLargo = (ms) => {
+  const total = Math.max(0, Math.ceil(ms / 1000))
+  const dos = (n) => String(n).padStart(2, '0')
+  return `${dos(Math.floor(total / 3600))}:${dos(Math.floor((total % 3600) / 60))}:${dos(total % 60)}`
+}
+
 // Que decirle a la persona segun lo que contesta el servidor (no segun la URL).
 function estadoDelPago({ vuelta, pago, fase }) {
   if (pago?.status === 'pagado') {
@@ -137,12 +144,15 @@ export default function PedidoPage() {
     }
   }, [id, vuelta])
 
-  // La cuenta regresiva se redibuja cada segundo mientras se espera.
+  const hasta = pedido ? reservadoHasta(pedido, ajustes?.paymentWindowMinutes) : null
+  const hayReserva = Boolean(hasta)
+
+  // Las cuentas regresivas (espera de 5 minutos y reserva del stock) se redibujan cada segundo.
   useEffect(() => {
-    if (fase !== 'esperando') return undefined
+    if (fase !== 'esperando' && !hayReserva) return undefined
     const reloj1s = setInterval(() => setAhora(Date.now()), 1000)
     return () => clearInterval(reloj1s)
-  }, [fase])
+  }, [fase, hayReserva])
 
   const pagar = async () => {
     setPagando(true)
@@ -178,7 +188,6 @@ export default function PedidoPage() {
   const pago = pedido?.payments?.[0]
   const esMercadoPago = /mercado pago/i.test(pago?.paymentMethod?.name ?? '')
   const puedePagar = esMercadoPago && pago?.status === 'pendiente' && pedido?.fulfillmentStatus === 'recibido'
-  const hasta = pedido ? reservadoHasta(pedido, ajustes?.paymentWindowMinutes) : null
   const mensaje = vuelta ? estadoDelPago({ vuelta, pago, fase }) : null
   const restante = ESPERA_MAXIMA_MS - (ahora - inicioDeEspera(id))
   const pasos = pedido ? lineaDeTiempo(pedido) : []
@@ -327,12 +336,21 @@ export default function PedidoPage() {
                 </li>
               </ul>
               {hasta && (
-                <p className="pedido-reserva">
+                <div className="pedido-reserva">
                   <Icon name="check" size={14} />
-                  Tus productos están reservados hasta las <b>{hasta.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}</b>
-                  {hasta.toDateString() !== new Date().toDateString() && ` del ${hasta.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })}`}.
-                  Si el pago no se acredita antes, el pedido se cancela y el stock vuelve a la venta.
-                </p>
+                  <div>
+                    <span>Tus productos están reservados. Tiempo para pagar:</span>
+                    <b className="pedido-reserva-reloj">{relojLargo(hasta.getTime() - ahora)}</b>
+                    <small>
+                      Hasta las{' '}
+                      {hasta.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' })}
+                      {hasta.toDateString() !== new Date().toDateString() &&
+                        ` del ${hasta.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' })}`}
+                      {' '}
+                      Si el pago no se acredita antes, el pedido se cancela y el stock vuelve a la venta.
+                    </small>
+                  </div>
+                </div>
               )}
               {puedePagar && (
                 <div className="pedido-pagar">
